@@ -16,23 +16,23 @@
       {
         "command": "uml-gen.create",
         "title": "Create UML",
-		"category": "UML"
-	  },
+        "category": "UML"
+      },
       {
-		"command": "uml-gen.save",
-		"title": "Save UML",
-		"category": "UML"
-	  }
+        "command": "uml-gen.save",
+        "title": "Save UML",
+        "category": "UML"
+      }
     ],
-	"menus": {
-		"editor/title": [
-			{
-				"command": "uml-gen.create",
-				"when": "true",
-				"group": "navigation"
-			}
-		]
-	}
+  "menus": {
+    "editor/title": [
+      {
+        "command": "uml-gen.create",
+        "when": "true",
+        "group": "navigation"
+      }
+    ]
+  }
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
