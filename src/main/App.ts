@@ -1,5 +1,4 @@
 import * as vscode from 'vscode';
-import * as fs from 'fs';
 import { Commands } from "./Commands";
 import { Reader } from './Reader';
 
@@ -21,6 +20,6 @@ export class App {
 	}
 
 	public createUml(document: vscode.TextDocument) {
-		
+
 	}
 }
