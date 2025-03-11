@@ -1,25 +1,31 @@
-import * as vscode from 'vscode';
-import { Commands } from "./Commands";
+import { 
+	ExtensionContext as Context, 
+	TextDocument as TxtDoc 
+} from 'vscode';
+import { Commands, ICreatorUml } from "./Commands";
 import { Reader } from './Reader';
 
 export class App {
-	public readonly context: vscode.ExtensionContext;
+	public readonly context: Context;
 
 	private commands: Commands;
 	private reader: Reader;
 
-	constructor(context: vscode.ExtensionContext) {
+	constructor(context: Context) {
 		this.context = context;
-		this.commands = new Commands(this);
+		this.commands = new Commands(this.context);
 		this.reader = new Reader(this.context.extensionPath);
 	}
 
 	public init() {
-		this.commands.registerComandCreateUML();
+		this.commands.registerComandCreateUML(CreatorUmlFromFile);
 		this.reader.loadFiles();
 	}
+}
 
-	public createUml(document: vscode.TextDocument) {
-
+const CreatorUmlFromFile = {
+	onCreate(doc: TxtDoc) {
+		const text = doc.getText();
+		console.log(text);
 	}
 }

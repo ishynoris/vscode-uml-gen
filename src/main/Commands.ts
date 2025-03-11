@@ -1,25 +1,26 @@
 import * as vscode from "vscode";
-import * as fs from "fs";
-import { App } from "./App";
+
+export interface ICreatorUml {
+	onCreate(document: vscode.TextDocument): void;
+}
 
 export class Commands {
 
-	private app: App;
+	private context: vscode.ExtensionContext;
 
-	constructor(app: App) {
-		this.app = app;
+	constructor(context: vscode.ExtensionContext) {
+		this.context  = context;
 	}
 
-	public registerComandCreateUML(): void {
-		const context = this.app.context;
+	public registerComandCreateUML(creator: ICreatorUml): void {
 		const command = vscode.commands.registerCommand("uml-gen.create", () => {
 			const doc = vscode.window.activeTextEditor?.document;
 			if (doc == undefined) {
 				return;
 			}
-			this.app.createUml(doc);
+			creator.onCreate(doc);
 		});
 
-		context.subscriptions.push(command);
+		this.context.subscriptions.push(command);
 	}
 }
