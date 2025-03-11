@@ -1,6 +1,7 @@
 import { TextDocument } from "vscode";
-import { JavaParser } from "./JavaParser";
+import { JavaParser } from "./java/JavaParser";
 import { ParserResult, IParserFile, ClassMetadataResult } from "./parser.type";
+import { Mock } from "./mock.types";
 
 export function getParser(doc: TextDocument): ParserResult {
 	const parsers = new Map<string, IParserFile>();
@@ -14,24 +15,8 @@ export function getParser(doc: TextDocument): ParserResult {
 	return {
 		optional: {
 			isValid: _isValid,
-			value: _parser ?? ParserFileMock,
+			value: _parser ?? Mock.getParserFile(),
 		},
 		error: _error,
-	}
-}
-
-const ParserFileMock = {
-	parse(doc: TextDocument): ClassMetadataResult { 
-
-		const metadata = {
-			className: "",
-		}
-		return { 
-			optional: {
-				isValid: false,
-				value: metadata,
-			},
-			errors: [ 'ParserFileMock' ] 
-		}
 	}
 }
