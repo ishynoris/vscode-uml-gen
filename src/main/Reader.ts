@@ -1,18 +1,24 @@
 import * as fs from 'fs';
-import * as vscode from 'vscode';
+import { window } from 'vscode';
 import path from 'path';
 import { getWorkspacePath } from './Workspace';
+
+export type FileMetadata = {
+	name: string
+	path: string,
+	extension: string,
+}
 
 export class Reader {
 	private path: string;
 	private srcPath: string;
-	private filesPath: string[];
+	private files: Map<string, FileMetadata>;
 	private invalidFiles: string[];
 
-	constructor(path: string, srcPath: string = "src") {
+	constructor(srcPath: string = "src") {
 		this.path = this.getSrcPath() ?? "";
 		this.srcPath = srcPath;
-		this.filesPath = [];
+		this.files = new Map<string, FileMetadata>;
 		this.invalidFiles = [
 			".properties",
 			".gitignore",
@@ -45,14 +51,19 @@ export class Reader {
 			}
 
 			filePath = filePath.replace(this.path, "");
-			this.filesPath.push(filePath);
+			const name = path.basename(filePath);
+			this.files.set(name, {
+				name: name,
+				path: filePath,
+				extension: extension
+			});
 		}
 	}
 
 	private getSrcPath(fileName?: string): null|string {
 		let srcPath = getWorkspacePath();
 		if (srcPath == null) {
-			vscode.window.showErrorMessage("None workspace loaded");
+			window.showErrorMessage("None workspace loaded");
 			return null;
 		}
 

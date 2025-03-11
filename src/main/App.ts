@@ -1,9 +1,11 @@
 import { 
+	window,
 	ExtensionContext as Context, 
 	TextDocument as TxtDoc 
 } from 'vscode';
 import { Commands, ICreatorUml } from "./Commands";
 import { Reader } from './Reader';
+import { getParser } from './parsers/ParserFactory';
 
 export class App {
 	public readonly context: Context;
@@ -14,7 +16,7 @@ export class App {
 	constructor(context: Context) {
 		this.context = context;
 		this.commands = new Commands(this.context);
-		this.reader = new Reader(this.context.extensionPath);
+		this.reader = new Reader();
 	}
 
 	public init() {
@@ -25,7 +27,13 @@ export class App {
 
 const CreatorUmlFromFile = {
 	onCreate(doc: TxtDoc) {
-		const text = doc.getText();
-		console.log(text);
+		const result = getParser(doc);
+		if (!result.optional.isValid) {
+			const text = doc.getText();
+			window.showErrorMessage(result.error ?? "");
+			return;
+		}
+
+		result.optional.value.parse(doc);
 	}
 }
