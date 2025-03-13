@@ -44,7 +44,7 @@ export const Mock = {
 				isValid: false,
 				value: Mock.getClassMatadata(),
 			},
-			errors: [ "ClassMetadataResultMock" ]
+			errors: [ ]
 		}
 	},
 	

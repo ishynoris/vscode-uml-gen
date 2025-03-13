@@ -3,8 +3,9 @@ import {
 	ExtensionContext as Context, 
 	TextDocument as TxtDoc 
 } from 'vscode';
-import { Commands, ICreatorUml } from "./Commands";
+import { Commands, ICreatorFromFile } from "./Commands";
 import { Reader } from './Reader';
+import { FileMetadata } from "./types/parser.type"
 import { getParser } from './parsers/ParserFactory';
 
 export class App {
@@ -21,19 +22,20 @@ export class App {
 
 	public init() {
 		this.commands.registerComandCreateUML(CreatorUmlFromFile);
+		this.commands.registerCommandRightClick(CreatorUmlFromFile);
+		this.commands.registerCommandTitleClick(CreatorUmlFromFile);
 		this.reader.loadFiles();
 	}
 }
 
-const CreatorUmlFromFile = {
-	onCreate(doc: TxtDoc) {
-		const result = getParser(doc);
+const CreatorUmlFromFile: ICreatorFromFile = {
+	create(file: FileMetadata) {
+		const result = getParser(file);
 		if (!result.optional.isValid) {
-			const text = doc.getText();
 			window.showErrorMessage(result.error ?? "");
 			return;
 		}
 
-		result.optional.value.parse(doc);
+		result.optional.value.parse(file);
 	}
 }

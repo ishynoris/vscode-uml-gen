@@ -9,30 +9,53 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [ "*" ],
+  "activationEvents": [ 
+    "onLanguage:java",
+    "onLanguage:php"
+   ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
         "command": "uml-gen.create",
         "title": "Create UML",
-        "category": "UML"
+        "shortTitle": "gdfdfgdfg",
+        "category": "uml-gen"
       },
       {
-        "command": "uml-gen.save",
-        "title": "Save UML",
-        "category": "UML"
+        "command": "uml-gen.right-click",
+        "title": "Right Generate UML",
+        "category": "uml-gen"
+      },
+      { 
+        "command": "uml-gen.title-click",
+        "title": "Title Generate UML",
+        "category": "uml-gen"
       }
     ],
-  "menus": {
-    "editor/title": [
-      {
-        "command": "uml-gen.create",
-        "when": "true",
-        "group": "navigation"
-      }
-    ]
-  }
+    "menus": {
+      "editor/title": [
+        {
+          "command": "uml-gen.create",
+          "when": "resourceLangId =~ /^java$|^php$/",
+          "group": "navigation"
+        }
+      ],
+      "editor/title/context": [
+        {
+          "command": "uml-gen.title-click",
+          "when": "resourceLangId =~ /^java$|^php$/",
+          "group": "uml-gen"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "uml-gen.right-click",
+          "when": "resourceLangId =~ /^java$|^php$/",
+          "group": "uml-gen"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
