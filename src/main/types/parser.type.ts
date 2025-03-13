@@ -1,12 +1,18 @@
-import { TextDocument } from "vscode";
 
 type Optional<T> = {
 	isValid: boolean,
 	value: T,
 }
 
+export type FileMetadata = {
+	name: string,
+	absolutePath: string,
+	extension: string,
+	content: string,
+}
+
 export interface IParserFile {
-	parse(doc: TextDocument): ClassMetadataResult;
+	parse(file: FileMetadata): ClassMetadataResult;
 }
 
 export type ParserResult = {

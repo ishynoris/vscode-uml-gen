@@ -1,5 +1,10 @@
-import { TextDocument } from "vscode"
-import { ClassMetadata, ClassMetadataResult, IParserFile, MethodResult } from "./parser.type"
+import { 
+	ClassMetadata, 
+	ClassMetadataResult, 
+	FileMetadata, 
+	IParserFile, 
+	MethodResult 
+} from "./parser.type"
 
 export const Mock = {
 	getMethodResult(): MethodResult {
@@ -45,7 +50,7 @@ export const Mock = {
 	
 	getParserFile(): IParserFile {
 		return {
-			parse(doc: TextDocument): ClassMetadataResult { 
+			parse(file: FileMetadata): ClassMetadataResult { 
 				return Mock.geClassMetadataResult();
 			}
 		}

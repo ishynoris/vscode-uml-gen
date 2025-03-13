@@ -1,16 +1,15 @@
-import { TextDocument } from "vscode";
 import { JavaParser } from "./java/JavaParser";
-import { ParserResult, IParserFile, ClassMetadataResult } from "./parser.type";
-import { Mock } from "./mock.types";
+import { ParserResult, IParserFile, FileMetadata } from "../types/parser.type";
+import { Mock } from "../types/mock.types";
 
-export function getParser(doc: TextDocument): ParserResult {
+export function getParser(file: FileMetadata): ParserResult {
 	const parsers = new Map<string, IParserFile>();
-	const langId = doc.languageId;
+	const langId = file.extension;
 	parsers.set("java", new JavaParser);
 
 	let _parser = parsers.get(langId);
 	const _isValid = _parser != undefined;
-	const _error = _isValid ? "" : `Não foi possível definir o parser para o arquivo ${doc.fileName}`;
+	const _error = _isValid ? "" : `Não foi possível definir o parser para o arquivo ${file.name}`;
 
 	return {
 		optional: {

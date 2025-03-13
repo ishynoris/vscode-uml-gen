@@ -1,14 +1,12 @@
-import { TextDocument } from "vscode";
-import { ClassMetadata, ClassMetadataResult, IParserFile } from "../parser.type";
-import { urlToHttpOptions } from "url";
+import { ClassMetadataResult, FileMetadata, IParserFile } from "../../types/parser.type";
 import { MethodJavaParser, types } from "./MehtodJavaParser";
-import { Mock } from "../mock.types";
+import { Mock } from "../../types/mock.types";
 
 const PUBLIC_CLASS = "public class";
 
 export class JavaParser implements IParserFile {
 	private content!: string;
-	private doc!: TextDocument;
+	private doc!: FileMetadata;
 	private bodyClassIndex!: number;
 	private bodyClassEnd!: number;
 
@@ -18,9 +16,9 @@ export class JavaParser implements IParserFile {
 		this.result = Mock.geClassMetadataResult();
 	}
 
-	public parse(doc: TextDocument): ClassMetadataResult {
+	public parse(doc: FileMetadata): ClassMetadataResult {
 		this.doc = doc;
-		this.content = doc.getText()
+		this.content = doc.content
 			.replaceAll("\n", "")
 			.replaceAll("\t", "");
 		this.bodyClassIndex = this.content.search("{");
@@ -37,7 +35,7 @@ export class JavaParser implements IParserFile {
 	private defineClassName() {
 		const index = this.content.search(PUBLIC_CLASS);
 		if (index < 0) {
-			this.addError(`Verifique se o arquivo ${this.doc.fileName} possui uma classe pública`);
+			this.addError(`Verifique se o arquivo ${this.doc.name} possui uma classe pública`);
 			return;
 		}
 
@@ -50,7 +48,7 @@ export class JavaParser implements IParserFile {
 		const className = this.content.substring(classNameIndex, this.bodyClassIndex).replaceAll(" ", "");
 
 		if (className.length == 0) {
-			this.addError(`Não foi possível definir o nome da classe: ${this.doc.fileName}`);
+			this.addError(`Não foi possível definir o nome da classe: ${this.doc.name}`);
 			return;
 		}
 

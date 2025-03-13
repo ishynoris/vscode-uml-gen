@@ -1,6 +1,5 @@
-import { generateKey } from "crypto";
-import { MethodResult } from "../parser.type";
-import { Mock } from "../mock.types";
+import { MethodResult } from "../../types/parser.type";
+import { Mock } from "../../types/mock.types";
 
 export const types = {
 	public: "public",
