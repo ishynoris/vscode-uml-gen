@@ -9,17 +9,16 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [ 
-    "onLanguage:java",
-    "onLanguage:php"
-   ],
+  "activationEvents": [
+    "workspaceContains:**/*.java",
+    "workspaceContains:**/*.php"
+  ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
         "command": "uml-gen.create",
         "title": "Create UML",
-        "shortTitle": "gdfdfgdfg",
         "category": "uml-gen"
       },
       {
