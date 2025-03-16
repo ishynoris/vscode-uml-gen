@@ -16,6 +16,10 @@ export interface IParserFile {
 	parse(file: FileMetadata): Optional<ClassMetadata>;
 }
 
+export interface IParseMethod {
+	parse(content: string): Optional<Method[]>
+}
+
 export type Args = {
 	name: string,
 	type: string,
