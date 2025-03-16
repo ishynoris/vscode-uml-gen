@@ -1,22 +1,20 @@
 import { 
 	ClassMetadata, 
-	ClassMetadataResult, 
 	FileMetadata, 
-	IParserFile, 
-	MethodResult 
+	IParserFile,
+	Method,
+	Optional, 
 } from "./parser.type"
 
 export const Mock = {
-	getMethodResult(): MethodResult {
+	getMethodResult(): Optional<Method> {
 		return {
-			optional: {
-				isValid: false,
-				value: {
-					name: "",
-					encapsulation: "",
-					returnType: "",
-					args: [],
-				}
+			isValid: false,
+			value: {
+				name: "",
+				encapsulation: "",
+				returnType: "",
+				args: [],
 			},
 			errors: [],
 		}
@@ -38,19 +36,17 @@ export const Mock = {
 		}
 	},
 
-	geClassMetadataResult(): ClassMetadataResult {
+	geClassMetadataResult(): Optional<ClassMetadata> {
 		return {
-			optional: {
-				isValid: false,
-				value: Mock.getClassMatadata(),
-			},
+			isValid: false,
+			value: Mock.getClassMatadata(),
 			errors: [ ]
 		}
 	},
 	
 	getParserFile(): IParserFile {
 		return {
-			parse(file: FileMetadata): ClassMetadataResult { 
+			parse(file: FileMetadata): Optional<ClassMetadata> { 
 				return Mock.geClassMetadataResult();
 			}
 		}

@@ -1,4 +1,4 @@
-import { MethodResult } from "../../types/parser.type";
+import { Method, Optional } from "../../types/parser.type";
 import { Mock } from "../../types/mock.types";
 
 export const types = {
@@ -9,14 +9,14 @@ export const types = {
 
 export class MethodJavaParser {
 	private signature!: string;
-	private result: MethodResult;
+	private result: Optional<Method>;
 
 	constructor (private type: string) {
 		this.result = Mock.getMethodResult();
-		this.result.optional.value.encapsulation = type;
+		this.result.value.encapsulation = type;
 	}
 
-	public parse(signature: string): MethodResult {
+	public parse(signature: string): Optional<Method> {
 		this.signature = signature
 			.replace(this.type, "")
 			.replaceAll(", ", ",")
@@ -26,7 +26,7 @@ export class MethodJavaParser {
 		this.consumeName();
 		this.consumeReturn();
 
-		this.result.optional.isValid = this.isValid();
+		this.result.isValid = this.isValid();
 		return this.result;
 	}
 
@@ -37,7 +37,7 @@ export class MethodJavaParser {
 			this.addError("Não foi possível identificar o nome do método");
 		}
 
-		this.result.optional.value.name = name.trim();
+		this.result.value.name = name.trim();
 		this.signature = this.signature.substring(0, index);
 	}
 
@@ -47,7 +47,7 @@ export class MethodJavaParser {
 			this.addError("Não foi possível identificar o tipo de retorno");
 		}
 
-		this.result.optional.value.returnType = returnType;
+		this.result.value.returnType = returnType;
 	}
 
 	private consumeArgs() {
@@ -95,7 +95,7 @@ export class MethodJavaParser {
 			.replaceAll("}", ">")
 			.replaceAll("|", ",");
 
-		this.result.optional.value.args.push({
+		this.result.value.args.push({
 			name: name,
 			type: type,
 		})
@@ -107,8 +107,8 @@ export class MethodJavaParser {
 
 	private isValid(): boolean {
 		const hasNoErrors = this.result.errors.length == 0;
-		const hasName = this.result.optional.value.name.length > 0;
-		const hasReturn = this.result.optional.value.returnType.length > 0;
+		const hasName = this.result.value.name.length > 0;
+		const hasReturn = this.result.value.returnType.length > 0;
 		return hasNoErrors && hasName && hasReturn;
 	}
 }

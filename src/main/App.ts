@@ -31,11 +31,12 @@ export class App {
 const CreatorUmlFromFile: ICreatorFromFile = {
 	create(file: FileMetadata) {
 		const result = getParser(file);
-		if (!result.optional.isValid) {
-			window.showErrorMessage(result.error ?? "");
+		if (!result.isValid) {
+			const message = result.errors.reduce((err, msg) => msg +=`- ${err}`);
+			window.showErrorMessage(message);
 			return;
 		}
 
-		result.optional.value.parse(file);
+		result.value.parse(file);
 	}
 }

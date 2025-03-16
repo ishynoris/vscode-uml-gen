@@ -1,6 +1,7 @@
 
-type Optional<T> = {
+export type Optional<T> = {
 	isValid: boolean,
+	errors: string[],
 	value: T,
 }
 
@@ -12,12 +13,7 @@ export type FileMetadata = {
 }
 
 export interface IParserFile {
-	parse(file: FileMetadata): ClassMetadataResult;
-}
-
-export type ParserResult = {
-	optional: Optional<IParserFile>,
-	error: string,
+	parse(file: FileMetadata): Optional<ClassMetadata>;
 }
 
 export type Args = {
@@ -32,18 +28,8 @@ export type Method = {
 	args: Args[],
 }
 
-export type MethodResult = {
-	optional: Optional<Method>,
-	errors: string[],
-}
-
 export type ClassMetadata = {
 	className: string,
 	publicMethod: Method[],
 	privateMethod: Method[],
-}
-
-export type ClassMetadataResult = {
-	optional: Optional<ClassMetadata>,
-	errors: string[],
 }

@@ -1,4 +1,10 @@
-import { ClassMetadataResult, FileMetadata, IParserFile } from "../../types/parser.type";
+import { 
+	ClassMetadata, 
+	FileMetadata, 
+	IParserFile, 
+	Method, 
+	Optional 
+} from "../../types/parser.type";
 import { MethodJavaParser, types } from "./MehtodJavaParser";
 import { Mock } from "../../types/mock.types";
 
@@ -10,13 +16,13 @@ export class JavaParser implements IParserFile {
 	private bodyClassIndex!: number;
 	private bodyClassEnd!: number;
 
-	private result: ClassMetadataResult;
+	private result: Optional<ClassMetadata>;
 
 	constructor() {
 		this.result = Mock.geClassMetadataResult();
 	}
 
-	public parse(doc: FileMetadata): ClassMetadataResult {
+	public parse(doc: FileMetadata): Optional<ClassMetadata> {
 		this.doc = doc;
 		this.content = doc.content
 			.replaceAll("\n", "")
@@ -28,7 +34,7 @@ export class JavaParser implements IParserFile {
 		this.defineMethod(types.public);
 		this.defineMethod(types.private);
 
-		this.result.optional.isValid = this.result.errors.length == 0;
+		this.result.isValid = this.result.errors.length == 0;
 		return this.result;
 	}
 
@@ -52,7 +58,7 @@ export class JavaParser implements IParserFile {
 			return;
 		}
 
-		this.result.optional.value.className = className;
+		this.result.value.className = className;
 	}
 
 	private defineMethod(type: string) {
@@ -69,18 +75,34 @@ export class JavaParser implements IParserFile {
 			index = signatureEnd;
 			stop = index >= this.bodyClassEnd;
 
-			const signature = this.content.substring(signatureIndex, signatureEnd);
-			if (signature.includes("class")) {
+			const signature = this.content.substring(signatureIndex, signatureEnd).trim();
+			const isSubclass = signature.includes("class");
+			if (isSubclass) {
 				continue;
 			}
 
 			const methodParser = new MethodJavaParser(type);
-			const result = methodParser.parse(signature.trim());
-			if (!result.optional.isValid) {
+			const result = methodParser.parse(signature);
+			if (!result.isValid) {
 				continue;
 			}
 
-			this.result.optional.value.publicMethod.push(result.optional.value);
+			this.content = this.content.replace(signature, "");
+			this.addMethod(type, result.value);
+		}
+	}
+
+	private addMethod(type: string, mehtod: Method) {
+		const classMetadata = this.result.value; 
+
+		if (type == types.public) {
+			classMetadata.publicMethod.push(mehtod);
+			return;
+		}
+
+		if (type == types.private) {
+			classMetadata.privateMethod.push(mehtod);
+			return;
 		}
 	}
 
