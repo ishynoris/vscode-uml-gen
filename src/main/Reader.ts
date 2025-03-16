@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import { window } from 'vscode';
 import path from 'path';
-import { getWorkspacePath } from './Workspace';
+import { Workspace } from './util';
 
 export type FileMetadata = {
 	name: string
@@ -61,7 +61,7 @@ export class Reader {
 	}
 
 	private getSrcPath(fileName?: string): null|string {
-		let srcPath = getWorkspacePath();
+		let srcPath = Workspace.getWorkspacePath();
 		if (srcPath == null) {
 			window.showErrorMessage("None workspace loaded");
 			return null;

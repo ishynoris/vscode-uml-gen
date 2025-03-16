@@ -1,5 +1,5 @@
 import { commands, window, TextDocument, ExtensionContext, Uri } from "vscode";
-import { FileFactory } from "./types/factory.types";
+import { FileFactory } from "./util"
 import { FileMetadata } from "./types/parser.type";
 
 
