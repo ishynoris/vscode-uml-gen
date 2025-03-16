@@ -23,16 +23,14 @@ export const Mock = {
 	getClassMetaData(): ClassMetadata {
 		return {
 			className: "metadataMock",
-			publicMethod: [],
-			privateMethod: [],
+			methods: [],
 		}
 	},
 
 	getClassMatadata(): ClassMetadata {
 		return {
 			className: "",
-			publicMethod: [],
-			privateMethod: [],
+			methods: [],
 		}
 	},
 

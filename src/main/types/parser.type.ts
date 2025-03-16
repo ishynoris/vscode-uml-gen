@@ -34,6 +34,5 @@ export type Method = {
 
 export type ClassMetadata = {
 	className: string,
-	publicMethod: Method[],
-	privateMethod: Method[],
+	methods: Method[],
 }

@@ -46,25 +46,7 @@ export class JavaParser implements IParserFile {
 		const regexParser = new JavaRegexParser(type);
 		const methodOpt = regexParser.parse(this.content);
 
-		this.addError(methodOpt.errors);
-		this.addMethod(type, methodOpt.value);
-	}
-
-	private addMethod(type: Encapsulation, mehtods: Method[]) {
-		const classMetadata = this.result.value; 
-
-		if (type == Encapsulation.public) {
-			classMetadata.publicMethod.push(...mehtods);
-			return;
-		}
-
-		if (type == Encapsulation.private) {
-			classMetadata.privateMethod.push(...mehtods);
-			return;
-		}
-	}
-
-	private addError(errors: string[]) {
-		this.result.errors.push(...errors);
+		this.result.errors.push(...methodOpt.errors);
+		this.result.value.methods.push(...methodOpt.value);
 	}
 }
