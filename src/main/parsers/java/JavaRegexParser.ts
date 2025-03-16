@@ -1,5 +1,5 @@
 import { Args, IParseMethod, Method, Optional } from "../../types/parser.type";
-import { Encapsulation } from "./JavaParser";
+import { Encapsulation } from "../AbstractParserFile";
 
 enum Regex {
 	CloseBlock = ".*\\{",
@@ -14,24 +14,18 @@ enum Regex {
 
 export class JavaRegexParser implements IParseMethod {
 
-	private regexMethod: RegExp;
+	private regex: RegExp;
 
-	constructor(private type: Encapsulation) {
-		const regexPattrn = `${type.toString()}${Regex.Blank}`
-				+ `(?<return>${Regex.Return})${Regex.Blank}`
-				+ `(?<name>${Regex.Name})${Regex.BlankOpt}`
-				+ `${Regex.OpenArgs}(?<args>${Regex.Args})${Regex.CloseArgs}`
-				+ `${Regex.CloseBlock}`;
-		this.regexMethod = new RegExp(regexPattrn, "gi");
+	constructor(types: Encapsulation[]) {
+		this.regex = this.createRegex(types);
 	}
 
 	public parse(content: string): Optional<Method[]> {
-		const methods: Method[] = [];
-		const errors: string[] = [];
 		let expression;
-		content = content.replaceAll(new RegExp(/,\s+/, "g"), ",");
+		const errors: string[] = [];
+		const methods: Method[] = [];
 
-		while ((expression = this.regexMethod.exec(content)) != null) {
+		while ((expression = this.regex.exec(content)) != null) {
 			const groups = expression.groups;
 			if (groups == undefined) {
 				const signature = expression[0];
@@ -40,7 +34,7 @@ export class JavaRegexParser implements IParseMethod {
 			}
 
 			methods.push({
-				encapsulation: this.type,
+				encapsulation: groups.encapsulation,
 				name: groups.name,
 				returnType: groups.return,
 				args: this.processArgs(groups.args ?? ""),
@@ -54,15 +48,15 @@ export class JavaRegexParser implements IParseMethod {
 		}
 	}
 
-	private processArgs(_params: string): Args[] {
+	private processArgs(params: string): Args[] {
 		const argsResult: Args[] = [];
 
-		_params = this.processGeneric(_params ?? "");
-		if (_params.length == 0) {
+		params = this.processGeneric(params ?? "");
+		if (params.length == 0) {
 			return argsResult;
 		}
 
-		const args: string[] = _params.split(",");
+		const args: string[] = params.split(",");
 		for (const key in args) {
 			const arg = args[key];
 			const blankIndex = arg.lastIndexOf(" ");
@@ -102,5 +96,15 @@ export class JavaRegexParser implements IParseMethod {
 			name: name.trim(), 
 			type: type.trim(), 
 		}
+	}
+
+	private createRegex(types: Encapsulation[]): RegExp {
+		const encapsulation = types.join("|");
+		const regexPattrn = `(?<encapsulation>${encapsulation})${Regex.Blank}`
+				+ `(?<return>${Regex.Return})${Regex.Blank}`
+				+ `(?<name>${Regex.Name})${Regex.BlankOpt}`
+				+ `${Regex.OpenArgs}(?<args>${Regex.Args})${Regex.CloseArgs}`
+				+ `${Regex.CloseBlock}`;
+		return new RegExp(regexPattrn, "gi");
 	}
 }
