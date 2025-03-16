@@ -21,7 +21,7 @@ export class JavaParser implements IParserFile {
 	private result: Optional<ClassMetadata>;
 
 	constructor() {
-		this.result = Mock.geClassMetadataResult();
+		this.result = Mock.getClassMetadataResult();
 	}
 
 	public parse(doc: FileMetadata): Optional<ClassMetadata> {

@@ -20,13 +20,6 @@ export const Mock = {
 		}
 	},
 
-	getClassMetaData(): ClassMetadata {
-		return {
-			className: "metadataMock",
-			methods: [],
-		}
-	},
-
 	getClassMatadata(): ClassMetadata {
 		return {
 			className: "",
@@ -34,7 +27,7 @@ export const Mock = {
 		}
 	},
 
-	geClassMetadataResult(): Optional<ClassMetadata> {
+	getClassMetadataResult(): Optional<ClassMetadata> {
 		return {
 			isValid: false,
 			value: Mock.getClassMatadata(),
@@ -45,7 +38,7 @@ export const Mock = {
 	getParserFile(): IParserFile {
 		return {
 			parse(file: FileMetadata): Optional<ClassMetadata> { 
-				return Mock.geClassMetadataResult();
+				return Mock.getClassMetadataResult();
 			}
 		}
 	}
