@@ -1,3 +1,4 @@
+import { Encapsulation } from "./encapsulation.types"
 import { 
 	ClassMetadata, 
 	FileMetadata, 
@@ -12,7 +13,7 @@ export const Mock = {
 			isValid: false,
 			value: {
 				name: "",
-				encapsulation: "",
+				encapsulation: Encapsulation.allowed.none,
 				returnType: "",
 				args: [],
 			},

@@ -1,3 +1,7 @@
+import { Allowed } from "./encapsulation.types"; 
+import { Types } from "./encapsulation.types";
+
+export type Encapsulation = Allowed;
 
 export type Optional<T> = {
 	isValid: boolean,
@@ -22,12 +26,13 @@ export interface IParseMethod {
 
 export type Args = {
 	name: string,
-	type: string,
+	type?: string,
+	initialValue?: string,
 }
 
 export type Method = {
 	name: string,
-	encapsulation: string,
+	encapsulation: Allowed,
 	returnType: string,
 	args: Args[],
 }

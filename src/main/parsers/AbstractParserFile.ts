@@ -1,12 +1,6 @@
 import { Mock } from "../types/mock.types";
 import { ClassMetadata, FileMetadata, IParseMethod, IParserFile, Optional } from "../types/parser.type";
 
-export enum Encapsulation {
-	public = "public", 
-	private = "private", 
-	protected = "protected"
-}
-
 export abstract class AbstractParserFile implements IParserFile {
 
 	protected result: Optional<ClassMetadata>;

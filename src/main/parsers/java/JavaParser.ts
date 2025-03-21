@@ -1,15 +1,16 @@
-import { IParserFile } from "../../types/parser.type";
 import { JavaRegexParser } from "./JavaRegexParser";
-import { AbstractParserFile, Encapsulation } from "../AbstractParserFile";
+import { AbstractParserFile } from "../AbstractParserFile";
+import { Encapsulation } from "../../types/encapsulation.types";
+import { IParserFile } from "../../types/parser.type";
 
 
 export class JavaParser extends AbstractParserFile implements IParserFile {
 
 	constructor() {
 		super(new JavaRegexParser([
-			Encapsulation.public, 
-			Encapsulation.private, 
-			Encapsulation.protected,
+			Encapsulation.allowed.private,
+			Encapsulation.allowed.protected,
+			Encapsulation.allowed.public,
 		]));
 	}
 }

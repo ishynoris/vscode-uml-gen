@@ -1,9 +1,15 @@
-import { Mock } from "../../types/mock.types";
-import { ClassMetadata, FileMetadata, IParserFile, Optional } from "../../types/parser.type";
+import { Encapsulation } from "../../types/encapsulation.types";
+import { IParserFile } from "../../types/parser.type";
+import { AbstractParserFile } from "../AbstractParserFile";
+import { PhpRegexPareser } from "./PhpRegexParser";
 
-export class PhpParser implements IParserFile {
+export class PhpParser extends AbstractParserFile implements IParserFile {
 
-	parse(file: FileMetadata): Optional<ClassMetadata> {
-		return Mock.getClassMetadataResult();
+	constructor() {
+		super(new PhpRegexPareser([
+			Encapsulation.allowed.public,
+			Encapsulation.allowed.private,
+			Encapsulation.allowed.protected,
+		]));
 	}
 }
