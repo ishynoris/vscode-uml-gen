@@ -14,8 +14,8 @@ enum Regex {
 
 export class JavaRegexParser extends AbstractParserMethod implements IParseMethod {
 
-	constructor(types: Encapsulation[]) {
-		super(JavaRegexParser.createPattern(types));
+	constructor(private types: Encapsulation[]) {
+		super();
 	}
 
 	protected getMetadadataRegex(group: GroupRegex): MetadataRegex {
@@ -77,8 +77,8 @@ export class JavaRegexParser extends AbstractParserMethod implements IParseMetho
 		}
 	}
 
-	private static createPattern(types: Encapsulation[]): string {
-		const encapsulation = types.join("|");
+	protected getPatternRegex(): string {
+		const encapsulation = this.types.join("|");
 		return `(?<encapsulation>${encapsulation})${Regex.Blank}`
 			+ `(?<return>${Regex.Return})${Regex.Blank}`
 			+ `(?<name>${Regex.Name})${Regex.BlankOpt}`

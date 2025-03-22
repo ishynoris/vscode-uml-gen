@@ -14,17 +14,16 @@ export type MetadataRegex = {
 
 export abstract class AbstractParserMethod implements IParseMethod {
 
-	constructor(private patternRegex: string) {
-	}
-
 	protected abstract getMetadadataRegex(groups: GroupRegex): MetadataRegex;
+
+	protected abstract getPatternRegex(): string;
 
 	public parse(content: string): Optional<Method[]> {
 		let expression;
 		const errors: string[] = [];
 		const methods: Method[] = [];
 		
-		const regex = new RegExp(this.patternRegex, "gi");
+		const regex = new RegExp(this.getPatternRegex(), "gi");
 		while ((expression = regex.exec(content)) != null) {
 			const signature = expression[0];
 			if (expression.groups == undefined) {

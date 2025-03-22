@@ -20,8 +20,8 @@ enum Regex {
 
 export class PhpRegexPareser extends AbstractParserMethod implements IParseMethod {
 
-	constructor(types: Encapsulation[]) {
-		super(PhpRegexPareser.createPattern(types));
+	constructor(private types: Encapsulation[]) {
+		super();
 	}
 
 	protected getMetadadataRegex(group: GroupRegex): MetadataRegex {
@@ -67,9 +67,8 @@ export class PhpRegexPareser extends AbstractParserMethod implements IParseMetho
 		});
 	}
 
-	private static createPattern(types: Encapsulation[]): string {
-		const encapsulation = types.join("|");
-
+	protected getPatternRegex(): string {
+		const encapsulation = this.types.join("|");
 		return `(?<_encapsulation>(${encapsulation}))` 
 			+ `(${Regex.BlankReq}static)?`
 			+ `${Regex.BlankReq}function`
