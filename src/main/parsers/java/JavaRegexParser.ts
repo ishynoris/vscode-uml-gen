@@ -1,5 +1,5 @@
-import { Args, IParseMethod, Method, Optional } from "../../types/parser.type";
-import { Encapsulation } from "../AbstractParserFile";
+import { Args, Encapsulation, IParseMethod } from "../../types/parser.type";
+import { AbstractParserMethod, GroupRegex, MetadataRegex } from "../AbstractParserMethod";
 
 enum Regex {
 	CloseBlock = ".*\\{",
@@ -12,39 +12,18 @@ enum Regex {
 	Args = "[a-zA-Z@<> ,]*",
 }
 
-export class JavaRegexParser implements IParseMethod {
-
-	private regex: RegExp;
+export class JavaRegexParser extends AbstractParserMethod implements IParseMethod {
 
 	constructor(types: Encapsulation[]) {
-		this.regex = this.createRegex(types);
+		super(JavaRegexParser.createPattern(types));
 	}
 
-	public parse(content: string): Optional<Method[]> {
-		let expression;
-		const errors: string[] = [];
-		const methods: Method[] = [];
-
-		while ((expression = this.regex.exec(content)) != null) {
-			const groups = expression.groups;
-			if (groups == undefined) {
-				const signature = expression[0];
-				errors.push(`Cannot process ${signature}`);
-				continue;
-			}
-
-			methods.push({
-				encapsulation: groups.encapsulation,
-				name: groups.name,
-				returnType: groups.return,
-				args: this.processArgs(groups.args ?? ""),
-			})
-		}
-
+	protected getMetadadataRegex(group: GroupRegex): MetadataRegex {
 		return {
-			isValid: errors.length == 0,
-			errors: errors,
-			value: methods,
+			name: group.name,
+			return: group.return,
+			encapsulation: group.encapsulation,
+			args: this.processArgs(group.args),
 		}
 	}
 
@@ -98,13 +77,12 @@ export class JavaRegexParser implements IParseMethod {
 		}
 	}
 
-	private createRegex(types: Encapsulation[]): RegExp {
+	private static createPattern(types: Encapsulation[]): string {
 		const encapsulation = types.join("|");
-		const regexPattrn = `(?<encapsulation>${encapsulation})${Regex.Blank}`
-				+ `(?<return>${Regex.Return})${Regex.Blank}`
-				+ `(?<name>${Regex.Name})${Regex.BlankOpt}`
-				+ `${Regex.OpenArgs}(?<args>${Regex.Args})${Regex.CloseArgs}`
-				+ `${Regex.CloseBlock}`;
-		return new RegExp(regexPattrn, "gi");
+		return `(?<encapsulation>${encapsulation})${Regex.Blank}`
+			+ `(?<return>${Regex.Return})${Regex.Blank}`
+			+ `(?<name>${Regex.Name})${Regex.BlankOpt}`
+			+ `${Regex.OpenArgs}(?<args>${Regex.Args})${Regex.CloseArgs}`
+			+ `${Regex.CloseBlock}`;
 	}
 }
