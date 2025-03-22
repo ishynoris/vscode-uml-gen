@@ -25,10 +25,17 @@ export class PhpRegexPareser extends AbstractParserMethod implements IParseMetho
 	}
 
 	protected getMetadadataRegex(group: GroupRegex): MetadataRegex {
+		let returnType = group._return;
+		if (returnType != undefined) {
+			returnType.replaceAll("\n", "")
+				.replaceAll("\t", "")
+				.trim();
+		}
+
 		return {
 			name: group._name,
 			args: this.processArgs(group._args),
-			return: group._return.replaceAll("\n", "").replaceAll("\t", ""),
+			return: returnType,
 			encapsulation: group._encapsulation
 		}
 	}
