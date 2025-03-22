@@ -10,6 +10,6 @@ export function getParser(file: FileMetadata): Optional<IParserFile> {
 
 	const parser = parsers.get(langId);
 	const isValid = parser != undefined;
-	const error = isValid ? "" : `Não foi possível definir o parser para o arquivo ${file.name}`;
-	return new Optional(parser, [ error ]);
+	const errors = isValid ? [] : [ `Não foi possível definir o parser para o arquivo ${file.name}` ];
+	return new Optional(parser, errors)
 }
