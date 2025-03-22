@@ -3,10 +3,24 @@ import { Types } from "./encapsulation.types";
 
 export type Encapsulation = Allowed;
 
-export type Optional<T> = {
-	isValid: boolean,
-	errors: string[],
-	value: T,
+export class Optional<T> {
+
+	public readonly hasValue!: boolean;
+	public readonly hasErrors!: boolean;
+	public readonly isValid!: boolean;
+
+	constructor(
+		public readonly value?: T, 
+		public readonly errors: string[] = []
+	) { 
+		this.hasValue = value != undefined;
+		this.hasErrors = errors.length > 0;
+		this.isValid = this.hasValue && !this.hasErrors;
+	}
+
+	public getMessage(prefixError: string = ""): string {
+		return this.errors.reduce((err, msg) => msg += `${prefixError} ${err}`);
+	}
 }
 
 export type FileMetadata = {

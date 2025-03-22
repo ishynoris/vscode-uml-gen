@@ -8,32 +8,24 @@ import {
 } from "./parser.type"
 
 export const Mock = {
-	getMethodResult(): Optional<Method> {
-		return {
-			isValid: false,
-			value: {
-				name: "",
-				encapsulation: Encapsulation.allowed.none,
-				returnType: "",
-				args: [],
-			},
-			errors: [],
-		}
+	method: {
+		name: "",
+		encapsulation: Encapsulation.allowed.none,
+		returnType: "",
+		args: [],
 	},
 
-	getClassMatadata(): ClassMetadata {
-		return {
-			className: "",
-			methods: [],
-		}
+	classMatadata: {
+		className: "",
+		methods: [],
+	},
+
+	getMethodResult(): Optional<Method> {
+		return new Optional(Mock.method)
 	},
 
 	getClassMetadataResult(): Optional<ClassMetadata> {
-		return {
-			isValid: false,
-			value: Mock.getClassMatadata(),
-			errors: [ ]
-		}
+		return new Optional(Mock.classMatadata);
 	},
 	
 	getParserFile(): IParserFile {

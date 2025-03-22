@@ -3,11 +3,13 @@ import { ClassMetadata, FileMetadata, IParseMethod, IParserFile, Optional } from
 
 export abstract class AbstractParserFile implements IParserFile {
 
-	protected result: Optional<ClassMetadata>;
+	protected errors: string[];
+	protected result: ClassMetadata;
 	protected doc!: FileMetadata;
 
-	constructor(private methodParser: IParseMethod, ) {
-		this.result = Mock.getClassMetadataResult();
+	constructor(private methodParser: IParseMethod) {
+		this.errors = [];
+		this.result = Mock.classMatadata;
 	}
 
 	public parse(doc: FileMetadata): Optional<ClassMetadata> {
@@ -16,20 +18,20 @@ export abstract class AbstractParserFile implements IParserFile {
 		this.defineClassName();
 		this.defineMethod();
 
-		this.result.isValid = this.result.errors.length == 0;
-		return this.result;
+		return new Optional(this.result);
 	}
 
 	protected defineClassName() {
 		const search = `.${this.doc.extension}`;
 		const className = this.doc.name.replace(search, "");
-		this.result.value.className = className;
+		this.result.className = className;
 	}
 
 	protected defineMethod() {
 		const methodOpt = this.methodParser.parse(this.doc.content);
+		const methods = methodOpt.value ?? [];
 
-		this.result.errors.push(...methodOpt.errors);
-		this.result.value.methods.push(...methodOpt.value);
+		this.errors.push(...methodOpt.errors);
+		this.result.methods.push(...methods);
 	}
 }

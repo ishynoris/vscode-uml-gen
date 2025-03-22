@@ -47,11 +47,7 @@ export abstract class AbstractParserMethod implements IParseMethod {
 			});
 		}
 
-		return {
-			isValid: errors.length == 0,
-			errors: errors,
-			value: methods,
-		}
+		return new Optional(methods, errors);
 	}
 }
 
@@ -65,7 +61,7 @@ class ValidateGroups {
 	constructor(signature: string) { 
 		this.signature = signature;
 		this.errors = [];
-		this.method = Mock.getMethodResult().value;
+		this.method = Mock.method;
 	}
 
 	public validate(metada: MetadataRegex) {
