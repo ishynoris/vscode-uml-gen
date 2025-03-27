@@ -1,0 +1,18 @@
+.node-div {
+	position: absolute;
+	top: 0;
+	height: 60px;
+	width: 100px;
+	text-align: center;
+	line-height: 60px;
+	background: blue;
+	border: 2px solid white;
+}
+
+.node-div:hover {    
+	cursor: grab;
+}
+
+.node-div:active {
+	cursor: grabbing;
+}

@@ -1,6 +1,6 @@
-import { TextDocument, Uri, WorkspaceFolder, workspace } from "vscode"
+import { ExtensionContext, TextDocument, Uri, WorkspaceFolder, workspace } from "vscode"
 import { FileMetadata } from "./types/parser.type"
-import { readFileSync, statSync } from "fs"
+import { readFileSync, realpathSync, statSync } from "fs"
 import * as path from "path"
 
 export const FileFactory = {
@@ -35,5 +35,13 @@ export const Workspace = {
 	getWorkspacePath(): null|string {
 		const folder = this.getWorkspace();
 		return folder == null ? null : folder.uri.path;
+	}
+}
+
+export const Front = {
+	getResourceContent(context: ExtensionContext, fileResource: string): null|string {
+		const contextPath = context.extensionPath;
+		const resourcePath = "src/front/resource";
+		return readFileSync(`${contextPath}/${resourcePath}/${fileResource}`).toString();
 	}
 }
