@@ -55,3 +55,19 @@ export type ClassMetadata = {
 	className: string,
 	methods: Method[],
 }
+
+/** DOM Types */
+export type DivOptions = { 
+	id?: string,
+	class?: string[],
+}
+
+export type LabelOptions = {
+	text: string,
+	for?: string
+}
+
+export type Element = {
+	content: string,
+	childs?: Element[]
+}
