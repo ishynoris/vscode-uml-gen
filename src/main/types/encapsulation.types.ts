@@ -43,5 +43,17 @@ export const Encapsulation = {
 
 		const map = this.map();
 		return map.hasOwnProperty(type);
+	},
+
+	getSymbol(type: Allowed): string {
+		if (type == undefined) {
+			return "  ";
+		}
+		const symbols = {
+			private: "-",
+			public: "+",
+			protected: "#",
+		}
+		return symbols[type];
 	}
 }
