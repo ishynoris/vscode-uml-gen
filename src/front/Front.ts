@@ -28,20 +28,14 @@ function processMetadata(classMetadata: ClassMetadata): Element {
 }
 
 function getHtml(context: ExtensionContext, element: Element): string {
+	const htmlContent = Front.getResourceContent(context, "index.html");
+	if (htmlContent == null) {
+		return "404 not found";
+	}
 	const cssContent = Front.getResourceContent(context, "index.css");
 	const jsContent = Front.getResourceContent(context, "index.js");
 
-	return `
-		<html>
-			<head> 
-				<style>
-					${cssContent}
-				</style>
-				<script>
-					${jsContent}
-				</script>
-			</head>
-			<body>${element.content}<body>
-		</html>
-	`
+	return htmlContent.replace("@_CSS_CONTENT_@", cssContent ?? "")
+		.replace("{_JAVA_SCRIPT_CONTENT_}", jsContent ?? "")
+		.replace("(_MAIN_CONTENT_)", element.content);
 }
