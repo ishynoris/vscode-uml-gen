@@ -57,9 +57,13 @@ export type ClassMetadata = {
 }
 
 /** DOM Types */
+type TextAlign = "center" | "end" | "justify" | "left" | "right";
+
 export type DivOptions = { 
 	id?: string,
 	class?: string[],
+	textAlign?: TextAlign,
+	borderBottom?: string,
 }
 
 export type LabelOptions = {

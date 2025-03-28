@@ -8,7 +8,7 @@ import {
 } from "vscode";
 import { ClassMetadata, Element } from "../main/types/parser.type";
 import { Front } from "../main/util";
-import { Dom } from "./core/Dom";
+import { Node } from "./core/Node";
 
 export function runWebview(context: ExtensionContext, classMetadata: ClassMetadata) {
 	const options: WebviewPanelOptions & WebviewOptions = {
@@ -22,11 +22,8 @@ export function runWebview(context: ExtensionContext, classMetadata: ClassMetada
 }
 
 function processMetadata(classMetadata: ClassMetadata): Element {
-	const childs = [ 
-		Dom.createLabel({ text: "Hello World" }), 
-		Dom.createLabel({ text: "Foo Bar"}) 
-	];
-	return Dom.createDiv({ id: "main-container" }, childs);
+	const node = new Node(classMetadata);
+	return node.getElement();
 }
 
 function getHtml(context: ExtensionContext, element: Element): string {

@@ -1,11 +1,8 @@
 .node-div {
 	position: absolute;
 	top: 0;
-	height: 60px;
-	width: 100px;
-	text-align: center;
-	line-height: 60px;
-	background: blue;
+	line-height: 25px;
+	padding: 5px;
 	border: 2px solid white;
 }
 
