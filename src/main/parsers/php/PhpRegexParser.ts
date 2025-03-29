@@ -1,23 +1,7 @@
 import { Args, Encapsulation, IParseMethod } from "../../types/parser.type";
+import { Regex } from "../../util";
 import { AbstractParserMethod, GroupRegex, MetadataRegex } from "../AbstractParserMethod";
-
-enum Regex {
-	Blank = `\\s\\t\\n`,
-	Letters = `a-zA-Z`,
-	Numbers = `0-9`,
-	Characters = `$=,\\'\\"\\[\\]|`,
-	OpenArgs = `\\(`,
-	CloseArgs = `\\)`,
-
-	BlankOpt = `[${Blank}]*`,
-	BlankReq = `[${Blank}]+`,
-	CloseBlock = `${BlankOpt}{`,
-	Name = `[${Letters}${Numbers}_]+`,
-	Args = `[${Letters}${Numbers}${Characters}${Blank}]*`,
-
-	Return = `[${Letters}${Numbers}]+`,
-}
-
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
 export class PhpRegexPareser extends AbstractParserMethod implements IParseMethod {
 
 	constructor(private types: Encapsulation[]) {
@@ -76,11 +60,17 @@ export class PhpRegexPareser extends AbstractParserMethod implements IParseMetho
 
 	protected getPatternRegex(): string {
 		const encapsulation = this.types.join("|");
+
+		const speacialChars = `$=,\\'\\"\\[\\]|`;
+		const staticKey = `(${Regex.BlankReq}static)?`;
+		const functionKey = `${Regex.BlankReq}function`;
+		const methodName = `[${Regex.Letters}${Regex.Numbers}_]+`;
+		const manyArgs = `[${Regex.Letters}${Regex.Numbers}${speacialChars}${Regex.Blank}]`
+
 		return `(?<_encapsulation>(${encapsulation}))` 
-			+ `(${Regex.BlankReq}static)?`
-			+ `${Regex.BlankReq}function`
-			+ `${Regex.BlankReq}(?<_name>${Regex.Name})${Regex.BlankOpt}`
-			+ `${Regex.OpenArgs}(?<_args>${Regex.Args})${Regex.CloseArgs}`
-			+ `${Regex.BlankOpt}(:${Regex.BlankOpt}(?<_return>${Regex.Args}))?${Regex.CloseBlock}`;
+			+ `${staticKey}${functionKey}`
+			+ `${Regex.BlankReq}(?<_name>${methodName})${Regex.BlankOp}`
+			+ `${Regex.OpenArgs}(?<_args>${manyArgs})${Regex.CloseArgs}`
+			+ `${Regex.BlankOp}(:${Regex.BlankOp}(?<_return>${manyArgs}))?${Regex.CloseBlock}`;
 	}
 }

@@ -1,16 +1,6 @@
 import { Args, Encapsulation, IParseMethod } from "../../types/parser.type";
+import { Regex } from "../../util";
 import { AbstractParserMethod, GroupRegex, MetadataRegex } from "../AbstractParserMethod";
-
-enum Regex {
-	CloseBlock = ".*\\{",
-	OpenArgs = "\\(",
-	CloseArgs = "\\)",
-	Blank = "\\s",
-	BlankOpt = "\\s?",
-	Name = "[a-zA-Z0-9_]+",
-	Return = "[a-zA-Z@<> ,]+",
-	Args = "[a-zA-Z@<> ,]*",
-}
 
 export class JavaRegexParser extends AbstractParserMethod implements IParseMethod {
 
@@ -79,10 +69,14 @@ export class JavaRegexParser extends AbstractParserMethod implements IParseMetho
 
 	protected getPatternRegex(): string {
 		const encapsulation = this.types.join("|");
+		const returnKey = `[${Regex.Letters}@<> ,]+`;
+		const methodName = `[${Regex.Letters}${Regex.Numbers}_]+`;
+		const args = `[${Regex.Letters}@<> ,]*`;
+
 		return `(?<encapsulation>${encapsulation})${Regex.Blank}`
-			+ `(?<return>${Regex.Return})${Regex.Blank}`
-			+ `(?<name>${Regex.Name})${Regex.BlankOpt}`
-			+ `${Regex.OpenArgs}(?<args>${Regex.Args})${Regex.CloseArgs}`
+			+ `(?<return>${returnKey})${Regex.Blank}`
+			+ `(?<name>${methodName})${Regex.BlankOp}`
+			+ `${Regex.OpenArgs}(?<args>${args})${Regex.CloseArgs}`
 			+ `${Regex.CloseBlock}`;
 	}
 }

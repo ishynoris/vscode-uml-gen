@@ -1,5 +1,5 @@
 import { ExtensionContext, TextDocument, Uri, WorkspaceFolder, workspace } from "vscode"
-import { FileMetadata } from "./types/parser.type"
+import { FileMetadata, KeyValue } from "./types/parser.type"
 import { readFileSync, realpathSync, statSync } from "fs"
 import * as path from "path"
 
@@ -45,3 +45,16 @@ export const Front = {
 		return readFileSync(`${contextPath}/${resourcePath}/${fileResource}`).toString();
 	}
 }
+
+export enum Regex {
+	Blank =`\\s\\t\\n`,
+	Letters =`a-zA-Z`,
+	Numbers = `0-9`,
+	OpenArgs =`\\(`,
+	CloseArgs =`\\)`,
+	OpenBlock =`\\{`,
+	CloseBlock =`\\}`,
+	
+	BlankOp = `[${Regex.Blank}]*`,
+	BlankReq = `[${Regex.Blank}]+`,
+};
