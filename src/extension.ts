@@ -4,8 +4,7 @@ import { Reader } from './main/Reader';
 import { Container } from './main/types/Container';
 
 export function activate(context: vscode.ExtensionContext) {
-	const files = new Reader().loadFiles();
-	Container.getInstance().setWorkspaceFiles(files);
+	Container.init();
 
 	const app = new App(context);
 	app.init();
