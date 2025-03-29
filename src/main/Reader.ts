@@ -2,17 +2,12 @@ import * as fs from 'fs';
 import { window } from 'vscode';
 import path from 'path';
 import { Workspace } from './util';
-
-export type FileMetadata = {
-	name: string
-	path: string,
-	extension: string,
-}
+import { FileMetadata, MapFilesMetada } from './types/parser.type';
 
 export class Reader {
 	private path: string;
 	private srcPath: string;
-	private files: Map<string, FileMetadata>;
+	private files: MapFilesMetada;
 	private invalidFiles: string[];
 
 	constructor(srcPath: string = "src") {
@@ -25,13 +20,14 @@ export class Reader {
 		];
 	}
 
-	public loadFiles() {
+	public loadFiles(): MapFilesMetada {
 		if (this.path == null) {
-			return;
+			return this.files;
 		}
 
 		const absolutePath = `${this.path}/${this.srcPath}`; 
 		this.readDirectory(absolutePath);
+		return this.files;
 	}
 
 	private readDirectory(absolutePath: string) {
@@ -50,12 +46,12 @@ export class Reader {
 				continue;
 			}
 
-			filePath = filePath.replace(this.path, "");
 			const name = path.basename(filePath);
 			this.files.set(name, {
 				name: name,
-				path: filePath,
-				extension: extension
+				absolutePath: filePath,
+				extension: extension,
+				content: "",
 			});
 		}
 	}

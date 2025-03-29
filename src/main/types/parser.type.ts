@@ -1,5 +1,4 @@
 import { Allowed } from "./encapsulation.types"; 
-import { Types } from "./encapsulation.types";
 
 export type Encapsulation = Allowed;
 
@@ -28,6 +27,17 @@ export type FileMetadata = {
 	absolutePath: string,
 	extension: string,
 	content: string,
+}
+
+export type MapFilesMetada = Map<string,  FileMetadata>;
+
+export class WorkspaceFiles {
+	constructor(public readonly files: MapFilesMetada) {
+	}
+
+	hasClass(className: string): boolean {
+		return false;
+	}
 }
 
 export interface IParserFile {
