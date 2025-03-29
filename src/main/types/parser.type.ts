@@ -1,5 +1,9 @@
 import { Allowed } from "./encapsulation.types"; 
 
+export type KeyValue = { 
+	[ key: string ]: string 
+}
+
 export type Encapsulation = Allowed;
 
 export class Optional<T> {
@@ -32,11 +36,19 @@ export type FileMetadata = {
 export type MapFilesMetada = Map<string,  FileMetadata>;
 
 export class WorkspaceFiles {
+
+	private classes: string[] = [];
+
 	constructor(public readonly files: MapFilesMetada) {
+		files.forEach((metadata, fileName) => {
+			const extension = metadata.extension;
+			const className = fileName.replace(extension, "");
+			this.classes.push(className);
+		});
 	}
 
 	hasClass(className: string): boolean {
-		return false;
+		return this.classes.includes(className);
 	}
 }
 
@@ -46,6 +58,10 @@ export interface IParserFile {
 
 export interface IParseMethod {
 	parse(content: string): Optional<Method[]>
+}
+
+export interface IParseImport {
+	parse(content: string): Optional<Package[]>
 }
 
 export type Args = {
@@ -61,7 +77,14 @@ export type Method = {
 	args: Args[],
 }
 
+export type Package = {
+	classImported: string,
+	package: string,
+	filePath?: string,
+}
+
 export type ClassMetadata = {
+	imports: Package[],
 	className: string,
 	methods: Method[],
 }

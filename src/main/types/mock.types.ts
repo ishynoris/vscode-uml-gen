@@ -16,6 +16,7 @@ export const Mock = {
 	},
 
 	classMatadata: {
+		imports: [],
 		className: "",
 		methods: [],
 	},

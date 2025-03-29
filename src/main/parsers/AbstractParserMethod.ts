@@ -1,9 +1,8 @@
 import { Encapsulation, Allowed } from "../types/encapsulation.types";
 import { Mock } from "../types/mock.types";
-import { Args, IParseMethod, Method, Optional } from "../types/parser.type";
+import { Args, IParseMethod, KeyValue, Method, Optional } from "../types/parser.type";
 
-
-export type GroupRegex = { [ key: string ]: string };
+export type GroupRegex = KeyValue;
 
 export type MetadataRegex = {
 	name: string,

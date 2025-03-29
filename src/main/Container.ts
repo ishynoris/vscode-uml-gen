@@ -1,5 +1,5 @@
-import { Reader } from "../Reader";
-import { MapFilesMetada, WorkspaceFiles } from "./parser.type";
+import { Reader } from "./Reader";
+import { MapFilesMetada, WorkspaceFiles } from "./types/parser.type";
 
 export class Container {
 
@@ -10,17 +10,17 @@ export class Container {
 	public static init(): Container {
 		if (Container.self == undefined) {
 			Container.self = new Container;
-			Container.self.initWorkspace();
+			Container.self.worspaceFiles = initWorkspace();
 		}
 		return Container.self
-	}
-
-	private initWorkspace()  {
-		const files: MapFilesMetada = new Reader().loadFiles();
-		this.worspaceFiles = new WorkspaceFiles(files);
 	}
 
 	public getWorkspaceFiles(): WorkspaceFiles {
 		return this.worspaceFiles;
 	}
 }
+
+function initWorkspace(): WorkspaceFiles  {
+	const files: MapFilesMetada = new Reader().loadFiles();
+	return new WorkspaceFiles(files);
+};
