@@ -56,12 +56,16 @@ export interface IParserFile {
 	parse(file: FileMetadata): Optional<ClassMetadata>;
 }
 
-export interface IParseMethod {
-	parse(content: string): Optional<Method[]>
+export type IParser<T> = {
+	getPatternRegex: () => string,
+	getValue: (groups: KeyValue) => undefined | T,
+	validator?: (value: T) => string[],
 }
 
-export interface IParseImport {
-	parse(content: string): Optional<Package[]>
+export type Attribute = {
+	encapsulation: Allowed,
+	type: string,
+	name: string,
 }
 
 export type Args = {
@@ -84,6 +88,7 @@ export type Package = {
 }
 
 export type ClassMetadata = {
+	attributes: Attribute[],
 	imports: Package[],
 	className: string,
 	methods: Method[],
