@@ -2,7 +2,9 @@ import { Encapsulation } from "./encapsulation.types"
 import { 
 	ClassMetadata, 
 	FileMetadata, 
+	IParser, 
 	IParserFile,
+	KeyValue,
 	Method,
 	Optional, 
 } from "./parser.type"
@@ -34,6 +36,18 @@ export const Mock = {
 		return {
 			parse(file: FileMetadata): Optional<ClassMetadata> { 
 				return Mock.getClassMetadataResult();
+			}
+		}
+	},
+
+	getParserContent<T>(): IParser<T> {
+		return {
+			getPatternRegex(): string {
+				return "";
+			},
+
+			getValue(group: KeyValue): T | undefined {
+				return undefined;
 			}
 		}
 	}

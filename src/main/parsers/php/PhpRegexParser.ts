@@ -1,14 +1,29 @@
-import { Args, Encapsulation, IParseMethod } from "../../types/parser.type";
+import { Encapsulation, Allowed } from "../../types/encapsulation.types";
+import { Args, IParser, KeyValue, Method } from "../../types/parser.type";
 import { Regex } from "../../util";
-import { AbstractParserMethod, GroupRegex, MetadataRegex } from "../AbstractParserMethod";
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
-export class PhpRegexPareser extends AbstractParserMethod implements IParseMethod {
+export class PhpRegexPareser implements IParser<Method> {
 
-	constructor(private types: Encapsulation[]) {
-		super();
+	constructor(private types: Allowed[]) {
 	}
 
-	protected getMetadadataRegex(group: GroupRegex): MetadataRegex {
+	public getPatternRegex(): string {
+		const encapsulation = this.types.join("|");
+
+		const speacialChars = `$=,\\'\\"\\[\\]|`;
+		const staticKey = `(${Regex.BlankReq}static)?`;
+		const functionKey = `${Regex.BlankReq}function`;
+		const methodName = `[${Regex.Letters}${Regex.Numbers}_]+`;
+		const manyArgs = `[${Regex.Letters}${Regex.Numbers}${speacialChars}${Regex.Blank}]`
+
+		return `(?<_encapsulation>(${encapsulation}))` 
+			+ `${staticKey}${functionKey}`
+			+ `${Regex.BlankReq}(?<_name>${methodName})${Regex.BlankOp}`
+			+ `${Regex.OpenArgs}(?<_args>${manyArgs})${Regex.CloseArgs}`
+			+ `${Regex.BlankOp}(:${Regex.BlankOp}(?<_return>${manyArgs}))?${Regex.CloseBlock}`;
+	}
+
+	public getValue(group: KeyValue): Method {
 		let returnType = group._return;
 		if (returnType != undefined) {
 			returnType.replaceAll("\n", "")
@@ -19,8 +34,8 @@ export class PhpRegexPareser extends AbstractParserMethod implements IParseMetho
 		return {
 			name: group._name,
 			args: this.processArgs(group._args),
-			return: returnType,
-			encapsulation: group._encapsulation
+			returnType: returnType,
+			encapsulation: Encapsulation.to(group._encapsulation)
 		}
 	}
 
@@ -56,21 +71,5 @@ export class PhpRegexPareser extends AbstractParserMethod implements IParseMetho
 				initialValue: initialValue,
 			};
 		});
-	}
-
-	protected getPatternRegex(): string {
-		const encapsulation = this.types.join("|");
-
-		const speacialChars = `$=,\\'\\"\\[\\]|`;
-		const staticKey = `(${Regex.BlankReq}static)?`;
-		const functionKey = `${Regex.BlankReq}function`;
-		const methodName = `[${Regex.Letters}${Regex.Numbers}_]+`;
-		const manyArgs = `[${Regex.Letters}${Regex.Numbers}${speacialChars}${Regex.Blank}]`
-
-		return `(?<_encapsulation>(${encapsulation}))` 
-			+ `${staticKey}${functionKey}`
-			+ `${Regex.BlankReq}(?<_name>${methodName})${Regex.BlankOp}`
-			+ `${Regex.OpenArgs}(?<_args>${manyArgs})${Regex.CloseArgs}`
-			+ `${Regex.BlankOp}(:${Regex.BlankOp}(?<_return>${manyArgs}))?${Regex.CloseBlock}`;
 	}
 }
