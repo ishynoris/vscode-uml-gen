@@ -13,11 +13,11 @@ export class JavaRegexParser  implements IParser<Method> {
 		const methodName = `[${Regex.Letters}${Regex.Numbers}_]+`;
 		const args = `[${Regex.Letters}@<> ,]*`;
 
-		return `(?<encapsulation>${encapsulation})${Regex.Blank}`
-			+ `(?<return>${returnKey})${Regex.Blank}`
+		return `(?<encapsulation>${encapsulation})${Regex.BlankReq}`
+			+ `(?<return>${returnKey})${Regex.BlankReq}`
 			+ `(?<name>${methodName})${Regex.BlankOp}`
-			+ `${Regex.OpenArgs}(?<args>${args})${Regex.CloseArgs}`
-			+ `${Regex.CloseBlock}`;
+			+ `${Regex.OpenArgs}(?<args>${args})${Regex.CloseArgs}${Regex.BlankOp}`
+			+ `${Regex.OpenBlock}`;
 	}
 
 	public getValue(group: KeyValue): Method {
