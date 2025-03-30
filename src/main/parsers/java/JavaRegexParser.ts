@@ -1,18 +1,30 @@
-import { Args, Encapsulation, IParseMethod } from "../../types/parser.type";
+import { Allowed, Encapsulation } from "../../types/encapsulation.types";
+import { Args, IParser, KeyValue, Method } from "../../types/parser.type";
 import { Regex } from "../../util";
-import { AbstractParserMethod, GroupRegex, MetadataRegex } from "../AbstractParserMethod";
 
-export class JavaRegexParser extends AbstractParserMethod implements IParseMethod {
+export class JavaRegexParser  implements IParser<Method> {
 
-	constructor(private types: Encapsulation[]) {
-		super();
+	constructor(private types: Allowed[]) {
 	}
 
-	protected getMetadadataRegex(group: GroupRegex): MetadataRegex {
+	public getPatternRegex(): string {
+		const encapsulation = this.types.join("|");
+		const returnKey = `[${Regex.Letters}@<> ,]+`;
+		const methodName = `[${Regex.Letters}${Regex.Numbers}_]+`;
+		const args = `[${Regex.Letters}@<> ,]*`;
+
+		return `(?<encapsulation>${encapsulation})${Regex.Blank}`
+			+ `(?<return>${returnKey})${Regex.Blank}`
+			+ `(?<name>${methodName})${Regex.BlankOp}`
+			+ `${Regex.OpenArgs}(?<args>${args})${Regex.CloseArgs}`
+			+ `${Regex.CloseBlock}`;
+	}
+
+	public getValue(group: KeyValue): Method {
 		return {
 			name: group.name,
-			return: group.return,
-			encapsulation: group.encapsulation,
+			returnType: group.return,
+			encapsulation: Encapsulation.to(group.encapsulation),
 			args: this.processArgs(group.args),
 		}
 	}
@@ -65,18 +77,5 @@ export class JavaRegexParser extends AbstractParserMethod implements IParseMetho
 			name: name.trim(), 
 			type: type.trim(), 
 		}
-	}
-
-	protected getPatternRegex(): string {
-		const encapsulation = this.types.join("|");
-		const returnKey = `[${Regex.Letters}@<> ,]+`;
-		const methodName = `[${Regex.Letters}${Regex.Numbers}_]+`;
-		const args = `[${Regex.Letters}@<> ,]*`;
-
-		return `(?<encapsulation>${encapsulation})${Regex.Blank}`
-			+ `(?<return>${returnKey})${Regex.Blank}`
-			+ `(?<name>${methodName})${Regex.BlankOp}`
-			+ `${Regex.OpenArgs}(?<args>${args})${Regex.CloseArgs}`
-			+ `${Regex.CloseBlock}`;
 	}
 }

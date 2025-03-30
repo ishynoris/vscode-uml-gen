@@ -1,25 +1,25 @@
 import { JavaRegexParser } from "./JavaRegexParser";
-import { AbstractParserFile, Parsers } from "../AbstractParserFile";
-import { Allowed, Encapsulation, Types } from "../../types/encapsulation.types";
-import { IParseImport, IParseMethod, IParserFile } from "../../types/parser.type";
+import { AbstractParserFile, ParseContent } from "../AbstractParserFile";
+import { Encapsulation } from "../../types/encapsulation.types";
+import { IParserFile } from "../../types/parser.type";
 import { JavaImportParser } from "./JavaImportParser";
+import { Container } from "../../Container";
+import { JavaAttributeParser } from "./JavaAttributeParser";
 
 export class JavaParser extends AbstractParserFile implements IParserFile {
 
-	private types: Allowed[] = [];
-
 	constructor() {
-		super(JavaParsers);
+		super({
+			methods: new JavaRegexParser(encapsulation),
+			imports: new JavaImportParser(workspaceFiles),
+			attributes: new JavaAttributeParser,
+		});
 	}
 }
+const workspaceFiles = Container.init().getWorkspaceFiles();
 
 const encapsulation = [ 
 	Encapsulation.allowed.private,
 	Encapsulation.allowed.protected,
 	Encapsulation.allowed.public,
-]
-
-const JavaParsers: Parsers = {
-	importParser: new JavaImportParser,
-	methodParser: new JavaRegexParser(encapsulation),
-}
+];

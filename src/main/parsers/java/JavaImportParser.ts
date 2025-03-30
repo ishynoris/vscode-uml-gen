@@ -1,25 +1,28 @@
-import { IParseImport, KeyValue, Optional, Package } from "../../types/parser.type";
+import { Container } from "../../Container";
+import { IParser, KeyValue, Optional, Package, WorkspaceFiles } from "../../types/parser.type";
 import { Regex, Workspace } from "../../util";
-import { AbstractParserImport, MetadataImport } from "../AbstractParserImport";
 
-export class JavaImportParser extends AbstractParserImport implements IParseImport {
+export class JavaImportParser implements IParser<Package> {
 
-	protected getRegexPattern(): string {
+	constructor(private workspace: WorkspaceFiles) {
+	}
+
+	public getPatternRegex(): string {
 		const importKey = `(import)${Regex.BlankReq}`;
 		const namespaceKey = `[${Regex.Letters}_\\-\\.]+`
 		return `${importKey}(?<_imports>${namespaceKey});`;
 	}
 
-	protected parserRegexGroup(group: KeyValue): null | MetadataImport {
+	public getValue(group: KeyValue): undefined | Package {
 		let absolutePath: undefined | string;
 		const importsPart = group._imports.split(".");
 		const className = importsPart[importsPart.length - 1];
 
-		if (!this.hasClass(className)) {
-			return null;
+		if (!this.workspace.hasClass(className)) {
+			return undefined;
 		}
 		return { 
-			file: className, 
+			classImported: className, 
 			filePath: absolutePath, 
 			package: group._imports 
 		}
