@@ -1,13 +1,8 @@
 import { Encapsulation } from "./encapsulation.types"
-import { 
-	ClassMetadata, 
-	FileMetadata, 
-	IParser, 
-	IParserFile,
-	KeyValue,
-	Method,
-	Optional, 
-} from "./parser.type"
+import { ClassMetadata, FileMetadata, Method } from "./backend.type"
+import { Optional } from "./classes.type"
+import { KeyValue } from "./general.types"
+import { IParser, IParserFile } from "./interfaces.type"
 
 export const Mock = {
 	method: (): Method => {
@@ -52,6 +47,9 @@ export const Mock = {
 
 			getValue(group: KeyValue): T | undefined {
 				return undefined;
+			}, 
+			validator(value: T): string[] {
+				return [];
 			}
 		}
 	}
