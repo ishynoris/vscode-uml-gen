@@ -1,9 +1,8 @@
-import { Encapsulation } from "../../main/types/encapsulation.types";
-import { Args, ClassMetadata, DivOptions, Element, Method } from "../../main/types/parser.type";
+import { ClassMetadata, DivOptions, Element, Method } from "../../main/types/parser.type";
+import { AttributeComponent } from "./components/AttributeComponent";
+import { MethodComponent } from "./components/MethodComponents";
 import { Dom } from "./Dom";
 
-
-type dictionary = { [ key: string ]: string };
 
 export class Node {
 	constructor(private metadata: ClassMetadata) {
@@ -18,9 +17,10 @@ export class Node {
 
 	private getChilds(): Element[] {
 		const title = this.getTitleNode();
-		const labels = this.metadata.methods.map((method) => this.getMethodChild(method));
+		const attributes = AttributeComponent.createMany(this.metadata.attributes);
+		const methods = MethodComponent.createMany(this.metadata.methods);
 
-		const childs = [ title, ...labels ];
+		const childs = [ title, attributes, methods ];
 		return childs;
 	}
 
@@ -35,13 +35,6 @@ export class Node {
 		return Dom.createDiv(options, [ label ]);
 	}
 
-	private getMethodChild(method: Method): Element {
-		const methodSignature = new MethodArgs(method).getSignature();
-		const label = Dom.createLabel({ text: methodSignature });
-
-		return Dom.createDiv({ id: _processId(method.name) }, [ label ]);
-	}
-
 	private getDivOptions(): DivOptions {
 		const name = this.metadata.className;
 		return {
@@ -51,58 +44,6 @@ export class Node {
 	}
 }
 
-class MethodArgs {
-	constructor(private method: Method) {
-	}
-
-	getSignature(): string {
-		const symbol = this.getSymbol();
-		const name = this.method.name;
-		const args = this.getArgsName();
-		const returnType = this.getReturnType();
-		return `${symbol} ${name}(${args}): ${returnType}`;
-	}
-
-
-	getArgsName(): string {
-		const mapArgName = (arg: Args): string => {
-			let name = arg.name;
-			if (arg.type != undefined) {
-				name += `: ${arg.type}`;
-			}
-		
-			if (arg.initialValue != undefined) {
-				name += ` = ${arg.initialValue}`;
-			}
-			return _scapeHtmlEntity(name);
-		}
-		return this.method.args.map(mapArgName).join(", ");
-	}
-
-	getReturnType(): string {
-		if (this.method.returnType == "") {
-			return "void";
-		}
-		return _scapeHtmlEntity(this.method.returnType);
-	}
-
-	getSymbol(): string {
-		return Encapsulation.getSymbol(this.method.encapsulation);
-	}
-}
-
 function _processId(name: string): string {
 	return name.replaceAll(" ", "-").toLowerCase().trim();
-}
-
-function _scapeHtmlEntity(text: string): string {
-	const htmlEntity: dictionary  = {
-		"<": "&#60;",
-		">": "&#62;",
-	}
-
-	for (let key in htmlEntity) {
-		text = text.replaceAll(key, htmlEntity[key]);
-	}
-	return text;
 }

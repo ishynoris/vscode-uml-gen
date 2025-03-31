@@ -19,7 +19,7 @@ export const Dom = {
 			style += `border-bottom: ${options.borderBottom}`;
 		}
 
-		return { content: `<div style="${style}" id="${id}" class="${clss}">${content}</div>` };
+		return { content: `<div id="${id}" class="${clss}" style="${style}" >${content}</div>` };
 	},
 
 	createLabel: (options: LabelOptions): Element => {

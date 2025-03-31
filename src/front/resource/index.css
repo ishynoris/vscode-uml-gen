@@ -1,7 +1,7 @@
 .node-div {
 	position: absolute;
 	top: 0;
-	line-height: 25px;
+	line-height: 16px;
 	padding: 5px;
 	border: 2px solid white;
 }
@@ -12,4 +12,8 @@
 
 .node-div:active {
 	cursor: grabbing;
+}
+
+.node-div > label {
+	font-size: 12px;
 }
