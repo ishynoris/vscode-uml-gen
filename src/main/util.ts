@@ -1,9 +1,15 @@
 import { ExtensionContext, TextDocument, Uri, WorkspaceFolder, workspace } from "vscode"
-import { FileMetadata, KeyValue } from "./types/parser.type"
-import { readFileSync, realpathSync, statSync } from "fs"
+import { FileMetadata } from "./types/parser.type"
+import { readFileSync, statSync } from "fs"
 import * as path from "path"
+import { Container } from "./Container"
 
 export const FileFactory = {
+	fromAbsolutePath(absolutePath: string): FileMetadata {
+		const uri = Uri.file(absolutePath);
+		return this.fromUri(uri);
+	},
+
 	fromDocument (doc: TextDocument): FileMetadata {
 		return this.fromUri(doc.uri);
 	},
@@ -35,6 +41,16 @@ export const Workspace = {
 	getWorkspacePath(): null|string {
 		const folder = this.getWorkspace();
 		return folder == null ? null : folder.uri.path;
+	},
+
+	getAbsolutePath(parts: string[]): undefined | string {
+		const workspacePath = this.getWorkspacePath();
+		if (workspacePath == null) {
+			return undefined;
+		}
+		const rootFiles = Container.init().getRootFiles("java");
+		const path = parts.join("/");
+		return `${workspacePath}/${rootFiles}/${path}`;
 	}
 }
 
