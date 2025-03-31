@@ -1,8 +1,8 @@
 import { ExtensionContext, TextDocument, Uri, WorkspaceFolder, workspace } from "vscode"
-import { FileMetadata } from "./types/parser.type"
 import { readFileSync, statSync } from "fs"
 import * as path from "path"
 import { Container } from "./Container"
+import { FileMetadata } from "../common/types/backend.type"
 
 export const FileFactory = {
 	fromAbsolutePath(absolutePath: string): FileMetadata {

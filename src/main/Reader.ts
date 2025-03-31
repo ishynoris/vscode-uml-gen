@@ -2,7 +2,8 @@ import * as fs from 'fs';
 import { window } from 'vscode';
 import path from 'path';
 import { Workspace } from './util';
-import { FileMetadata, MapFilesMetada } from './types/parser.type';
+import { MapFilesMetada } from '../common/types/classes.type';
+import { FileMetadata } from '../common/types/backend.type';
 
 export class Reader {
 	private path: string;

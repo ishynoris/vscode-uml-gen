@@ -1,7 +1,8 @@
-import { ClassMetadata, Component, IComponent, Package } from "../../../main/types/parser.type";
 import { Node } from "../Node";
 import { Graph, Item } from "../../../common/Graph";
 import { ClassMetadata as ClassFacade } from "../../../common/Facade";
+import { Component, IComponent } from "../../../common/types/frontend.type";
+import { ClassMetadata, Package } from "../../../common/types/backend.type";
 
 export class MainComponent implements IComponent {
 

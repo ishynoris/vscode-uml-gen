@@ -1,5 +1,7 @@
-import { Allowed, Encapsulation } from "../../types/encapsulation.types";
-import { Attribute, IParser, KeyValue, Optional } from "../../types/parser.type";
+import { KeyValue } from "../../../common/types/general.types";
+import { Attribute } from "../../../common/types/backend.type";
+import { Allowed, Encapsulation } from "../../../common/types/encapsulation.types";
+import { IParser } from "../../../common/types/interfaces.type";
 import { Regex } from "../../util";
 
 export class JavaAttributeParser implements IParser<Attribute> {

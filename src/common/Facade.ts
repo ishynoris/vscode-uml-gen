@@ -1,5 +1,5 @@
 import * as ParserFactory from "../main/parsers/ParserFactory";
-import { ClassMetadata as ClassType, FileMetadata } from "../main/types/parser.type";
+import { ClassMetadata as ClassType, FileMetadata } from "../common/types/backend.type";
 import { FileFactory, Workspace } from "../main/util";
 
 const CachFile: { [key: string]: ClassType } = { }

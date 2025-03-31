@@ -1,14 +1,14 @@
 import { 
 	ExtensionContext, 
-	Webview, 
 	WebviewOptions, 
 	WebviewPanelOptions, 
 	window, 
 	ViewColumn
 } from "vscode";
-import { ClassMetadata, Component } from "../main/types/parser.type";
 import { Front } from "../main/util";
 import { MainComponent } from "./core/components/MainComponent";
+import { ClassMetadata } from "../common/types/backend.type";
+import { Component } from "../common/types/frontend.type";
 
 export function runWebview(context: ExtensionContext, classMetadata: ClassMetadata) {
 	const options: WebviewPanelOptions & WebviewOptions = {

@@ -1,6 +1,6 @@
 import { window, ExtensionContext as Context } from 'vscode';
 import { Commands, ICreatorFromFile } from "./Commands";
-import { FileMetadata } from "./types/parser.type"
+import { FileMetadata } from "../common/types/backend.type"
 import * as ParserFactory from './parsers/ParserFactory';
 import * as FrontEnd from '../front/Front';
 

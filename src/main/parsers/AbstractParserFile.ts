@@ -1,5 +1,8 @@
-import { Mock } from "../types/mock.types";
-import { Attribute, ClassMetadata, FileMetadata, IParser, IParserFile, Method, Optional, Package } from "../types/parser.type";
+import { Attribute, ClassMetadata, FileMetadata, Method, Package } from "../../common/types/backend.type";
+import { Optional } from "../../common/types/classes.type";
+import { IParser, IParserFile } from "../../common/types/interfaces.type";
+import { Mock } from "../../common/types/mock.types";
+
 
 export type ParseContent = {
 	imports: IParser<Package>,

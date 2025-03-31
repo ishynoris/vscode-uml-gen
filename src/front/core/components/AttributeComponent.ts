@@ -1,5 +1,6 @@
-import { Encapsulation } from "../../../main/types/encapsulation.types";
-import { Attribute, DivOptions, Component, IComponent } from "../../../main/types/parser.type";
+import { Attribute } from "../../../common/types/backend.type";
+import { Encapsulation } from "../../../common/types/encapsulation.types";
+import { Component, DivOptions, IComponent } from "../../../common/types/frontend.type";
 import { Dom } from "../Dom";
 
 

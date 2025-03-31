@@ -1,5 +1,7 @@
+import { ClassMetadata, FileMetadata } from "../../common/types/backend.type";
+import { Optional } from "../../common/types/classes.type";
+import { IParserFile } from "../../common/types/interfaces.type";
 import { JavaParser } from "./java/JavaParser";
-import { Optional, IParserFile, FileMetadata, ClassMetadata } from "../types/parser.type";
 import { PhpParser } from "./php/PhpParser";
 
 export function getParser(file: FileMetadata): Optional<IParserFile> {

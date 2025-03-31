@@ -1,5 +1,7 @@
-import { Encapsulation } from "../../../main/types/encapsulation.types";
-import { Args, Component, IComponent, KeyValue, Method } from "../../../main/types/parser.type";
+import { Args, Method } from "../../../common/types/backend.type";
+import { Encapsulation } from "../../../common/types/encapsulation.types";
+import { Component, IComponent } from "../../../common/types/frontend.type";
+import { KeyValue } from "../../../common/types/general.types";
 import { Dom } from "../Dom";
 
 export class MethodComponent implements IComponent {

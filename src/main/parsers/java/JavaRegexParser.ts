@@ -1,5 +1,7 @@
-import { Allowed, Encapsulation } from "../../types/encapsulation.types";
-import { Args, IParser, KeyValue, Method } from "../../types/parser.type";
+import { Args, Method } from "../../../common/types/backend.type";
+import { Allowed, Encapsulation } from "../../../common/types/encapsulation.types";
+import { KeyValue } from "../../../common/types/general.types";
+import { IParser } from "../../../common/types/interfaces.type";
 import { Regex } from "../../util";
 
 export class JavaRegexParser  implements IParser<Method> {

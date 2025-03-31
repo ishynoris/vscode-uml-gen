@@ -1,10 +1,10 @@
 import { JavaRegexParser } from "./JavaRegexParser";
 import { AbstractParserFile, ParseContent } from "../AbstractParserFile";
-import { Encapsulation } from "../../types/encapsulation.types";
-import { IParserFile } from "../../types/parser.type";
+import { Encapsulation } from "../../../common/types/encapsulation.types";
 import { JavaImportParser } from "./JavaImportParser";
 import { Container } from "../../Container";
 import { JavaAttributeParser } from "./JavaAttributeParser";
+import { IParserFile } from "../../../common/types/interfaces.type";
 
 export class JavaParser extends AbstractParserFile implements IParserFile {
 

@@ -1,5 +1,6 @@
+import { MapFilesMetada, WorkspaceFiles } from "../common/types/classes.type";
+import { KeyValue } from "../common/types/general.types";
 import { Reader } from "./Reader";
-import { KeyValue, MapFilesMetada, WorkspaceFiles } from "./types/parser.type";
 
 export class Container {
 

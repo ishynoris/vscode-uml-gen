@@ -1,4 +1,7 @@
-import { IParser, KeyValue, Package, WorkspaceFiles } from "../../types/parser.type";
+import { Package } from "../../../common/types/backend.type";
+import { WorkspaceFiles } from "../../../common/types/classes.type";
+import { KeyValue } from "../../../common/types/general.types";
+import { IParser } from "../../../common/types/interfaces.type";
 import { FileFactory, Regex, Workspace } from "../../util";
 
 export class JavaImportParser implements IParser<Package> {
