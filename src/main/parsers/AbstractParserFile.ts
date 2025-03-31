@@ -15,7 +15,7 @@ export abstract class AbstractParserFile implements IParserFile {
 
 	constructor(private parsers: ParseContent) {
 		this.errors = [];
-		this.result = Mock.classMatadata;
+		this.result = Mock.classMatadata();
 	}
 
 	public parse(doc: FileMetadata): Optional<ClassMetadata> {

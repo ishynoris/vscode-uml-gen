@@ -10,26 +10,30 @@ import {
 } from "./parser.type"
 
 export const Mock = {
-	method: {
-		name: "",
-		encapsulation: Encapsulation.allowed.none,
-		returnType: "",
-		args: [],
+	method: (): Method => {
+		return {
+			name: "",
+			encapsulation: Encapsulation.allowed.none,
+			returnType: "",
+			args: [],
+		}
 	},
 
-	classMatadata: {
-		attributes: [],
-		imports: [],
-		className: "",
-		methods: [],
+	classMatadata: (): ClassMetadata => {
+		return {
+			attributes: [],
+			imports: [],
+			className: "",
+			methods: [],
+		}
 	},
 
 	getMethodResult(): Optional<Method> {
-		return new Optional(Mock.method)
+		return new Optional(Mock.method())
 	},
 
 	getClassMetadataResult(): Optional<ClassMetadata> {
-		return new Optional(Mock.classMatadata);
+		return new Optional(Mock.classMatadata());
 	},
 	
 	getParserFile(): IParserFile {
