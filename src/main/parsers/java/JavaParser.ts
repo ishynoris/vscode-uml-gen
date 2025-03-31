@@ -12,7 +12,7 @@ export class JavaParser extends AbstractParserFile implements IParserFile {
 		super({
 			methods: new JavaRegexParser(encapsulation),
 			imports: new JavaImportParser(workspaceFiles),
-			attributes: new JavaAttributeParser,
+			attributes: new JavaAttributeParser(encapsulation),
 		});
 	}
 }

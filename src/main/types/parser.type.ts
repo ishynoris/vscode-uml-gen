@@ -52,6 +52,10 @@ export class WorkspaceFiles {
 	}
 }
 
+export interface IComponent {
+	getElement(): Element;
+}
+
 export interface IParserFile {
 	parse(file: FileMetadata): Optional<ClassMetadata>;
 }
