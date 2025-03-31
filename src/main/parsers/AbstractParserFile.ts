@@ -26,7 +26,7 @@ export abstract class AbstractParserFile implements IParserFile {
 		this.defineImports();
 		this.defineMethod();
 
-		return new Optional(this.result);
+		return new Optional(this.result, this.errors);
 	}
 
 	protected defineClassName() {
@@ -68,8 +68,8 @@ function parse<T>(content: string, parser: IParser<T>): Optional<T[]> {
 	const pattern = parser.getPatternRegex();
 
 	const regex = new RegExp(pattern, "gi");
+	const values: T[] = [];
 	let expression;
-	let values: T[] = [];
 	while((expression = regex.exec(content)) != null) {
 		const groups = expression.groups;
 		const signature = expression[0];
