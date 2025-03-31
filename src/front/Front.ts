@@ -8,7 +8,7 @@ import {
 } from "vscode";
 import { ClassMetadata, Component } from "../main/types/parser.type";
 import { Front } from "../main/util";
-import { Node } from "./core/Node";
+import { MainComponent } from "./core/components/MainComponent";
 
 export function runWebview(context: ExtensionContext, classMetadata: ClassMetadata) {
 	const options: WebviewPanelOptions & WebviewOptions = {
@@ -17,14 +17,9 @@ export function runWebview(context: ExtensionContext, classMetadata: ClassMetada
 	}
 	const title = `UML - ${classMetadata.className}`;
 	const wvPanel = window.createWebviewPanel("uml-gen", title, ViewColumn.Beside, options);
-	const container = processMetadata(classMetadata);
-	wvPanel.webview.html = getHtml(context, container);
+	const container = new MainComponent(classMetadata);
+	wvPanel.webview.html = getHtml(context, container.getContent());
 	wvPanel.reveal();
-}
-
-function processMetadata(classMetadata: ClassMetadata): Component {
-	const node = new Node(classMetadata);
-	return node.getComponent();
 }
 
 function getHtml(context: ExtensionContext, component: Component): string {

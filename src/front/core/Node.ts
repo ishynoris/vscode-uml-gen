@@ -5,7 +5,11 @@ import { Dom } from "./Dom";
 
 
 export class Node {
+
+	public readonly tag: string;
+
 	constructor(private metadata: ClassMetadata) {
+		this.tag = metadata.className;
 	}
 	
 	getComponent(): Component {
