@@ -1,6 +1,5 @@
-import { Container } from "../../Container";
-import { IParser, KeyValue, Optional, Package, WorkspaceFiles } from "../../types/parser.type";
-import { Regex, Workspace } from "../../util";
+import { IParser, KeyValue, Package, WorkspaceFiles } from "../../types/parser.type";
+import { FileFactory, Regex, Workspace } from "../../util";
 
 export class JavaImportParser implements IParser<Package> {
 
@@ -14,16 +13,22 @@ export class JavaImportParser implements IParser<Package> {
 	}
 
 	public getValue(group: KeyValue): undefined | Package {
-		let absolutePath: undefined | string;
 		const importsPart = group._imports.split(".");
-		const className = importsPart[importsPart.length - 1];
+		const lastIndexPackage = importsPart.length - 1;
+		const className = importsPart[lastIndexPackage];
 
 		if (!this.workspace.hasClass(className)) {
 			return undefined;
 		}
+
+		importsPart[lastIndexPackage] = `${className}.java`;
+		const absolutePath = Workspace.getAbsolutePath(importsPart);
+		if (absolutePath == undefined) {
+			return undefined;
+		}
 		return { 
 			classImported: className, 
-			filePath: absolutePath, 
+			file: FileFactory.fromAbsolutePath(absolutePath),
 			package: group._imports 
 		}
 	}

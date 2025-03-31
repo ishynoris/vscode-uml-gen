@@ -88,7 +88,7 @@ export type Method = {
 export type Package = {
 	classImported: string,
 	package: string,
-	filePath?: string,
+	file?: FileMetadata,
 }
 
 export type ClassMetadata = {
