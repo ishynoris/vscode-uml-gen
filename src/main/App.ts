@@ -34,7 +34,7 @@ export class App {
 				}
 
 				const classMetadataOpt = result.value.parse(file);
-				if (classMetadataOpt.isValid && classMetadataOpt.value != undefined) {
+				if (classMetadataOpt.value != undefined) {
 					FrontEnd.runWebview(context, classMetadataOpt.value);
 				}
 			}
