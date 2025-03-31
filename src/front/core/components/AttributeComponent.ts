@@ -1,4 +1,5 @@
 import { Attribute } from "../../../common/types/backend.type";
+import { AttributeFormatter as Formatter } from "../../../common/types/classes.type";
 import { Encapsulation } from "../../../common/types/encapsulation.types";
 import { Component, DivOptions, IComponent } from "../../../common/types/frontend.type";
 import { Dom } from "../Dom";
@@ -27,17 +28,6 @@ export class AttributeComponent implements IComponent {
 	}
 
 	getContent(): Component {
-		return Dom.createLabel({ text: this.formatter.getText() });
-	}
-}
-
-class Formatter {
-	constructor(private attr: Attribute) { }
-
-	getText(): string {
-		const symbol = Encapsulation.getSymbol(this.attr.encapsulation);
-		const name = this.attr.name;
-		const type = this.attr.type;
-		return `${symbol} ${name}: ${type}`;
+		return Dom.createLabel({ text: this.formatter.getSignature() });
 	}
 }
