@@ -1,5 +1,5 @@
 import { JavaParser } from "./java/JavaParser";
-import { Optional, IParserFile, FileMetadata } from "../types/parser.type";
+import { Optional, IParserFile, FileMetadata, ClassMetadata } from "../types/parser.type";
 import { PhpParser } from "./php/PhpParser";
 
 export function getParser(file: FileMetadata): Optional<IParserFile> {
@@ -12,4 +12,13 @@ export function getParser(file: FileMetadata): Optional<IParserFile> {
 	const isValid = parser != undefined;
 	const errors = isValid ? [] : [ `Não foi possível definir o parser para o arquivo ${file.name}` ];
 	return new Optional(parser, errors)
+}
+
+export function parse(file: FileMetadata): Optional<ClassMetadata> {
+	const parser = getParser(file);
+	if (parser.value == undefined) {
+		return new Optional<ClassMetadata>(undefined, parser.errors);
+	}
+
+	return parser.value.parse(file);
 }

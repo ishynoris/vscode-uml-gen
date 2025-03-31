@@ -1,7 +1,7 @@
 import { window, ExtensionContext as Context } from 'vscode';
 import { Commands, ICreatorFromFile } from "./Commands";
 import { FileMetadata } from "./types/parser.type"
-import { getParser } from './parsers/ParserFactory';
+import * as ParserFactory from './parsers/ParserFactory';
 import * as FrontEnd from '../front/Front';
 
 export class App {
@@ -27,16 +27,12 @@ export class App {
 
 		return {
 			create(file: FileMetadata) {
-				const result = getParser(file);
-				if (!result.isValid || result.value == undefined) {
-					window.showErrorMessage(result.getMessage());
+				const classMetadataOpt = ParserFactory.parse(file);
+				if (classMetadataOpt.value == undefined) {
+					window.showErrorMessage(classMetadataOpt.getMessage());
 					return;
 				}
-
-				const classMetadataOpt = result.value.parse(file);
-				if (classMetadataOpt.value != undefined) {
-					FrontEnd.runWebview(context, classMetadataOpt.value);
-				}
+				FrontEnd.runWebview(context, classMetadataOpt.value);
 			}
 		}
 	}
