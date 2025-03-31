@@ -1,5 +1,5 @@
 import { Encapsulation } from "../../../main/types/encapsulation.types";
-import { Args, Element, IComponent, KeyValue, Method } from "../../../main/types/parser.type";
+import { Args, Component, IComponent, KeyValue, Method } from "../../../main/types/parser.type";
 import { Dom } from "../Dom";
 
 export class MethodComponent implements IComponent {
@@ -10,18 +10,18 @@ export class MethodComponent implements IComponent {
 		this.formatter = new Formatter(method);
 	}
 
-	static create(method: Method): Element {
+	static create(method: Method): Component {
 		const component = new MethodComponent(method);
-		const childs = [ component.getElement() ];
+		const childs = [ component.getContent() ];
 		return Dom.createDiv({ id: `method-${method.name}` }, childs) ;
 	}
 
-	static createMany(methods: Method[]): Element {
+	static createMany(methods: Method[]): Component {
 		const labels = methods.map(MethodComponent.create);
 		return Dom.createDiv({ id: "container-methods" }, labels);
 	}
 
-	getElement(): Element {
+	getContent(): Component {
 		return Dom.createLabel({ text: this.formatter.getSignature() });
 	}
 }

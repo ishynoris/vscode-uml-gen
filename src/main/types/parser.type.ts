@@ -53,7 +53,7 @@ export class WorkspaceFiles {
 }
 
 export interface IComponent {
-	getElement(): Element;
+	getContent(): Component;
 }
 
 export interface IParserFile {
@@ -113,7 +113,7 @@ export type LabelOptions = {
 	for?: string
 }
 
-export type Element = {
+export type Component = {
 	content: string,
-	childs?: Element[]
+	childs?: Component[]
 }

@@ -1,5 +1,5 @@
 import { Encapsulation } from "../../../main/types/encapsulation.types";
-import { Attribute, DivOptions, Element, IComponent } from "../../../main/types/parser.type";
+import { Attribute, DivOptions, Component, IComponent } from "../../../main/types/parser.type";
 import { Dom } from "../Dom";
 
 
@@ -10,13 +10,13 @@ export class AttributeComponent implements IComponent {
 		this.formatter = new Formatter(attr);
 	}
 
-	static create(attr: Attribute): Element {
+	static create(attr: Attribute): Component {
 		const component = new AttributeComponent(attr);
-		const childs = [ component.getElement() ];
+		const childs = [ component.getContent() ];
 		return Dom.createDiv({ id: `attr-${attr.name}` }, childs) ;
 	}
 
-	static createMany(attrs: Attribute[]): Element {
+	static createMany(attrs: Attribute[]): Component {
 		const labels = attrs.map(AttributeComponent.create);
 		const options: DivOptions = {
 			id: "container-attrs",
@@ -25,7 +25,7 @@ export class AttributeComponent implements IComponent {
 		return Dom.createDiv(options, labels);
 	}
 
-	getElement(): Element {
+	getContent(): Component {
 		return Dom.createLabel({ text: this.formatter.getText() });
 	}
 }

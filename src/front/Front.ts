@@ -6,7 +6,7 @@ import {
 	window, 
 	ViewColumn
 } from "vscode";
-import { ClassMetadata, Element } from "../main/types/parser.type";
+import { ClassMetadata, Component } from "../main/types/parser.type";
 import { Front } from "../main/util";
 import { Node } from "./core/Node";
 
@@ -22,12 +22,12 @@ export function runWebview(context: ExtensionContext, classMetadata: ClassMetada
 	wvPanel.reveal();
 }
 
-function processMetadata(classMetadata: ClassMetadata): Element {
+function processMetadata(classMetadata: ClassMetadata): Component {
 	const node = new Node(classMetadata);
-	return node.getElement();
+	return node.getComponent();
 }
 
-function getHtml(context: ExtensionContext, element: Element): string {
+function getHtml(context: ExtensionContext, component: Component): string {
 	const htmlContent = Front.getResourceContent(context, "index.html");
 	if (htmlContent == null) {
 		return "404 not found";
@@ -37,5 +37,5 @@ function getHtml(context: ExtensionContext, element: Element): string {
 
 	return htmlContent.replace("@_CSS_CONTENT_@", cssContent ?? "")
 		.replace("{_JAVA_SCRIPT_CONTENT_}", jsContent ?? "")
-		.replace("(_MAIN_CONTENT_)", element.content);
+		.replace("(_MAIN_CONTENT_)", component.content);
 }

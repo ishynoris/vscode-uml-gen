@@ -1,8 +1,8 @@
-import { DivOptions, Element, LabelOptions } from "../../main/types/parser.type";
+import { DivOptions, Component, LabelOptions } from "../../main/types/parser.type";
 
 
 export const Dom = {
-	createDiv: (options: DivOptions, childs?: Element[]): Element => {
+	createDiv: (options: DivOptions, childs?: Component[]): Component => {
 		let style = "", id = "";
 		const content: string = childs == undefined ? "" : childs.reduce(_reduceChild, "");
 		const clss: string = options.class == undefined ? "" : options.class.join(" ");
@@ -22,12 +22,12 @@ export const Dom = {
 		return { content: `<div id="${id}" class="${clss}" style="${style}" >${content}</div>` };
 	},
 
-	createLabel: (options: LabelOptions): Element => {
+	createLabel: (options: LabelOptions): Component => {
 		const labelFor = options?.for ?? "";
 		return { content: `<label for="${labelFor}">${options.text}</label>`}
 	}
 }
 
-function _reduceChild(content: string, value: Element): string {
+function _reduceChild(content: string, value: Component): string {
 	return content += value.content;
 }

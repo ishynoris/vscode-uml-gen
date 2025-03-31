@@ -1,4 +1,4 @@
-import { ClassMetadata, DivOptions, Element, Method } from "../../main/types/parser.type";
+import { ClassMetadata, DivOptions, Component, Method } from "../../main/types/parser.type";
 import { AttributeComponent } from "./components/AttributeComponent";
 import { MethodComponent } from "./components/MethodComponents";
 import { Dom } from "./Dom";
@@ -8,14 +8,14 @@ export class Node {
 	constructor(private metadata: ClassMetadata) {
 	}
 	
-	getElement(): Element {
+	getComponent(): Component {
 		const divOptions = this.getDivOptions();
 		const childs = this.getChilds();
 
 		return Dom.createDiv(divOptions, childs);
 	}
 
-	private getChilds(): Element[] {
+	private getChilds(): Component[] {
 		const title = this.getTitleNode();
 		const attributes = AttributeComponent.createMany(this.metadata.attributes);
 		const methods = MethodComponent.createMany(this.metadata.methods);
@@ -24,7 +24,7 @@ export class Node {
 		return childs;
 	}
 
-	private getTitleNode(): Element {
+	private getTitleNode(): Component {
 		const name = this.metadata.className;
 		const label = Dom.createLabel({ text: name });
 		const options: DivOptions = {  
