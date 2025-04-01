@@ -7,7 +7,7 @@ import {
 } from "vscode";
 import { MainComponent } from "./core/components/MainComponent";
 import { ClassMetadata } from "../common/types/backend.type";
-import { HtmlTemplate } from "./core/HtmlTemplate";
+import { HtmlTemplate } from "./core/templates/HtmlTemplate";
 
 export function runWebview(context: ExtensionContext, classMetadata: ClassMetadata) {
 	const options: WebviewPanelOptions & WebviewOptions = {

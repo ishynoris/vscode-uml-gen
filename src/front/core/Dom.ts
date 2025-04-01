@@ -1,33 +1,14 @@
-import { DivOptions, Component, LabelOptions } from "../../main/types/parser.type";
-
+import { Component, DivOptions, LabelOptions } from "../../common/types/frontend.type";
+import { DivTemplate } from "./templates/DivTemplate";
+import { LabelTemplate } from "./templates/LabelTemplate";
 
 export const Dom = {
 	createDiv: (options: DivOptions, childs?: Component[]): Component => {
-		let style = "", id = "";
-		const content: string = childs == undefined ? "" : childs.reduce(_reduceChild, "");
-		const clss: string = options.class == undefined ? "" : options.class.join(" ");
-
-		if (options.id != undefined) {
-			id = options.id;
-		}
-
-		if (options.textAlign != undefined) {
-			style += `text-align: ${options.textAlign};`
-		}
-
-		if (options.borderBottom != undefined) {
-			style += `border-bottom: ${options.borderBottom}`;
-		}
-
-		return { content: `<div id="${id}" class="${clss}" style="${style}" >${content}</div>` };
+		const div = new DivTemplate(options);
+		return { content: div.getContent(childs ?? []) };
 	},
 
 	createLabel: (options: LabelOptions): Component => {
-		const labelFor = options?.for ?? "";
-		return { content: `<label for="${labelFor}">${options.text}</label>`}
+		return {content: new LabelTemplate(options).getContent() }
 	}
-}
-
-function _reduceChild(content: string, value: Component): string {
-	return content += value.content;
 }
