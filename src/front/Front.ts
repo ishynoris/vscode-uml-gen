@@ -5,10 +5,9 @@ import {
 	window, 
 	ViewColumn
 } from "vscode";
-import { Front } from "../main/util";
 import { MainComponent } from "./core/components/MainComponent";
 import { ClassMetadata } from "../common/types/backend.type";
-import { Component } from "../common/types/frontend.type";
+import { HtmlTemplate } from "./core/HtmlTemplate";
 
 export function runWebview(context: ExtensionContext, classMetadata: ClassMetadata) {
 	const options: WebviewPanelOptions & WebviewOptions = {
@@ -17,20 +16,6 @@ export function runWebview(context: ExtensionContext, classMetadata: ClassMetada
 	}
 	const title = `UML - ${classMetadata.className}`;
 	const wvPanel = window.createWebviewPanel("uml-gen", title, ViewColumn.Beside, options);
-	const container = new MainComponent(classMetadata);
-	wvPanel.webview.html = getHtml(context, container.getContent());
-	wvPanel.reveal();
-}
-
-function getHtml(context: ExtensionContext, component: Component): string {
-	const htmlContent = Front.getResourceContent(context, "index.html");
-	if (htmlContent == null) {
-		return "404 not found";
-	}
-	const cssContent = Front.getResourceContent(context, "index.css");
-	const jsContent = Front.getResourceContent(context, "index.js");
-
-	return htmlContent.replace("@_CSS_CONTENT_@", cssContent ?? "")
-		.replace("{_JAVA_SCRIPT_CONTENT_}", jsContent ?? "")
-		.replace("(_MAIN_CONTENT_)", component.content);
+	const template = new HtmlTemplate(wvPanel, context);
+	template.render(new MainComponent(classMetadata));
 }
