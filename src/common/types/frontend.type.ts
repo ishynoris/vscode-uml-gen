@@ -1,11 +1,16 @@
 type TextAlign = "center" | "end" | "justify" | "left" | "right";
 
-export type Coordinates = {
-	x?: number,
-	y?: number,
-	height?: number,
-	width?: number,
+export type Area = {
+	height: number,
+	width: number,
 }
+
+export type Position = {
+	x: number,
+	y: number,
+}
+
+export type Coordinates = Area & Position;
 
 export type DivOptions = { 
 	id?: string,
@@ -22,6 +27,10 @@ export type LabelOptions = {
 
 export interface IComponent {
 	getContent(): Component;
+}
+
+export interface IAreaComponent extends IComponent {
+	getArea(): Area;
 }
 
 export type Component = {

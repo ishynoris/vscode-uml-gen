@@ -1,18 +1,23 @@
-import { ClassMetadata, DivOptions, Component, Method } from "../../main/types/parser.type";
+import { ClassMetadata } from "../../common/types/backend.type";
+import { Area, Component, Coordinates, DivOptions, IAreaComponent } from "../../common/types/frontend.type";
 import { AttributeComponent } from "./components/AttributeComponent";
 import { MethodComponent } from "./components/MethodComponents";
+import { NameComponent } from "./components/NameComponent";
 import { Dom } from "./Dom";
 
-
-export class Node {
+export class Node implements IAreaComponent {
 
 	public readonly tag: string;
 
-	constructor(private metadata: ClassMetadata) {
+	constructor(private metadata: ClassMetadata, private coords: Coordinates) {
 		this.tag = metadata.className;
 	}
 	
-	getComponent(): Component {
+	getArea(): Area {
+		return this.coords
+	}
+
+	getContent(): Component {
 		const divOptions = this.getDivOptions();
 		const childs = this.getChilds();
 
@@ -20,23 +25,14 @@ export class Node {
 	}
 
 	private getChilds(): Component[] {
-		const title = this.getTitleNode();
-		const attributes = AttributeComponent.createMany(this.metadata.attributes);
-		const methods = MethodComponent.createMany(this.metadata.methods);
+		const name = _processId(this.metadata.className);
+
+		const title = NameComponent.create(this.metadata.className);
+		const attributes = AttributeComponent.createMany(name, this.metadata.attributes);
+		const methods = MethodComponent.createMany(name, this.metadata.methods);
 
 		const childs = [ title, attributes, methods ];
 		return childs;
-	}
-
-	private getTitleNode(): Component {
-		const name = this.metadata.className;
-		const label = Dom.createLabel({ text: name });
-		const options: DivOptions = {  
-			id: _processId(name),
-			textAlign: "center",
-			borderBottom: "1px solid white",
-		}
-		return Dom.createDiv(options, [ label ]);
 	}
 
 	private getDivOptions(): DivOptions {
@@ -44,6 +40,7 @@ export class Node {
 		return {
 			id: `node-${_processId(name)}`,
 			class: [ "node-div" ],
+			coordinates: this.coords,
 		}
 	}
 }
