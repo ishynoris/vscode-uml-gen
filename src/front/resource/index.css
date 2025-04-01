@@ -4,6 +4,7 @@
 	line-height: 16px;
 	padding: 5px;
 	border: 2px solid white;
+	background-color: rgb(29, 27, 27);
 }
 
 .node-div:hover {    
@@ -15,5 +16,5 @@
 }
 
 .node-div > label {
-	font-size: 12px;
+	font-size: 10px;
 }
