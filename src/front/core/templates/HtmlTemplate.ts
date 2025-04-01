@@ -1,6 +1,5 @@
 import { ExtensionContext as Context, WebviewPanel } from "vscode";
-import { Component, IComponent, Position } from "../../../common/types/frontend.type";
-import { Dom } from "./../Dom";
+import { IComponent, Position } from "../../../common/types/frontend.type";
 import { Front as FrontUtil } from "../../../main/util";
 
 export class HtmlTemplate {

@@ -33,13 +33,6 @@ export class DivTemplate {
 			style += `top: ${this.options.coordinates.y}px;`;
 		}
 
-		if (this.options.coordinates?.width) {
-			style += `width: ${this.options.coordinates.width}px;`;
-		}
-
-		if (this.options.coordinates?.height) {
-			style += `height: ${this.options.coordinates.height}px;`
-		}
 		return style ?? "";
 	}
 }
