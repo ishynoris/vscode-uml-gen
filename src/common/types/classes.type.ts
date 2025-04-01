@@ -1,6 +1,7 @@
-import { Args, Attribute, FileMetadata, Method } from "./backend.type";
+import { Args, Attribute, ClassMetadata, FileMetadata, Method } from "./backend.type";
 import { Encapsulation } from "./encapsulation.types";
 import { Front as FrontEnd } from "../../main/util";
+import { Area } from "./frontend.type";
 
 export type MapFilesMetada = Map<string,  FileMetadata>;
 
@@ -41,7 +42,43 @@ export class WorkspaceFiles {
 	}
 }
 
+export class CalcArea {
+	static getMaxArea(area1: Area, area2: Area): Area {
+		if (area2.height > area1.height || area2.width > area1.width) {
+			return area2;
+		}
+		return area1;
+	}
 
+	static getFromClassMetadata(metadata: ClassMetadata): Area {
+		const reduceMaxLength = (length: number, text: string) => {
+			length = text.length > length ? text.length : length;
+			return  length;
+		}
+
+		let signs: string[] = [ metadata.className ];
+		metadata.attributes.forEach(attr => signs.push(AttributeFormatter.signature(attr)));
+		metadata.methods.forEach(method => signs.push(MethodFormatter.signature(method)));
+		const maxLength = signs.reduce(reduceMaxLength, 0);
+
+		return CalcArea.calc(signs.length, maxLength);
+	}
+
+	static calc(height: number, width: number): Area {
+		return {
+			width: CalcArea.widthToPixel(width),
+			height: CalcArea.heightToPixel(height),
+		}
+	}
+
+	static heightToPixel(height: number): number {
+		return height * 16.5;
+	}
+
+	static widthToPixel(width: number): number {
+		return width * 6.2;
+	}
+}
 
 export class AttributeFormatter {
 	constructor(private attr: Attribute) { }

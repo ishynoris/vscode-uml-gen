@@ -3,6 +3,7 @@ import { readFileSync, statSync } from "fs"
 import * as path from "path"
 import { Container } from "./Container"
 import { FileMetadata } from "../common/types/backend.type"
+import { KeyValue } from "../common/types/general.types"
 
 export const FileFactory = {
 	fromAbsolutePath(absolutePath: string): FileMetadata {
@@ -59,6 +60,18 @@ export const Front = {
 		const contextPath = context.extensionPath;
 		const resourcePath = "src/front/resource";
 		return readFileSync(`${contextPath}/${resourcePath}/${fileResource}`).toString();
+	},
+
+	scapeHtmlEntity(text: string): string {
+		const htmlEntity: KeyValue = {
+			"<": "&#60;",
+			">": "&#62;",
+		}
+
+		for (let key in htmlEntity) {
+			text = text.replaceAll(key, htmlEntity[key]);
+		}
+		return text;
 	}
 }
 
