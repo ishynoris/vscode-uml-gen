@@ -8,20 +8,20 @@ import { Dom } from "../Dom";
 export class AttributeComponent implements IComponent {
 	private formatter: Formatter;
 	
-	constructor(private attr: Attribute) {
+	constructor(private name: string, private attr: Attribute) {
 		this.formatter = new Formatter(attr);
 	}
 
-	static create(attr: Attribute): Component {
-		const component = new AttributeComponent(attr);
+	static create(name: string, attr: Attribute): Component {
+		const component = new AttributeComponent(name, attr);
 		const childs = [ component.getContent() ];
 		return Dom.createDiv({ id: `attr-${attr.name}` }, childs) ;
 	}
 
-	static createMany(attrs: Attribute[]): Component {
-		const labels = attrs.map(AttributeComponent.create);
+	static createMany(name: string, attrs: Attribute[]): Component {
+		const labels = attrs.map(attr => AttributeComponent.create(name, attr));
 		const options: DivOptions = {
-			id: "container-attrs",
+			id: `container-attrs-${this.name}`,
 			borderBottom: "1px solid white"
 		}
 		return Dom.createDiv(options, labels);

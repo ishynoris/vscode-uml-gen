@@ -7,19 +7,19 @@ export class MethodComponent implements IComponent {
 
 	private formatter: Formatter;
 
-	constructor(private method: Method) { 
+	constructor(private name: string, private method: Method) { 
 		this.formatter = new Formatter(method);
 	}
 
-	static create(method: Method): Component {
-		const component = new MethodComponent(method);
+	static create(name: string, method: Method): Component {
+		const component = new MethodComponent(name, method);
 		const childs = [ component.getContent() ];
 		return Dom.createDiv({ id: `method-${method.name}` }, childs) ;
 	}
 
-	static createMany(methods: Method[]): Component {
-		const labels = methods.map(MethodComponent.create);
-		return Dom.createDiv({ id: "container-methods" }, labels);
+	static createMany(name: string, methods: Method[]): Component {
+		const labels = methods.map(method => MethodComponent.create(name, method));
+		return Dom.createDiv({ id: `container-methods-${this.name}` }, labels);
 	}
 
 	getContent(): Component {
