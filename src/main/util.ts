@@ -83,6 +83,7 @@ export enum Regex {
 	CloseArgs =`\\)`,
 	OpenBlock =`\\{`,
 	CloseBlock =`\\}`,
+	Anything = `.*`,
 	
 	BlankOp = `[${Regex.Blank}]*`,
 	BlankReq = `[${Regex.Blank}]+`,

@@ -15,14 +15,13 @@ export class JavaRegexParser  implements IParser<Method> {
 		const returnKey = `[${Regex.Letters}\\[\\]@<> ,]+`;
 		const methodName = `[${Regex.Letters}${Regex.Numbers}_]+`;
 		const args = `[${Regex.Letters}\\[\\]@<> ,]*`;
-		const anyting = `.*`
 
 		return `(?<encapsulation>${encapsulation})${Regex.BlankReq}`
 			+ `(?<detail>${detail})${Regex.BlankOp}`
 			+ `(?<return>${returnKey})${Regex.BlankReq}`
 			+ `(?<name>${methodName})${Regex.BlankOp}`
 			+ `${Regex.OpenArgs}(?<args>${args})${Regex.CloseArgs}${Regex.BlankOp}`
-			+ `${anyting}${Regex.OpenBlock}`;
+			+ `${Regex.Anything}${Regex.OpenBlock}`;
 	}
 
 	public getValue(group: KeyValue): Method {
