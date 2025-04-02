@@ -36,6 +36,7 @@ export type ClassDetail = {
 	isInterface: boolean,
 	isStatic: boolean,
 	isAbstract: boolean,
+	isEnum: boolean,
 }
 
 export type ClassMetadata = {

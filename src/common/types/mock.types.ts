@@ -21,6 +21,7 @@ export const Mock = {
 				isAbstract: false,
 				isInterface: false,
 				isStatic: false,
+				isEnum: false,
 			},
 			attributes: [],
 			imports: [],
