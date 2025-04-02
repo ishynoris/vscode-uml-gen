@@ -20,9 +20,17 @@ export type DivOptions = {
 	coordinates?: Coordinates,
 }
 
+export type ItalicOptions = {
+	text: string,
+}
+
 export type LabelOptions = {
 	text: string,
 	for?: string
+}
+
+export interface ITemplate {
+	getHtml(): string;
 }
 
 export interface IComponent {

@@ -1,5 +1,6 @@
-import { Component, DivOptions, LabelOptions } from "../../common/types/frontend.type";
+import { Component, DivOptions, ItalicOptions, LabelOptions } from "../../common/types/frontend.type";
 import { DivTemplate } from "./templates/DivTemplate";
+import { ItalicTemplate } from "./templates/ItalicTemplate";
 import { LabelTemplate } from "./templates/LabelTemplate";
 
 export const Dom = {
@@ -9,6 +10,10 @@ export const Dom = {
 	},
 
 	createLabel: (options: LabelOptions): Component => {
-		return {content: new LabelTemplate(options).getContent() }
+		return { content: new LabelTemplate(options).getContent() }
+	},
+
+	createItalic: (options: ItalicOptions): Component => {
+		return { content: new ItalicTemplate(options).getHtml() }
 	}
 }
