@@ -14,7 +14,7 @@ export function runWebview(context: ExtensionContext, classMetadata: ClassMetada
 		enableScripts: true,
 		enableForms: true,
 	}
-	const title = `UML - ${classMetadata.className}`;
+	const title = `UML - ${classMetadata.detail.name}`;
 	const wvPanel = window.createWebviewPanel("uml-gen", title, ViewColumn.Beside, options);
 	const template = new HtmlTemplate(wvPanel, context);
 	template.render(new MainComponent(classMetadata));

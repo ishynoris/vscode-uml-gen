@@ -56,7 +56,7 @@ export class CalcArea {
 			return  length;
 		}
 
-		let signs: string[] = [ metadata.className ];
+		let signs: string[] = [ metadata.detail.name ];
 		metadata.attributes.forEach(attr => signs.push(AttributeFormatter.signature(attr)));
 		metadata.methods.forEach(method => signs.push(MethodFormatter.signature(method)));
 		const maxLength = signs.reduce(reduceMaxLength, 0);

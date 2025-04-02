@@ -31,10 +31,16 @@ export type Package = {
 	package: string,
 	file?: FileMetadata,
 }
+export type ClassDetail = {
+	name: string,
+	isInterface: boolean,
+	isStatic: boolean,
+	isAbstract: boolean,
+}
 
 export type ClassMetadata = {
+	detail: ClassDetail,
 	attributes: Attribute[],
 	imports: Package[],
-	className: string,
 	methods: Method[],
 }

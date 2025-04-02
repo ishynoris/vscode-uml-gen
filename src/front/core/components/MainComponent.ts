@@ -55,7 +55,7 @@ export class MainComponent implements IComponent {
 			};
 
 			const node = new Node(clsType, coords);
-			itens.push(new Item(clsType.className, node));
+			itens.push(new Item(clsType.detail.name, node));
 
 			// currentCoords.x = coords.x,
 			currentCoords.y = coords.y + coords.height + GAP_NODES;

@@ -16,9 +16,14 @@ export const Mock = {
 
 	classMatadata: (): ClassMetadata => {
 		return {
+			detail: {
+				name: "",
+				isAbstract: false,
+				isInterface: false,
+				isStatic: false,
+			},
 			attributes: [],
 			imports: [],
-			className: "",
 			methods: [],
 		}
 	},
