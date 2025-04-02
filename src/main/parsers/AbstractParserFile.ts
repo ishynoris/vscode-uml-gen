@@ -1,10 +1,11 @@
-import { Attribute, ClassMetadata, FileMetadata, Method, Package } from "../../common/types/backend.type";
+import { Attribute, ClassDetail, ClassMetadata, FileMetadata, Method, Package } from "../../common/types/backend.type";
 import { Optional } from "../../common/types/classes.type";
 import { IParser, IParserFile } from "../../common/types/interfaces.type";
 import { Mock } from "../../common/types/mock.types";
 
 
 export type ParseContent = {
+	detail: IParser<ClassDetail>
 	imports: IParser<Package>,
 	attributes: IParser<Attribute>,
 	methods: IParser<Method>,
@@ -33,9 +34,16 @@ export abstract class AbstractParserFile implements IParserFile {
 	}
 
 	protected defineClassName() {
-		const search = `.${this.doc.extension}`;
-		const className = this.doc.name.replace(search, "");
-		this.result.className = className;
+		const parser = this.parsers.detail;
+		const detailsOpt = parseOne(this.doc.content, parser);
+
+		if (detailsOpt.value == undefined) {
+			this.errors.push(`Can't extract details from class`)
+			return;
+		}
+
+		this.result.detail = detailsOpt.value;
+		this.errors.push(...detailsOpt.errors);
 	}
 
 	protected defineAttributes() {
@@ -64,6 +72,20 @@ export abstract class AbstractParserFile implements IParserFile {
 		this.errors.push(...methodOpt.errors);
 		this.result.methods.push(...methods);
 	}
+}
+
+function parseOne<T>(content: string, parser: IParser<T>): Optional<T> {
+	const pattern = parser.getPatternRegex();
+	const regex = new RegExp(pattern);
+	const expression = regex.exec(content);
+	const groups = expression?.groups;
+	if (expression == null || groups == undefined) {
+		return new Optional<T>(undefined, [ `Can't process regex ${pattern}` ]);
+	}
+
+	const errors: string[] = [];
+	const value = parser.getValue(groups);
+	return new Optional(value, errors);
 }
 
 function parse<T>(content: string, parser: IParser<T>): Optional<T[]> {
