@@ -2,6 +2,7 @@ import { Args, Attribute, ClassMetadata, FileMetadata, Method } from "./backend.
 import { Encapsulation } from "./encapsulation.types";
 import { Front as FrontEnd } from "../../main/util";
 import { Area } from "./frontend.type";
+import { ItalicTemplate } from "../../front/core/templates/ItalicTemplate";
 
 export type MapFilesMetada = Map<string,  FileMetadata>;
 
@@ -105,10 +106,17 @@ export class MethodFormatter {
 
 	getSignature(): string {
 		const symbol = Encapsulation.getSymbol(this.method.encapsulation);
+		const classifier = this.getClassifier();
 		const name = this.method.name;
 		const args = this.getArgsName();
 		const returnType = this.getReturnType();
-		return `${symbol} ${name}(${args}): ${returnType}`;
+
+		let signature = `${classifier}${name}(${args}): ${returnType}`
+		if (this.method.isStatic) {
+			signature = new ItalicTemplate({ text: signature }).getHtml();
+		}
+
+		return `${symbol} ${signature}`;
 	}
 
 
@@ -132,5 +140,18 @@ export class MethodFormatter {
 			return "void";
 		}
 		return FrontEnd.scapeHtmlEntity(this.method.returnType);
+	}
+
+	private getClassifier(): string {
+		const classifier: string[] = [];
+		if (this.method.isAbstract) {
+			classifier.push("abstract");
+		}
+		
+		if (this.method.isStatic) {
+			classifier.push("static");
+		}
+		
+		return classifier.length == 0 ? "" : `${classifier.join(" ")}&nbsp;`;
 	}
 }

@@ -50,7 +50,7 @@ export const Encapsulation = {
 			return "  ";
 		}
 		const symbols = {
-			private: "-",
+			private: "−",
 			public: "+",
 			protected: "#",
 		}

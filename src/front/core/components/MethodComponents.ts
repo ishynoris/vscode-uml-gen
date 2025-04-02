@@ -13,16 +13,31 @@ export class MethodComponent implements IComponent {
 
 	static create(name: string, method: Method): Component {
 		const component = new MethodComponent(name, method);
-		const childs = [ component.getContent() ];
-		return Dom.createDiv({ id: `method-${method.name}` }, childs) ;
+		return component.getContent();
 	}
 
 	static createMany(name: string, methods: Method[]): Component {
 		const labels = methods.map(method => MethodComponent.create(name, method));
-		return Dom.createDiv({ id: `container-methods-${this.name}` }, labels);
+		return Dom.createDiv({ id: `container-methods-${name}` }, labels);
 	}
 
 	getContent(): Component {
-		return Dom.createLabel({ text: this.formatter.getSignature() });
+		const childs: Component[] = [];
+		const classifier: string[] = [];
+		if (this.method.isAbstract) {
+			classifier.push("abstract");
+		}
+
+		if (this.method.isStatic) {
+			classifier.push("static");
+		}
+
+		if (classifier.length > 0) {
+			// const italic = Dom.createItalic({ text: `≪${classifier.join(" ")}≫` });
+			// childs.push(Dom.createDiv({ }, [ italic ]));
+		}
+
+		childs.push(Dom.createLabel({ text: this.formatter.getSignature() }));
+		return Dom.createDiv({ id: `method-${this.method.name}` }, childs) ;
 	}
 }

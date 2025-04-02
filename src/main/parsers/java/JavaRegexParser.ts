@@ -11,20 +11,27 @@ export class JavaRegexParser  implements IParser<Method> {
 
 	public getPatternRegex(): string {
 		const encapsulation = this.types.join("|");
-		const returnKey = `[${Regex.Letters}@<> ,]+`;
+		const detail = `((static abstract)|(abstract static)|static|abstract)?`
+		const returnKey = `[${Regex.Letters}\\[\\]@<> ,]+`;
 		const methodName = `[${Regex.Letters}${Regex.Numbers}_]+`;
-		const args = `[${Regex.Letters}@<> ,]*`;
+		const args = `[${Regex.Letters}\\[\\]@<> ,]*`;
+		const anyting = `.*`
 
 		return `(?<encapsulation>${encapsulation})${Regex.BlankReq}`
+			+ `(?<detail>${detail})${Regex.BlankOp}`
 			+ `(?<return>${returnKey})${Regex.BlankReq}`
 			+ `(?<name>${methodName})${Regex.BlankOp}`
 			+ `${Regex.OpenArgs}(?<args>${args})${Regex.CloseArgs}${Regex.BlankOp}`
-			+ `${Regex.OpenBlock}`;
+			+ `${anyting}${Regex.OpenBlock}`;
 	}
 
 	public getValue(group: KeyValue): Method {
+		const detail = group.detail;
+
 		return {
 			name: group.name,
+			isAbstract: detail.includes("abstract"),
+			isStatic: detail.includes("static"),
 			returnType: group.return,
 			encapsulation: Encapsulation.to(group.encapsulation),
 			args: this.processArgs(group.args),
