@@ -1,7 +1,7 @@
 .node-div {
 	position: absolute;
 	top: 0;
-	line-height: 16px;
+	line-height: 14px;
 	padding: 5px;
 	border: 2px solid white;
 	background-color: rgb(29, 27, 27);
@@ -15,6 +15,6 @@
 	cursor: grabbing;
 }
 
-.node-div > label {
+.node-div label, i {
 	font-size: 10px;
 }

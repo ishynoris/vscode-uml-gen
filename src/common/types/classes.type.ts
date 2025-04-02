@@ -77,7 +77,7 @@ export class CalcArea {
 	}
 
 	static widthToPixel(width: number): number {
-		return width * 6.2;
+		return width * 4;
 	}
 }
 
