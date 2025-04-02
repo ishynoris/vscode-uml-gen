@@ -11,6 +11,8 @@ export type Attribute = {
 	encapsulation: Allowed,
 	type: string,
 	name: string,
+	isStatic: boolean,
+	isFinal: boolean,
 }
 
 export type Args = {

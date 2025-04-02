@@ -90,9 +90,27 @@ export class AttributeFormatter {
 
 	getSignature(): string {
 		const symbol = Encapsulation.getSymbol(this.attr.encapsulation);
-		const name = this.attr.name;
-		const type = this.attr.type;
-		return `${symbol} ${name}: ${type}`;
+		const classifier = this.getClassifier();
+
+		let signature = `${classifier}${this.attr.name}: ${this.attr.type}`;
+		if (this.attr.isStatic) {
+			signature = new ItalicTemplate({ text: signature }).getHtml();
+		}
+
+		return `${symbol} ${signature}`;
+	}
+
+	private getClassifier(): string {
+		const classifier: string[] = [];
+		if (this.attr.isStatic) {
+			classifier.push("static");
+		}
+
+		if (this.attr.isFinal) {
+			classifier.push("final");
+		}
+		
+		return classifier.length == 0 ? "" : `${classifier.join(" ")}&nbsp;`;
 	}
 }
 
