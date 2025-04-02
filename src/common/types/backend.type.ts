@@ -21,6 +21,8 @@ export type Args = {
 
 export type Method = {
 	name: string,
+	isStatic: boolean,
+	isAbstract: boolean,
 	encapsulation: Allowed,
 	returnType: string,
 	args: Args[],

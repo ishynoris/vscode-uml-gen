@@ -8,6 +8,8 @@ export const Mock = {
 	method: (): Method => {
 		return {
 			name: "",
+			isStatic: false,
+			isAbstract: false,
 			encapsulation: Encapsulation.allowed.none,
 			returnType: "",
 			args: [],
