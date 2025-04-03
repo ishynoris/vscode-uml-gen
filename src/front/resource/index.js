@@ -4,10 +4,20 @@ function init(containerId) {
 }
 
 function Container(containerId) {
+
+	const getParents = ($nodes) => {
+		const $parents = $nodes.reduce((acc, $node) => {
+			const $parent = $node.closest(".node-container");
+			acc[$parent.id] = $parent;
+			return acc;
+		}, {});
+		return Object.values($parents);
+	}
+
 	const $container = document.getElementById(containerId);
 	const $nodes = Array.from($container.getElementsByClassName("node-item"));
-	const events = new MouseEvents($nodes);
-	console.log($nodes);
+	const $parents = getParents($nodes);
+	const events = new MouseEvents($parents);
 
 	return {
 		$container: $container,
@@ -19,9 +29,9 @@ function Container(containerId) {
 	}
 }
 
-function MouseEvents($nodes) {
+function MouseEvents($nodesContainer) {
 	const lastPostion = { x: 0, y: 0 };
-	let currentNode = undefined;
+	let $currentNode = undefined;
 
 	const setLastMousePosition = (newX, newY) => {
 		lastPostion.x = newX;
@@ -29,43 +39,40 @@ function MouseEvents($nodes) {
 	}
 
 	const setNodePosition = (newX, newY) => {
-		currentNode.style.left = currentNode.offsetLeft + newX - lastPostion.x + "px";
-		currentNode.style.top  = currentNode.offsetTop  + newY - lastPostion.y + "px";
+		if ($currentNode == undefined) {
+			return;
+		}
+
+		$currentNode.style.left = $currentNode.offsetLeft + newX - lastPostion.x + "px";
+		$currentNode.style.top  = $currentNode.offsetTop  + newY - lastPostion.y + "px";
 		setLastMousePosition(newX, newY);
+	}
+
+	const setDepth = (currentId) => {
+		const totalNodes = $nodesContainer.length;
+		for (let i = 0; i < totalNodes; i++) {
+			const $node = $nodesContainer[i];
+			const zIndex = $node.id == currentId ? totalNodes : i;
+			$node.style.zIndex = zIndex;
+		}
 	}
 
 	return {
 		onDown: (e) => {
 			e.preventDefault();
-			currentNode = e.target.closest(".node-container");
-
+			$currentNode = e.target.closest(".node-container");
 			setLastMousePosition(e.clientX, e.clientY);
-		
-			var i = 1; 
-			for (key in $nodes) {
-				const node = $nodes[key];
-				if (node.id != currentNode.id) {
-					node.style.zIndex = i++; 
-				}
-			}
+			setDepth($currentNode.id);
 		},
 
 		onMove: (e) => {
 			e.preventDefault();
-			if (currentNode == undefined) {
-				return;
-			}
-
 			setNodePosition(e.clientX, e.clientY);
 		},
 
 		onUp: (e) => {
 			e.preventDefault();
-			if (currentNode == undefined) {
-				return;
-			}
-
-			currentNode = undefined;
+			$currentNode = undefined;
 		}
 	}
 }
