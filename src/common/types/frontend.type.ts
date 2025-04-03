@@ -37,6 +37,10 @@ export interface IComponent {
 	getContent(): Component;
 }
 
+export interface IContainer extends IComponent {
+	getContainerId(): string;
+}
+
 export interface IAreaComponent extends IComponent {
 	getArea(): Area;
 }

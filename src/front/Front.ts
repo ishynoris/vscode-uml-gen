@@ -14,8 +14,11 @@ export function runWebview(context: ExtensionContext, classMetadata: ClassMetada
 		enableScripts: true,
 		enableForms: true,
 	}
+	const component = new MainComponent(classMetadata, "main-container");
+	const template = new HtmlTemplate(component, context);
+
 	const title = `UML - ${classMetadata.detail.name}`;
 	const wvPanel = window.createWebviewPanel("uml-gen", title, ViewColumn.Beside, options);
-	const template = new HtmlTemplate(wvPanel, context);
-	template.render(new MainComponent(classMetadata));
+	wvPanel.webview.html = template.getHtml();
+	wvPanel.reveal();
 }
