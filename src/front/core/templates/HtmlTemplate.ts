@@ -24,6 +24,7 @@ export class HtmlTemplate implements ITemplate {
 					</script>
 				</head>
 				<body>
+					<canvas id="canvas"></canvas>
 					${htmlContent}
 				</body>
 				<script>
