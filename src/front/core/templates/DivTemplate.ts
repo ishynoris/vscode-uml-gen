@@ -1,4 +1,5 @@
 import { Component, DivOptions } from "../../../common/types/frontend.type";
+import { KeyManyValues, KeyValue } from "../../../common/types/general.types";
 
 export class DivTemplate {
 
@@ -8,11 +9,12 @@ export class DivTemplate {
 		const content = components.reduce((acc, comp) => acc += comp.content, "");
 		const cls = this.options.class ?? [];
 		const style = this.getStyle();
+		const dataValues = this.getPseudData();
 
 		const idContent = (this.options.id ?? "").length == 0 ? "" : `id="${this.options.id}"`;
 		const clsContent = cls.length == 0 ? "" : `class="${cls.join(" ")}"`;
 		const styleContent = style.length == 0 ? "" : `style="${style}"`
-		return `<div ${idContent} ${clsContent} ${styleContent}>${content}</div>`;
+		return `<div ${idContent} ${clsContent} ${styleContent}${dataValues}>${content}</div>`;
 	}
 
 	private getStyle(): string {
@@ -34,5 +36,20 @@ export class DivTemplate {
 		}
 
 		return style ?? "";
+	}
+
+	private getPseudData(): string {
+		const dataValues = this.options.dataValue ?? [];
+		if (dataValues.length == 0) {
+			return "";
+		}
+
+		return dataValues.reduce((acc: "", keyValue: KeyManyValues) => {
+			for (const key in keyValue) {
+				const values: string[] = keyValue[key];
+				acc += `data-${key}="${values.join(",")}" `;
+			}
+			return acc;
+		}, "");
 	}
 }

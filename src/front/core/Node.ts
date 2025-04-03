@@ -4,6 +4,7 @@ import { AttributeComponent } from "./components/AttributeComponent";
 import { MethodComponent } from "./components/MethodComponents";
 import { DetailComponent } from "./components/DetailComponent";
 import { Dom } from "./Dom";
+import { KeyManyValues } from "../../common/types/general.types";
 
 export class Node implements IAreaComponent {
 
@@ -36,10 +37,18 @@ export class Node implements IAreaComponent {
 	}
 
 	private getDivOptions(): DivOptions {
+		const dataPackages: KeyManyValues[] = [];
+		const classImports = this.metadata.imports;
+		if (classImports.length > 0) {
+			const classImported = classImports.map(pack => pack.classImported);
+			dataPackages.push({ "imports": classImported });
+		}
+
 		return {
 			id: `node-${_processId(this.tag)}`,
 			class: [ "node-container" ],
 			coordinates: this.coords,
+			dataValue: dataPackages,
 		}
 	}
 }

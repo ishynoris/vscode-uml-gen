@@ -1,3 +1,5 @@
+import { KeyManyValues } from "./general.types";
+
 type TextAlign = "center" | "end" | "justify" | "left" | "right";
 
 export type Area = {
@@ -18,6 +20,7 @@ export type DivOptions = {
 	textAlign?: TextAlign,
 	borderBottom?: string,
 	coordinates?: Coordinates,
+	dataValue?: KeyManyValues[],
 }
 
 export type ItalicOptions = {
