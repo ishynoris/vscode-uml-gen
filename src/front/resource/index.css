@@ -1,4 +1,4 @@
-.node-div {
+.node-container {
 	position: absolute;
 	top: 0;
 	line-height: 14px;
@@ -7,14 +7,14 @@
 	background-color: rgb(29, 27, 27);
 }
 
-.node-div:hover {    
+.node-container .node-item:hover, label:hover {
 	cursor: grab;
 }
 
-.node-div:active {
+.node-container .node-item:active, label:active {
 	cursor: grabbing;
 }
 
-.node-div label, i {
+.node-container label, i {
 	font-size: 10px;
 }

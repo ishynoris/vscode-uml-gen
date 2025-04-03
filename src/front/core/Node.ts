@@ -38,7 +38,7 @@ export class Node implements IAreaComponent {
 	private getDivOptions(): DivOptions {
 		return {
 			id: `node-${_processId(this.tag)}`,
-			class: [ "node-div" ],
+			class: [ "node-container" ],
 			coordinates: this.coords,
 		}
 	}

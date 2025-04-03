@@ -38,6 +38,7 @@ export class DetailComponent implements IComponent {
 		const options: DivOptions = {  
 			id: `container-title-${this.detail.name}`,
 			textAlign: "center",
+			class: [ "node-item" ],
 			borderBottom: "1px solid white",
 		}
 		return Dom.createDiv(options, childs);

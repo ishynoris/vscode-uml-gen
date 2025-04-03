@@ -22,6 +22,7 @@ export class AttributeComponent implements IComponent {
 		const labels = attrs.map(attr => AttributeComponent.create(name, attr));
 		const options: DivOptions = {
 			id: `container-attrs-${this.name}`,
+			class: [ "node-item" ],
 			borderBottom: "1px solid white"
 		}
 		return Dom.createDiv(options, labels);

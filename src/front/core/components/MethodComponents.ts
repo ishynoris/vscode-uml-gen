@@ -38,6 +38,10 @@ export class MethodComponent implements IComponent {
 		}
 
 		childs.push(Dom.createLabel({ text: this.formatter.getSignature() }));
-		return Dom.createDiv({ id: `method-${this.method.name}` }, childs) ;
+		const options = {
+			id: `method-${this.method.name}`,
+			class: [ "node-item" ],
+		}
+		return Dom.createDiv(options, childs) ;
 	}
 }
