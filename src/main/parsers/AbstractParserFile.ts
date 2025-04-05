@@ -90,10 +90,14 @@ function parseOne<T>(content: string, parser: IParser<T>): Optional<T> {
 
 function parse<T>(content: string, parser: IParser<T>): Optional<T[]> {
 	const errors: string[] = [];
+	const values: T[] = [];
 	const pattern = parser.getPatternRegex();
+	if (pattern.length == 0) {
+		errors.push(`No regex pattern was defined to attributes`);
+		return new Optional<T[]>(values, errors);
+	}
 
 	const regex = new RegExp(pattern, "gi");
-	const values: T[] = [];
 	let expression;
 	while((expression = regex.exec(content)) != null) {
 		const groups = expression.groups;
