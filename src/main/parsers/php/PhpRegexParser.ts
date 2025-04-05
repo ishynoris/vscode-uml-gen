@@ -1,5 +1,7 @@
-import { Encapsulation, Allowed } from "../../types/encapsulation.types";
-import { Args, IParser, KeyValue, Method } from "../../types/parser.type";
+import { Args, Method } from "../../../common/types/backend.type";
+import { Allowed, Encapsulation } from "../../../common/types/encapsulation.types";
+import { KeyValue } from "../../../common/types/general.types";
+import { IParser } from "../../../common/types/interfaces.type";
 import { Regex } from "../../util";
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
 export class PhpRegexPareser implements IParser<Method> {
@@ -10,28 +12,28 @@ export class PhpRegexPareser implements IParser<Method> {
 	public getPatternRegex(): string {
 		const encapsulation = this.types.join("|");
 
-		const speacialChars = `$=,\\'\\"\\[\\]|`;
-		const staticKey = `(${Regex.BlankReq}static)?`;
+		const speacialChars = `&$=,\\'\\"\\[\\]|${Regex.Blank}`;
+		const classifier = `(${Regex.BlankReq}(static|abstract))?`;
 		const functionKey = `${Regex.BlankReq}function`;
 		const methodName = `[${Regex.Letters}${Regex.Numbers}_]+`;
-		const manyArgs = `[${Regex.Letters}${Regex.Numbers}${speacialChars}${Regex.Blank}]`
+		const manyArgs = `[${Regex.Letters}${Regex.Numbers}${speacialChars}]*`
 
 		return `(?<_encapsulation>(${encapsulation}))` 
-			+ `${staticKey}${functionKey}`
+			+ `${classifier}${functionKey}`
 			+ `${Regex.BlankReq}(?<_name>${methodName})${Regex.BlankOp}`
-			+ `${Regex.OpenArgs}(?<_args>${manyArgs})${Regex.CloseArgs}`
-			+ `${Regex.BlankOp}(:${Regex.BlankOp}(?<_return>${manyArgs}))?${Regex.CloseBlock}`;
+			+ `${Regex.OpenArgs}(?<_args>${manyArgs})${Regex.CloseArgs}${Regex.BlankOp}`
+			+ `(:${Regex.BlankOp}(?<_return>${manyArgs}))?${Regex.OpenBlock}`;
 	}
 
 	public getValue(group: KeyValue): Method {
-		let returnType = group._return;
-		if (returnType != undefined) {
-			returnType.replaceAll("\n", "")
-				.replaceAll("\t", "")
-				.trim();
-		}
+		const returnType = (group._return ?? "void")
+			.replaceAll("\n", "")
+			.replaceAll("\t", "")
+			.trim();
 
 		return {
+			isAbstract: false,
+			isStatic: false,
 			name: group._name,
 			args: this.processArgs(group._args),
 			returnType: returnType,
