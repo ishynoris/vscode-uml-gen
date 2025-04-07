@@ -6,19 +6,19 @@ import { Container } from "../../Container";
 import { JavaAttributeParser } from "./JavaAttributeParser";
 import { IParserFile } from "../../../common/types/interfaces.type";
 import { JavaDetailParser } from "./JavaDetailParser";
+import { WorkspaceFiles } from "../../../common/types/classes.type";
 
 export class JavaParser extends AbstractParserFile implements IParserFile {
 
-	constructor() {
+	constructor(workspace: WorkspaceFiles) {
 		super({
 			detail: new JavaDetailParser(encapsulation),
 			methods: new JavaRegexParser(encapsulation),
-			imports: new JavaImportParser(workspaceFiles),
+			imports: new JavaImportParser(workspace),
 			attributes: new JavaAttributeParser(encapsulation),
 		});
 	}
 }
-const workspaceFiles = Container.init().getWorkspaceFiles();
 
 const encapsulation = [ 
 	Encapsulation.allowed.private,
