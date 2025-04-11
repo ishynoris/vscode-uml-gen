@@ -14,6 +14,11 @@ export class PhpPackageMapper implements IPackageMapper {
 	}
 
 	getFile(parts: string[]): undefined | FileMetadata {
+		if (parts.length == 1) {
+			const fileName = `${parts[0]}.${this.extension}`;
+			return this.workspace.getFromFileName(fileName);
+		}
+
 		const currentNamespace = parts[0];
 		const currentPath = this.psr4Map[currentNamespace];
 		if (currentPath != undefined) {
@@ -21,8 +26,7 @@ export class PhpPackageMapper implements IPackageMapper {
 			return this.workspace.getFromPath(`${currentPath}/${classPath}.${this.extension}`);
 		}
 
-		const fileName = `${currentNamespace}.${this.extension}`;
-		return this.workspace.getFromFileName(fileName);
+		return undefined;
 	}
 }
 
