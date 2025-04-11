@@ -12,6 +12,12 @@ export class JavaPackageMapper implements IPackageMapper {
 	}
 
 	public getFile(parts: string[]): undefined | FileMetadata {
+		let name = parts[parts.length - 1];
+		name = `${name}.${this.extension}`;
+		if (!this.workspace.hasFileName(name)) {
+			return undefined;
+		}
+		
 		let absolutePath = Workspace.getAbsolutePath(this.extension, parts);
 		if (absolutePath == undefined) {
 			return undefined;

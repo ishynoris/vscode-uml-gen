@@ -44,6 +44,11 @@ export class WorkspaceFiles {
 		return FileFactory.fromAbsolutePath(absolutePath);
 	}
 
+	hasFileName(fileName: string): boolean {
+		const file = this.getFromFileName(fileName);
+		return file != undefined;
+	}
+
 	getFromFileName(fileName: string): undefined | FileMetadata {
 		if (!fileName.endsWith(this.extension)) {
 			fileName = `${fileName}.${this.extension}`;
@@ -101,8 +106,9 @@ export class AttributeFormatter {
 		const symbol = Encapsulation.getSymbol(this.attr.encapsulation);
 		const classifier = this.getClassifier();
 		const type = this.attr.type == "" ? "" : `: ${this.attr.type}`
+		const initial = this.getInitialValue();
 
-		let signature = `${classifier}${this.attr.name}${type}`;
+		let signature = `${classifier}${this.attr.name}${type}${initial}`;
 		if (this.attr.isStatic) {
 			signature = new ItalicTemplate({ text: signature }).getHtml();
 		}
@@ -121,6 +127,14 @@ export class AttributeFormatter {
 		}
 		
 		return classifier.length == 0 ? "" : `${classifier.join(" ")}&nbsp;`;
+	}
+
+	private getInitialValue(): string {
+		const initial = (this.attr.initialValue ?? "");
+		if (initial.length == 0) {
+			return "";
+		}
+		return ` = ${initial}`;
 	}
 }
 
