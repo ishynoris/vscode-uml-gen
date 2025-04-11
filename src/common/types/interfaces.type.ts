@@ -11,3 +11,7 @@ export type IParser<T> = {
 	getValue: (groups: KeyValue) => undefined | T;
 	validator?: (value: T) => string[],
 }
+
+export type IPackageMapper = {
+	packageToPath(parts: string[]): undefined | string;
+}

@@ -3,6 +3,7 @@ import { Encapsulation } from "./encapsulation.types";
 import { FileFactory, Front as FrontEnd, Workspace } from "../../main/util";
 import { Area } from "./frontend.type";
 import { ItalicTemplate } from "../../front/core/templates/ItalicTemplate";
+import { IPackageMapper } from "./interfaces.type";
 
 export class Optional<T> {
 
@@ -28,15 +29,8 @@ type MapFileMetada = { [key: string]: FileMetadata };
 
 export class WorkspaceFiles {
 
-	private pathMapper: MapFileMetada = { };
-
-	constructor(private extension: string, files: FileMetadata[]) {
-		const ReducePath = (map: MapFileMetada, file: FileMetadata): MapFileMetada => {
-			map[file.absolutePath] = file;
-			return map;
-		}
-
-		this.pathMapper = files.reduce(ReducePath, { });
+	constructor(private mapper: IPackageMapper, files: FileMetadata[]) {
+		
 	}
 
 	getFromPath(absolutePath: string): FileMetadata | undefined {
@@ -44,12 +38,11 @@ export class WorkspaceFiles {
 	}
 
 	getFromPackage(packageParts: string[]): FileMetadata | undefined {
-		const absolutePath = Workspace.getAbsolutePath(this.extension, packageParts);
+		const absolutePath = this.mapper.packageToPath(packageParts);
 		if (absolutePath == undefined) {
-			return undefined;
+			return undefined
 		}
-
-		return this.getFromPath(`${absolutePath}.${this.extension}`);
+		return this.getFromPath(absolutePath);
 	}
 }
 

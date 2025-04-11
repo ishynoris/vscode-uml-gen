@@ -1,7 +1,8 @@
 import { FileMetadata } from "../common/types/backend.type";
 import { WorkspaceFiles } from "../common/types/classes.type";
 import { KeyValue } from "../common/types/general.types";
-import { IParserFile } from "../common/types/interfaces.type";
+import { IPackageMapper, IParserFile } from "../common/types/interfaces.type";
+import { JavaPackageMapper } from "./parsers/java/JavaPackageMapper";
 import { JavaParser } from "./parsers/java/JavaParser";
 import { PhpParser } from "./parsers/php/PhpParser";
 import { Reader } from "./Reader";
@@ -55,8 +56,14 @@ export class Container {
 	}
 }
 
+function initPackageMapper(extension: string): IPackageMapper {
+	
+	return new JavaPackageMapper;
+}
+
 function initWorkspace(extension: string): WorkspaceFiles {
 	const rootFiles = RootFiles[extension];
+	const mapper = initPackageMapper(extension);
 	const files: FileMetadata[] = new Reader(extension, rootFiles).loadFiles();
-	return new WorkspaceFiles(extension, files);
+	return new WorkspaceFiles(mapper, files);
 };
