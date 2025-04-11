@@ -2,10 +2,11 @@ import { FileMetadata } from "../../../common/types/backend.type";
 import { WorkspaceFiles } from "../../../common/types/classes.type";
 import { KeyValue } from "../../../common/types/general.types";
 import { IPackageMapper } from "../../../common/types/interfaces.type";
-import { FileFactory, Workspace } from "../../util";
+import { FileFactory, FileReader, Workspace } from "../../util";
 
 export class PhpPackageMapper implements IPackageMapper {
 
+	private extension: string = "php";
 	private psr4Map: KeyValue = { };
 
 	constructor(private workspace: WorkspaceFiles, composerFile: string) {
@@ -15,18 +16,23 @@ export class PhpPackageMapper implements IPackageMapper {
 	getFile(parts: string[]): undefined | FileMetadata {
 		const currentNamespace = parts[0];
 		const currentPath = this.psr4Map[currentNamespace];
-		const classPath = parts.slice(1).join("/");
-		return this.workspace.getFromPath(`${currentPath}/${classPath}.php`);
+		if (currentPath != undefined) {
+			const classPath = parts.slice(1).join("/");
+			return this.workspace.getFromPath(`${currentPath}/${classPath}.${this.extension}`);
+		}
+
+		const fileName = `${currentNamespace}.${this.extension}`;
+		return this.workspace.getFromFileName(fileName);
 	}
 }
 
 function initComposer(composerFilePath: string): KeyValue {
-	const composerFile = FileFactory.fromAbsolutePath(composerFilePath, true);
-	if (composerFile == undefined) {
+	const composerFile = FileReader.readFromPath(composerFilePath);
+	if (composerFile == "") {
 		throw new Error("Cannot load composer file");
 	}
 	
-	const contentJson = JSON.parse(composerFile.content);
+	const contentJson = JSON.parse(composerFile);
 	const psr4 = contentJson["autoload"]["psr-4"] ?? { };
 	const workspacePath = Workspace.getWorkspacePath();
 	const psr4Content: KeyValue = {  };

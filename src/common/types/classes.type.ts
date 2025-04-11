@@ -29,12 +29,26 @@ type MapFileMetada = { [key: string]: FileMetadata };
 
 export class WorkspaceFiles {
 
-	constructor(files: FileMetadata[]) {
-		
+	private files: MapFileMetada = { };
+
+	constructor(private extension: string, files: FileMetadata[]) {
+		const ReducePath = (map: MapFileMetada, file: FileMetadata): MapFileMetada => {
+			map[file.name] = file;
+			return map;
+		}
+
+		this.files = files.reduce(ReducePath, { });
 	}
 
-	getFromPath(absolutePath: string, loadContent: boolean = true): FileMetadata | undefined {
-		return FileFactory.fromAbsolutePath(absolutePath, loadContent);
+	getFromPath(absolutePath: string): FileMetadata | undefined {
+		return FileFactory.fromAbsolutePath(absolutePath);
+	}
+
+	getFromFileName(fileName: string): undefined | FileMetadata {
+		if (!fileName.endsWith(this.extension)) {
+			fileName = `${fileName}.${this.extension}`;
+		}
+		return this.files[fileName];
 	}
 }
 
