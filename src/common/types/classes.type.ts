@@ -100,8 +100,9 @@ export class AttributeFormatter {
 	getSignature(): string {
 		const symbol = Encapsulation.getSymbol(this.attr.encapsulation);
 		const classifier = this.getClassifier();
+		const type = this.attr.type == "" ? "" : `: ${this.attr.type}`
 
-		let signature = `${classifier}${this.attr.name}: ${this.attr.type}`;
+		let signature = `${classifier}${this.attr.name}${type}`;
 		if (this.attr.isStatic) {
 			signature = new ItalicTemplate({ text: signature }).getHtml();
 		}
