@@ -33,16 +33,16 @@ export class WorkspaceFiles {
 		
 	}
 
-	getFromPath(absolutePath: string): FileMetadata | undefined {
-		return FileFactory.fromAbsolutePath(absolutePath);
+	getFromPath(absolutePath: string, loadContent: boolean = true): FileMetadata | undefined {
+		return FileFactory.fromAbsolutePath(absolutePath, loadContent);
 	}
 
-	getFromPackage(packageParts: string[]): FileMetadata | undefined {
+	getFromPackage(packageParts: string[], loadContent: boolean = true): FileMetadata | undefined {
 		const absolutePath = this.mapper.packageToPath(packageParts);
 		if (absolutePath == undefined) {
 			return undefined
 		}
-		return this.getFromPath(absolutePath);
+		return this.getFromPath(absolutePath, loadContent);
 	}
 }
 
