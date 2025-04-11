@@ -1,5 +1,6 @@
 import { Attribute } from "../../../common/types/backend.type";
 import { Encapsulation, Types } from "../../../common/types/encapsulation.types";
+import { Extensions } from "../../../common/types/extension.type";
 import { KeyValue } from "../../../common/types/general.types";
 import { IParser } from "../../../common/types/interfaces.type";
 import { Regex } from "../../util";
@@ -25,16 +26,19 @@ export class PhpAttributeParser implements IParser<Attribute> {
 	}
 
 	getValue(groups: KeyValue): Attribute | undefined {
-		const hasEncapsulation = groups._encap != undefined && groups._encap.length > 0;
-		const encapsulation = hasEncapsulation ? groups._encap : undefined;
+		const _encap = (groups._encap ?? "");
+		const _initial = (groups._initial ?? "");
+
 		const classifier = groups._classifier ?? "";
+		const initialVal = _initial.length > 0 ? _initial.replace("=", "").trim() : undefined;
 
 		return {
 			name: groups._name,
 			type: groups._type ?? "",
-			encapsulation: Encapsulation.to(encapsulation),
+			encapsulation: Encapsulation.to(_encap.length > 0 ? _encap : undefined),
 			isStatic: classifier.includes("static"),
 			isFinal: classifier.includes("final"),
+			initialValue: initialVal,
 		};
 	}
 }

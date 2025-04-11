@@ -130,7 +130,7 @@ export class AttributeFormatter {
 	}
 
 	private getInitialValue(): string {
-		const initial = (this.attr.initialValue ?? "");
+		const initial = (this.attr.initialValue ?? "").replace("=", "").trim();
 		if (initial.length == 0) {
 			return "";
 		}

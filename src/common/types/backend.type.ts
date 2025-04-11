@@ -14,6 +14,7 @@ export type Attribute = {
 	name: string,
 	isStatic: boolean,
 	isFinal: boolean,
+	initialValue: undefined | string,
 }
 
 export type Args = {
