@@ -103,7 +103,7 @@ function MouseEvents($nodesContainer, canvas) {
 	}
 
 	const setZAxis = (currentId) => {
-		let i = 1;
+		let i = 0;
 		const keys = Object.keys($nodesContainer);
 		const totalNodes = keys.length;
 
