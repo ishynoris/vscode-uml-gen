@@ -20,7 +20,7 @@ export class JavaAttributeParser implements IParser<Attribute> {
 			+ `(?<classifier>${classifier})?${Regex.BlankOp}`
 			+ `(?<type>${typesVar})${Regex.BlankReq}`
 			+ `(?<name>${nameVar})${Regex.BlankOp}`
-			+ `(?<initial>${initialVal});`;
+			+ `(?<initial>${initialVal})?;`;
 	}
 
 	public getValue(groups: KeyValue): Attribute | undefined {
