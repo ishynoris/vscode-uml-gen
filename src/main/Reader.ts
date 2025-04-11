@@ -3,7 +3,7 @@ import { window } from 'vscode';
 import path from 'path';
 import { FileFactory, Workspace } from './util';
 import { FileMetadata } from '../common/types/backend.type';
-import { Extensions } from '../common/types/extension.type';
+import { Allowed as Extension } from '../common/types/extension.type';
 
 export class Reader {
 	private path: string;
@@ -11,9 +11,7 @@ export class Reader {
 	private files: FileMetadata[];
 	private invalidFiles: string[];
 
-	constructor(private extension: string, srcPath: string = "src") {
-		Extensions.throwErrorIfInvalid(extension);
-
+	constructor(private extension: Extension, srcPath: string = "src") {
 		this.path = this.getSrcPath() ?? "";
 		this.srcPath = srcPath;
 		this.files = [];

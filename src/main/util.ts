@@ -4,6 +4,7 @@ import * as path from "path"
 import { Container } from "./Container"
 import { FileMetadata } from "../common/types/backend.type"
 import { KeyValue } from "../common/types/general.types"
+import { Extensions } from "../common/types/extension.type"
 
 export const FileFactory = {
 	fromAbsolutePath(absolutePath: string): undefined | FileMetadata {
@@ -20,11 +21,12 @@ export const FileFactory = {
 
 	fromUri(uri: Uri): FileMetadata {
 		const fsPath = uri.fsPath;
+		const extension = path.extname(fsPath).replace(".", "");
 
 		return {
 			name: path.basename(fsPath),
 			absolutePath: fsPath,
-			extension: path.extname(fsPath).replace(".", ""),
+			extension: Extensions.to(extension),
 		}
 	}
 }

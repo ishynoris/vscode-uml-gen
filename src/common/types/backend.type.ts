@@ -1,13 +1,15 @@
-import { Allowed } from "./encapsulation.types"
+import { Allowed as EncAllowed } from "./encapsulation.types"
+import { Allowed as ExtAllowed } from "./extension.type"
+
 
 export type FileMetadata = {
 	name: string,
 	absolutePath: string,
-	extension: string,
+	extension: ExtAllowed,
 }
 
 export type Attribute = {
-	encapsulation: Allowed,
+	encapsulation: EncAllowed,
 	type: string,
 	name: string,
 	isStatic: boolean,
@@ -24,7 +26,7 @@ export type Method = {
 	name: string,
 	isStatic: boolean,
 	isAbstract: boolean,
-	encapsulation: Allowed,
+	encapsulation: EncAllowed,
 	returnType: string,
 	args: Args[],
 }

@@ -68,9 +68,9 @@ export class Container {
 }
 
 function initWorkspace(extension: string): WorkspaceFiles {
-	Extensions.throwErrorIfInvalid(extension);
-
 	const rootFiles = RootFiles[extension];
-	const files: FileMetadata[] = new Reader(extension, rootFiles).loadFiles();
+	const reader = new Reader(Extensions.to(extension), rootFiles);
+
+	const files: FileMetadata[] = reader.loadFiles();
 	return new WorkspaceFiles(extension, files);
 };
