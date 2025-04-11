@@ -4,6 +4,7 @@ import { KeyValue } from "../common/types/general.types";
 import { IPackageMapper, IParserFile } from "../common/types/interfaces.type";
 import { JavaPackageMapper } from "./parsers/java/JavaPackageMapper";
 import { JavaParser } from "./parsers/java/JavaParser";
+import { ParserFile } from "./parsers/ParserFile";
 import { PhpPackageMapper } from "./parsers/php/PhpPackageMapper";
 import { PhpParser } from "./parsers/php/PhpParser";
 import { Reader } from "./Reader";
@@ -43,39 +44,26 @@ export class Container {
 		return this.rootFiles[extension];
 	}
 
-	public getParser(file: FileMetadata): undefined | IParserFile {
+	public getParser(file: FileMetadata): undefined | ParserFile {
 		const workspace = this.getWorkspaceFiles(file.extension);
 		const extension = file.extension.replace(".", "");
 
 		if (extension == "java") {
-			return new JavaParser(workspace);
+			const parser = new JavaParser(workspace);
+			return new ParserFile(parser);
 		}
 
 		if (file.extension == "php") {
-			return new PhpParser(workspace);
+			const parser = new PhpParser(workspace);
+			return new ParserFile(parser);
 		}
+
 		return undefined;
 	}
 }
 
-function initPackageMapper(extension: string): IPackageMapper {
-	if (extension == "java") {
-		return new JavaPackageMapper
-	}
-
-	if (extension == "php") {
-		const composerPath = Workspace.getWorkspacePath("composer.json");
-		if (composerPath == null) {
-			throw new Error("No workspace open");
-		}
-		return new PhpPackageMapper(composerPath);
-	}
-	throw new Error("Cannot load package mapper");
-}
-
 function initWorkspace(extension: string): WorkspaceFiles {
 	const rootFiles = RootFiles[extension];
-	const mapper = initPackageMapper(extension);
 	const files: FileMetadata[] = new Reader(extension, rootFiles).loadFiles();
-	return new WorkspaceFiles(mapper, files);
+	return new WorkspaceFiles(files);
 };

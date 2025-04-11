@@ -29,20 +29,12 @@ type MapFileMetada = { [key: string]: FileMetadata };
 
 export class WorkspaceFiles {
 
-	constructor(private mapper: IPackageMapper, files: FileMetadata[]) {
+	constructor(files: FileMetadata[]) {
 		
 	}
 
 	getFromPath(absolutePath: string, loadContent: boolean = true): FileMetadata | undefined {
 		return FileFactory.fromAbsolutePath(absolutePath, loadContent);
-	}
-
-	getFromPackage(packageParts: string[], loadContent: boolean = true): FileMetadata | undefined {
-		const absolutePath = this.mapper.packageToPath(packageParts);
-		if (absolutePath == undefined) {
-			return undefined
-		}
-		return this.getFromPath(absolutePath, loadContent);
 	}
 }
 

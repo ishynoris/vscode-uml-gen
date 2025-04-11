@@ -1,3 +1,5 @@
+import { FileMetadata } from "../../../common/types/backend.type";
+import { WorkspaceFiles } from "../../../common/types/classes.type";
 import { KeyValue } from "../../../common/types/general.types";
 import { IPackageMapper } from "../../../common/types/interfaces.type";
 import { FileFactory, Workspace } from "../../util";
@@ -6,15 +8,15 @@ export class PhpPackageMapper implements IPackageMapper {
 
 	private psr4Map: KeyValue = { };
 
-	constructor(composerFilePath: string) {
-		this.psr4Map = initComposer(composerFilePath);
+	constructor(private workspace: WorkspaceFiles, composerFile: string) {
+		this.psr4Map = initComposer(composerFile);
 	}
 
-	packageToPath(parts: string[]): undefined | string {
+	getFile(parts: string[]): undefined | FileMetadata {
 		const currentNamespace = parts[0];
 		const currentPath = this.psr4Map[currentNamespace];
 		const classPath = parts.slice(1).join("/");
-		return `${currentPath}/${classPath}.php`;
+		return this.workspace.getFromPath(`${currentPath}/${classPath}.php`);
 	}
 }
 

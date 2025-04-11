@@ -1,17 +1,25 @@
 import { KeyValue } from "./general.types";
-import { ClassMetadata, FileMetadata } from "./backend.type";
+import { Attribute, ClassDetail, FileMetadata, Method, Package } from "./backend.type";
 import { Optional } from "./classes.type";
 
 export interface IParserFile {
-	parse(file: FileMetadata): Optional <ClassMetadata>;
+	getDetailParser(): IParser<ClassDetail>;
+
+	getImportParser(): IParser<Package>;
+
+	getAttributeParser(): IParser<Attribute>;
+
+	getMethodParser(): IParser<Method>;
 }
 
-export type IParser<T> = {
-	getPatternRegex: () => string;
-	getValue: (groups: KeyValue) => undefined | T;
+export interface IParser<T> {
+	getPatternRegex(): string;
+
+	getValue(groups: KeyValue): undefined | T;
+
 	validator?: (value: T) => string[],
 }
 
-export type IPackageMapper = {
-	packageToPath(parts: string[]): undefined | string;
+export interface IPackageMapper {
+	getFile(parts: string[]): undefined | FileMetadata;
 }

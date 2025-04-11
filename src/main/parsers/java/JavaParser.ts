@@ -1,27 +1,37 @@
 import { JavaRegexParser } from "./JavaRegexParser";
-import { AbstractParserFile, ParseContent } from "../AbstractParserFile";
-import { Encapsulation } from "../../../common/types/encapsulation.types";
+import { Types } from "../../../common/types/encapsulation.types";
 import { JavaImportParser } from "./JavaImportParser";
-import { Container } from "../../Container";
 import { JavaAttributeParser } from "./JavaAttributeParser";
-import { IParserFile } from "../../../common/types/interfaces.type";
+import { IParser, IParserFile } from "../../../common/types/interfaces.type";
 import { JavaDetailParser } from "./JavaDetailParser";
 import { WorkspaceFiles } from "../../../common/types/classes.type";
+import { Attribute, ClassDetail, Method, Package } from "../../../common/types/backend.type";
+import { JavaPackageMapper } from "./JavaPackageMapper";
 
-export class JavaParser extends AbstractParserFile implements IParserFile {
+export class JavaParser implements IParserFile {
 
-	constructor(workspace: WorkspaceFiles) {
-		super({
-			detail: new JavaDetailParser(encapsulation),
-			methods: new JavaRegexParser(encapsulation),
-			imports: new JavaImportParser(workspace),
-			attributes: new JavaAttributeParser(encapsulation),
-		});
+	private encapsulation: Types[] = [];
+
+	constructor(private workspace: WorkspaceFiles) {
+		this.encapsulation.push(Types.private);
+		this.encapsulation.push(Types.protected);
+		this.encapsulation.push(Types.public);
+	}
+
+	getImportParser(): IParser<Package> {
+		const mapper = new JavaPackageMapper(this.workspace);
+		return new JavaImportParser(mapper);
+	}
+
+	getDetailParser(): IParser<ClassDetail> {
+		return new JavaDetailParser(this.encapsulation);
+	}
+
+	getMethodParser(): IParser<Method> {
+		return new JavaRegexParser(this.encapsulation);
+	}
+
+	getAttributeParser(): IParser<Attribute> {
+		return new JavaAttributeParser(this.encapsulation);
 	}
 }
-
-const encapsulation = [ 
-	Encapsulation.allowed.private,
-	Encapsulation.allowed.protected,
-	Encapsulation.allowed.public,
-];

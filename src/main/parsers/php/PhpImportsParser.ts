@@ -1,12 +1,12 @@
 import { FileMetadata, Package } from "../../../common/types/backend.type";
 import { WorkspaceFiles } from "../../../common/types/classes.type";
 import { KeyValue } from "../../../common/types/general.types";
-import { IParser } from "../../../common/types/interfaces.type";
+import { IPackageMapper, IParser } from "../../../common/types/interfaces.type";
 import { FileFactory, Regex } from "../../util";
 
 export class PhpImportsParser implements IParser<Package> {
 
-	constructor(private workspace: WorkspaceFiles) {
+	constructor(private mapper: IPackageMapper) {
 
 	}
 
@@ -29,7 +29,7 @@ export class PhpImportsParser implements IParser<Package> {
 		return {
 			classImported: className,
 			package: uses,
-			file: this.workspace.getFromPackage(importsPart, false),
+			file: this.mapper.getFile(importsPart),
 		}
 	}
 }

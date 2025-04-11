@@ -1,23 +1,16 @@
-import { Attribute, ClassDetail, ClassMetadata, FileMetadata, Method, Package } from "../../common/types/backend.type";
+import { ClassMetadata, FileMetadata } from "../../common/types/backend.type";
 import { Optional } from "../../common/types/classes.type";
 import { IParser, IParserFile } from "../../common/types/interfaces.type";
 import { Mock } from "../../common/types/mock.types";
 
 
-export type ParseContent = {
-	detail: IParser<ClassDetail>
-	imports: IParser<Package>,
-	attributes: IParser<Attribute>,
-	methods: IParser<Method>,
-}
-
-export abstract class AbstractParserFile implements IParserFile {
+export class ParserFile {
 
 	protected errors: string[];
 	protected result: ClassMetadata;
 	protected doc!: FileMetadata;
 
-	constructor(private parsers: ParseContent) {
+	constructor(private parser: IParserFile) {
 		this.errors = [];
 		this.result = Mock.classMatadata();
 	}
@@ -34,7 +27,7 @@ export abstract class AbstractParserFile implements IParserFile {
 	}
 
 	protected defineClassName() {
-		const parser = this.parsers.detail;
+		const parser = this.parser.getDetailParser();
 		const detailsOpt = parseOne(this.doc.content, parser);
 
 		if (detailsOpt.value == undefined) {
@@ -47,7 +40,7 @@ export abstract class AbstractParserFile implements IParserFile {
 	}
 
 	protected defineAttributes() {
-		const parser = this.parsers.attributes;
+		const parser = this.parser.getAttributeParser();
 		const attributesOpt = parse(this.doc.content, parser);
 		const attributes = attributesOpt.value ?? [];
 
@@ -56,7 +49,7 @@ export abstract class AbstractParserFile implements IParserFile {
 	}
 
 	protected defineImports() {
-		const parser = this.parsers.imports;
+		const parser = this.parser.getImportParser();
 		const importsOpt = parse(this.doc.content, parser);
 		const imports = importsOpt.value ?? [];
 
@@ -65,7 +58,7 @@ export abstract class AbstractParserFile implements IParserFile {
 	}
 
 	protected defineMethod() {
-		const parser = this.parsers.methods;
+		const parser = this.parser.getMethodParser();
 		const methodOpt = parse(this.doc.content, parser);
 		const methods = methodOpt.value ?? [];
 

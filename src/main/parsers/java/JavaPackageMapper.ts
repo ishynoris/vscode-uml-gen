@@ -1,14 +1,17 @@
+import { FileMetadata } from "../../../common/types/backend.type";
+import { WorkspaceFiles } from "../../../common/types/classes.type";
 import { IPackageMapper } from "../../../common/types/interfaces.type";
 import { Workspace } from "../../util";
 
 export class JavaPackageMapper implements IPackageMapper {
 
 	private extension: string;
-	constructor() {
+
+	constructor(private workspace: WorkspaceFiles) {
 		this.extension = "java";
 	}
 
-	public packageToPath(parts: string[]): undefined | string {
+	public getFile(parts: string[]): undefined | FileMetadata {
 		let absolutePath = Workspace.getAbsolutePath(this.extension, parts);
 		if (absolutePath == undefined) {
 			return undefined;
@@ -18,6 +21,6 @@ export class JavaPackageMapper implements IPackageMapper {
 			absolutePath = `${absolutePath}.${this.extension}`;
 		}
 
-		return absolutePath;
+		return this.workspace.getFromPath(absolutePath, false);
 	}
 }
