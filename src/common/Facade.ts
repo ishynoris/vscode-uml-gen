@@ -21,12 +21,12 @@ export const ClassMetadata = {
 			return cached;
 		}
 
-		const clsType = ParserFactory.parse(file).value;
-		if (clsType == undefined) {
+		const clsType = ParserFactory.parse(file);
+		if (clsType.value == undefined || !clsType.isValid) {
 			return undefined;
 		}
 
-		CachFile[file.name] = clsType;
+		CachFile[file.name] = clsType.value;
 		return CachFile[file.name];
 	}
 }
