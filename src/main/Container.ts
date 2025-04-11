@@ -4,8 +4,10 @@ import { KeyValue } from "../common/types/general.types";
 import { IPackageMapper, IParserFile } from "../common/types/interfaces.type";
 import { JavaPackageMapper } from "./parsers/java/JavaPackageMapper";
 import { JavaParser } from "./parsers/java/JavaParser";
+import { PhpPackageMapper } from "./parsers/php/PhpPackageMapper";
 import { PhpParser } from "./parsers/php/PhpParser";
 import { Reader } from "./Reader";
+import { Workspace } from "./util";
 
 type WorkspaceFilesType = { [ key: string] : WorkspaceFiles }; 
 
@@ -57,8 +59,18 @@ export class Container {
 }
 
 function initPackageMapper(extension: string): IPackageMapper {
-	
-	return new JavaPackageMapper;
+	if (extension == "java") {
+		return new JavaPackageMapper
+	}
+
+	if (extension == "php") {
+		const composerPath = Workspace.getWorkspacePath("composer.json");
+		if (composerPath == null) {
+			throw new Error("No workspace open");
+		}
+		return new PhpPackageMapper(composerPath);
+	}
+	throw new Error("Cannot load package mapper");
 }
 
 function initWorkspace(extension: string): WorkspaceFiles {
