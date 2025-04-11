@@ -1,10 +1,8 @@
 import { Args, Attribute, ClassMetadata, FileMetadata, Method } from "./backend.type";
 import { Encapsulation } from "./encapsulation.types";
-import { Front as FrontEnd } from "../../main/util";
+import { FileFactory, Front as FrontEnd } from "../../main/util";
 import { Area } from "./frontend.type";
 import { ItalicTemplate } from "../../front/core/templates/ItalicTemplate";
-
-export type MapFilesMetada = Map<string,  FileMetadata>;
 
 export class Optional<T> {
 
@@ -26,20 +24,23 @@ export class Optional<T> {
 	}
 }
 
+type MapFileMetada = { [key: string]: FileMetadata };
+
 export class WorkspaceFiles {
 
-	private classes: string[] = [];
+	private pathMapper: MapFileMetada = { };
 
-	constructor(public readonly files: MapFilesMetada) {
-		files.forEach((metadata, fileName) => {
-			const extension = metadata.extension;
-			const className = fileName.replace(extension, "");
-			this.classes.push(className);
-		});
+	constructor(files: FileMetadata[]) {
+		const ReducePath = (map: MapFileMetada, file: FileMetadata): MapFileMetada => {
+			map[file.absolutePath] = file;
+			return map;
+		}
+
+		this.pathMapper = files.reduce(ReducePath, { });
 	}
 
-	hasClass(className: string): boolean {
-		return this.classes.includes(className);
+	getFromPath(absolutePath: string): FileMetadata | undefined {
+		return FileFactory.fromAbsolutePath(absolutePath);
 	}
 }
 

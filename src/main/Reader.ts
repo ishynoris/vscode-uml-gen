@@ -2,26 +2,25 @@ import * as fs from 'fs';
 import { window } from 'vscode';
 import path from 'path';
 import { Workspace } from './util';
-import { MapFilesMetada } from '../common/types/classes.type';
 import { FileMetadata } from '../common/types/backend.type';
 
 export class Reader {
 	private path: string;
 	private srcPath: string;
-	private files: MapFilesMetada;
+	private files: FileMetadata[];
 	private invalidFiles: string[];
 
-	constructor(srcPath: string = "src") {
+	constructor(private extension: string, srcPath: string = "src") {
 		this.path = this.getSrcPath() ?? "";
 		this.srcPath = srcPath;
-		this.files = new Map<string, FileMetadata>;
+		this.files = [];
 		this.invalidFiles = [
 			".properties",
 			".gitignore",
 		];
 	}
 
-	public loadFiles(): MapFilesMetada {
+	public loadFiles(): FileMetadata[] {
 		if (this.path == null) {
 			return this.files;
 		}
@@ -48,7 +47,7 @@ export class Reader {
 			}
 
 			const name = path.basename(filePath);
-			this.files.set(name, {
+			this.files.push({
 				name: name,
 				absolutePath: filePath,
 				extension: extension,
@@ -71,6 +70,12 @@ export class Reader {
 	}
 
 	private isInvalidFile(fileName: string): boolean {
+		if (fileName.length == 0) {
+			return true;
+		}
+		if (!fileName.endsWith(this.extension)) {
+			return true;
+		}
 		return this.invalidFiles.includes(fileName);
 	}
 }
