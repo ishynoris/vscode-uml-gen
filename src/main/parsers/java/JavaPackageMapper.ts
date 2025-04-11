@@ -21,6 +21,6 @@ export class JavaPackageMapper implements IPackageMapper {
 			absolutePath = `${absolutePath}.${this.extension}`;
 		}
 
-		return this.workspace.getFromPath(absolutePath, false);
+		return this.workspace.getFromPath(absolutePath);
 	}
 }

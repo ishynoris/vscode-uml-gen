@@ -6,10 +6,10 @@ import { FileMetadata } from "../common/types/backend.type"
 import { KeyValue } from "../common/types/general.types"
 
 export const FileFactory = {
-	fromAbsolutePath(absolutePath: string, loadContent: boolean = true): undefined | FileMetadata {
+	fromAbsolutePath(absolutePath: string): undefined | FileMetadata {
 		const uri = Uri.file(absolutePath);
 		try {
-			return this.fromUri(uri, loadContent);
+			return this.fromUri(uri);
 		} catch (e) { }
 		return undefined;
 	},
@@ -18,16 +18,24 @@ export const FileFactory = {
 		return this.fromUri(doc.uri);
 	},
 
-	fromUri(uri: Uri, loadContent: boolean = true): FileMetadata {
+	fromUri(uri: Uri): FileMetadata {
 		const fsPath = uri.fsPath;
-		const content = loadContent ? readFileSync(fsPath).toString("utf-8") : "";
 
 		return {
 			name: path.basename(fsPath),
 			absolutePath: fsPath,
 			extension: path.extname(fsPath).replace(".", ""),
-			content: content,
 		}
+	}
+}
+
+export const FileReader = {
+	readFromPath(absolutePath: string): string {
+		return readFileSync(absolutePath).toString("utf-8");
+	},
+
+	readFromFile(file: FileMetadata): string {
+		return FileReader.readFromPath(file.absolutePath);
 	}
 }
 

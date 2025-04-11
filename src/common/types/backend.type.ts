@@ -4,7 +4,6 @@ export type FileMetadata = {
 	name: string,
 	absolutePath: string,
 	extension: string,
-	content: string,
 }
 
 export type Attribute = {

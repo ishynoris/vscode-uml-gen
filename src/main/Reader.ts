@@ -47,7 +47,7 @@ export class Reader {
 			}
 
 			const name = path.basename(filePath);
-			const file = FileFactory.fromAbsolutePath(filePath, false);
+			const file = FileFactory.fromAbsolutePath(filePath);
 			if (file == undefined) {
 				continue;
 			}

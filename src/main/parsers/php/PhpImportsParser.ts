@@ -1,8 +1,7 @@
-import { FileMetadata, Package } from "../../../common/types/backend.type";
-import { WorkspaceFiles } from "../../../common/types/classes.type";
+import { Package } from "../../../common/types/backend.type";
 import { KeyValue } from "../../../common/types/general.types";
 import { IPackageMapper, IParser } from "../../../common/types/interfaces.type";
-import { FileFactory, Regex } from "../../util";
+import { Regex } from "../../util";
 
 export class PhpImportsParser implements IParser<Package> {
 

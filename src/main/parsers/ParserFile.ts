@@ -2,6 +2,7 @@ import { ClassMetadata, FileMetadata } from "../../common/types/backend.type";
 import { Optional } from "../../common/types/classes.type";
 import { IParser, IParserFile } from "../../common/types/interfaces.type";
 import { Mock } from "../../common/types/mock.types";
+import { FileReader } from "../util";
 
 
 export class ParserFile {
@@ -28,7 +29,7 @@ export class ParserFile {
 
 	protected defineClassName() {
 		const parser = this.parser.getDetailParser();
-		const detailsOpt = parseOne(this.doc.content, parser);
+		const detailsOpt = parseOne(this.doc, parser);
 
 		if (detailsOpt.value == undefined) {
 			this.errors.push(`Can't extract details from class`)
@@ -41,7 +42,7 @@ export class ParserFile {
 
 	protected defineAttributes() {
 		const parser = this.parser.getAttributeParser();
-		const attributesOpt = parse(this.doc.content, parser);
+		const attributesOpt = parse(this.doc, parser);
 		const attributes = attributesOpt.value ?? [];
 
 		this.errors.push(...attributesOpt.errors);
@@ -50,7 +51,7 @@ export class ParserFile {
 
 	protected defineImports() {
 		const parser = this.parser.getImportParser();
-		const importsOpt = parse(this.doc.content, parser);
+		const importsOpt = parse(this.doc, parser);
 		const imports = importsOpt.value ?? [];
 
 		this.errors.push(...importsOpt.errors);
@@ -59,7 +60,7 @@ export class ParserFile {
 
 	protected defineMethod() {
 		const parser = this.parser.getMethodParser();
-		const methodOpt = parse(this.doc.content, parser);
+		const methodOpt = parse(this.doc, parser);
 		const methods = methodOpt.value ?? [];
 
 		this.errors.push(...methodOpt.errors);
@@ -67,7 +68,8 @@ export class ParserFile {
 	}
 }
 
-function parseOne<T>(content: string, parser: IParser<T>): Optional<T> {
+function parseOne<T>(file: FileMetadata, parser: IParser<T>): Optional<T> {
+	const content = FileReader.readFromFile(file);
 	const pattern = parser.getPatternRegex();
 	const regex = new RegExp(pattern);
 	const expression = regex.exec(content);
@@ -81,7 +83,8 @@ function parseOne<T>(content: string, parser: IParser<T>): Optional<T> {
 	return new Optional(value, errors);
 }
 
-function parse<T>(content: string, parser: IParser<T>): Optional<T[]> {
+function parse<T>(file: FileMetadata, parser: IParser<T>): Optional<T[]> {
+	const content = FileReader.readFromFile(file);
 	const errors: string[] = [];
 	const values: T[] = [];
 	const pattern = parser.getPatternRegex();
