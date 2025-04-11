@@ -1,4 +1,4 @@
-import { ExtensionContext, TextDocument, Uri, WorkspaceFolder, workspace } from "vscode"
+import { ExtensionContext, TextDocument, Uri, WorkspaceFolder, window, workspace } from "vscode"
 import { readFileSync, statSync } from "fs"
 import * as path from "path"
 import { Container } from "./Container"
@@ -42,9 +42,14 @@ export const Workspace = {
 		return folder == null ? null : folder.name;
 	},
 
-	getWorkspacePath(): null|string {
+	getWorkspacePath(fileName?: string): null|string {
 		const folder = this.getWorkspace();
-		return folder == null ? null : folder.uri.path;
+		if (folder == null) {
+			return null;
+		}
+
+		const path = folder.uri.path;
+		return fileName == undefined ? path : `${path}/${fileName}`;
 	},
 
 	getAbsolutePath(extension: string, parts: string[]): undefined | string {
@@ -75,6 +80,18 @@ export const Front = {
 			text = text.replaceAll(key, htmlEntity[key]);
 		}
 		return text;
+	}
+}
+
+export const WindowErrors = {
+	showMessage: (message: string) => {
+		window.showErrorMessage(message);
+	},
+
+	showError: (e: any) => {
+		if (e instanceof Error) {
+			WindowErrors.showMessage(e.message);
+		}
 	}
 }
 
