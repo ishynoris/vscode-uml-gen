@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import { window } from 'vscode';
 import path from 'path';
-import { Workspace } from './util';
+import { FileFactory, Workspace } from './util';
 import { FileMetadata } from '../common/types/backend.type';
 
 export class Reader {
@@ -47,12 +47,12 @@ export class Reader {
 			}
 
 			const name = path.basename(filePath);
-			this.files.push({
-				name: name,
-				absolutePath: filePath,
-				extension: extension.replace(".", ""),
-				content: "",
-			});
+			const file = FileFactory.fromAbsolutePath(filePath, false);
+			if (file == undefined) {
+				continue;
+			}
+
+			this.files.push(file);
 		}
 	}
 
