@@ -50,7 +50,7 @@ export class Reader {
 			this.files.push({
 				name: name,
 				absolutePath: filePath,
-				extension: extension,
+				extension: extension.replace(".", ""),
 				content: "",
 			});
 		}

@@ -1,5 +1,5 @@
 import { FileMetadata } from "../common/types/backend.type";
-import { MapFilesMetada, Optional, WorkspaceFiles } from "../common/types/classes.type";
+import { WorkspaceFiles } from "../common/types/classes.type";
 import { KeyValue } from "../common/types/general.types";
 import { IParserFile } from "../common/types/interfaces.type";
 import { JavaParser } from "./parsers/java/JavaParser";
@@ -42,8 +42,9 @@ export class Container {
 
 	public getParser(file: FileMetadata): undefined | IParserFile {
 		const workspace = this.getWorkspaceFiles(file.extension);
+		const extension = file.extension.replace(".", "");
 
-		if (file.extension == "java") {
+		if (extension == "java") {
 			return new JavaParser(workspace);
 		}
 
@@ -56,6 +57,6 @@ export class Container {
 
 function initWorkspace(extension: string): WorkspaceFiles {
 	const rootFiles = RootFiles[extension];
-	const files: MapFilesMetada = new Reader(rootFiles).loadFiles();
+	const files: FileMetadata[] = new Reader(extension, rootFiles).loadFiles();
 	return new WorkspaceFiles(files);
 };
