@@ -58,5 +58,5 @@ export class Container {
 function initWorkspace(extension: string): WorkspaceFiles {
 	const rootFiles = RootFiles[extension];
 	const files: FileMetadata[] = new Reader(extension, rootFiles).loadFiles();
-	return new WorkspaceFiles(files);
+	return new WorkspaceFiles(extension, files);
 };

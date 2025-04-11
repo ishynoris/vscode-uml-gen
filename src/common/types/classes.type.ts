@@ -1,6 +1,6 @@
 import { Args, Attribute, ClassMetadata, FileMetadata, Method } from "./backend.type";
 import { Encapsulation } from "./encapsulation.types";
-import { FileFactory, Front as FrontEnd } from "../../main/util";
+import { FileFactory, Front as FrontEnd, Workspace } from "../../main/util";
 import { Area } from "./frontend.type";
 import { ItalicTemplate } from "../../front/core/templates/ItalicTemplate";
 
@@ -30,7 +30,7 @@ export class WorkspaceFiles {
 
 	private pathMapper: MapFileMetada = { };
 
-	constructor(files: FileMetadata[]) {
+	constructor(private extension: string, files: FileMetadata[]) {
 		const ReducePath = (map: MapFileMetada, file: FileMetadata): MapFileMetada => {
 			map[file.absolutePath] = file;
 			return map;
@@ -41,6 +41,15 @@ export class WorkspaceFiles {
 
 	getFromPath(absolutePath: string): FileMetadata | undefined {
 		return FileFactory.fromAbsolutePath(absolutePath);
+	}
+
+	getFromPackage(packageParts: string[]): FileMetadata | undefined {
+		const absolutePath = Workspace.getAbsolutePath(this.extension, packageParts);
+		if (absolutePath == undefined) {
+			return undefined;
+		}
+
+		return this.getFromPath(`${absolutePath}.${this.extension}`);
 	}
 }
 

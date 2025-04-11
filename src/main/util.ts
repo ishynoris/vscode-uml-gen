@@ -47,12 +47,12 @@ export const Workspace = {
 		return folder == null ? null : folder.uri.path;
 	},
 
-	getAbsolutePath(parts: string[]): undefined | string {
+	getAbsolutePath(extension: string, parts: string[]): undefined | string {
 		const workspacePath = this.getWorkspacePath();
 		if (workspacePath == null) {
 			return undefined;
 		}
-		const rootFiles = Container.init().getRootFiles("java");
+		const rootFiles = Container.init().getRootFiles(extension);
 		const path = parts.join("/");
 		return `${workspacePath}/${rootFiles}/${path}`;
 	}

@@ -20,14 +20,9 @@ export class JavaImportParser implements IParser<Package> {
 		const lastIndexPackage = importsPart.length - 1;
 		const className = importsPart[lastIndexPackage];
 
-		importsPart[lastIndexPackage] = `${className}.java`;
-		const absolutePath = Workspace.getAbsolutePath(importsPart);
-		if (absolutePath == undefined) {
-			return undefined;
-		}
 		return { 
 			classImported: className, 
-			file: this.workspace.getFromPath(absolutePath),
+			file: this.workspace.getFromPackage(importsPart),
 			package: group._imports 
 		}
 	}
