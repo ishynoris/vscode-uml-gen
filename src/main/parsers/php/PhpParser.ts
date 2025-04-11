@@ -1,20 +1,40 @@
-import { Types as Allowed } from "../../types/encapsulation.types";
-import { Mock } from "../../types/mock.types";
-import { Attribute, IParserFile, Package } from "../../types/parser.type";
-import { AbstractParserFile, ParseContent } from "../AbstractParserFile";
+import { IParser, IParserFile } from "../../../common/types/interfaces.type";
 import { PhpRegexPareser } from "./PhpRegexParser";
+import { Types } from "../../../common/types/encapsulation.types";
+import { PhpDetailParser } from "./PhpDetailParser";
+import { PhpImportsParser } from "./PhpImportsParser";
+import { WorkspaceFiles } from "../../../common/types/classes.type";
+import { PhpAttributeParser } from "./PhpAttributeParser";
+import { Attribute, ClassDetail, Method, Package } from "../../../common/types/backend.type";
+import { PhpPackageMapper } from "./PhpPackageMapper";
+import { Workspace } from "../../util";
 
-export class PhpParser extends AbstractParserFile implements IParserFile {
+export class PhpParser implements IParserFile {
 
-	constructor() {
-		super(Parsers);
+	private types: Types[];
+
+	constructor(private workspace: WorkspaceFiles) {
+		this.types = [ Types.public, Types.private, Types.protected ];
 	}
-}
 
-const encapsulation = [ Allowed.public, Allowed.private, Allowed.protected ]
+	getDetailParser(): IParser<ClassDetail> {
+		return new PhpDetailParser(this.types);
+	}
 
-const Parsers: ParseContent = {
-	methods: new PhpRegexPareser(encapsulation),
-	imports: Mock.getParserContent<Package>(),
-	attributes: Mock.getParserContent<Attribute>(),
+	getAttributeParser(): IParser<Attribute> {
+		return new PhpAttributeParser(this.types);
+	}
+
+	getMethodParser(): IParser<Method> {
+		return new PhpRegexPareser(this.types);
+	}
+
+	getImportParser(): IParser<Package> {
+		const composerPath = Workspace.getWorkspacePath("composer.json");
+		if (composerPath == null) {
+			throw new Error("Cannot load composer.json file");
+		}
+		const mapper = new PhpPackageMapper(this.workspace, composerPath);
+		return new PhpImportsParser(mapper);
+	}
 }
