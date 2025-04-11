@@ -38,14 +38,6 @@ export const Mock = {
 	getClassMetadataResult(): Optional<ClassMetadata> {
 		return new Optional(Mock.classMatadata());
 	},
-	
-	getParserFile(): IParserFile {
-		return {
-			parse(file: FileMetadata): Optional<ClassMetadata> { 
-				return Mock.getClassMetadataResult();
-			}
-		}
-	},
 
 	getParserContent<T>(): IParser<T> {
 		return {
