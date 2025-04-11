@@ -1,8 +1,10 @@
 import { window, ExtensionContext as Context } from 'vscode';
 import { Commands, ICreatorFromFile } from "./Commands";
-import { FileMetadata } from "../common/types/backend.type"
+import { ClassMetadata, FileMetadata } from "../common/types/backend.type"
 import * as ParserFactory from './parsers/ParserFactory';
 import * as FrontEnd from '../front/Front';
+import { Optional } from '../common/types/classes.type';
+import { WindowErrors } from './util';
 
 export class App {
 	public readonly context: Context;
@@ -29,8 +31,7 @@ export class App {
 			create(file: FileMetadata) {
 				const classMetadataOpt = ParserFactory.parse(file);
 				if (classMetadataOpt.value == undefined) {
-					window.showErrorMessage(classMetadataOpt.getMessage());
-					return;
+					throw new Error(classMetadataOpt.getMessage());
 				}
 				FrontEnd.runWebview(context, classMetadataOpt.value);
 			}
