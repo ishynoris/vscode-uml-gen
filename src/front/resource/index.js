@@ -94,16 +94,6 @@ function MouseEvents($nodesContainer, canvas) {
 		lastPostion.y = newY;
 	}
 
-	const setNodePosition = (newX, newY) => {
-		if ($currentNode == undefined) {
-			return;
-		}
-
-		$currentNode.style.left = $currentNode.offsetLeft + newX - lastPostion.x + "px";
-		$currentNode.style.top  = $currentNode.offsetTop  + newY - lastPostion.y + "px";
-		setLastMousePosition(newX, newY);
-	}
-
 	const setZAxis = (currentId) => {
 		let i = 0;
 		const keys = Object.keys($nodesContainer);
@@ -117,38 +107,60 @@ function MouseEvents($nodesContainer, canvas) {
 		});
 	}
 
+	const onDowmNode = ($target, x, y) => {
+		$currentNode = $target.closest(".node-container");
+		setLastMousePosition(x, y)/
+		setZAxis($currentNode.id);
+	}
+
+	const onMoveNode = (newX, newY) => {
+		if ($currentNode == undefined) {
+			return;
+		}
+
+		$currentNode.style.left = $currentNode.offsetLeft + newX - lastPostion.x + "px";
+		$currentNode.style.top  = $currentNode.offsetTop  + newY - lastPostion.y + "px";
+		setLastMousePosition(newX, newY);
+
+		canvas.drawEdges($nodesContainer);
+	}
+
+	const onDropNode = () => {
+		$currentNode = undefined;
+	}
+
+	const onCollapseNode = ($target) => {
+		const $divTitle = $target.closest(".node-collapse");
+		const targetId = $divTitle.dataset["collapse"];
+
+		const $divContent = document.querySelector(`#${targetId}`);
+		const currentDisplay = $divContent.style.display ?? "";
+		$divContent.style.display = currentDisplay == "block"
+			? `none`
+			: `block`;
+
+		canvas.drawEdges($nodesContainer);
+	}
+
 	return {
 		onDown: (e) => {
 			e.preventDefault();
-			$currentNode = e.target.closest(".node-container");
-
-			setLastMousePosition(e.clientX, e.clientY);
-			setZAxis($currentNode.id);
+			onDowmNode(e.target, e.clientX, e.clientY);
 		},
 
 		onMove: (e) => {
 			e.preventDefault();
-			setNodePosition(e.clientX, e.clientY);
-			canvas.drawEdges($nodesContainer);
+			onMoveNode(e.clientX, e.clientY);
 		},
 
 		onUp: (e) => {
 			e.preventDefault();
-			$currentNode = undefined;
+			onDropNode();
 		}, 
 
 		onCollapse: (e) => {
 			e.preventDefault();
-
-			debugger;
-			const $divTitle = e.target.closest(".node-collapse");
-			const targetId = $divTitle.dataset["collapse"];
-
-			const $divContent = document.querySelector(`#${targetId}`);
-			const currentDisplay = $divContent.style.display ?? "";
-			$divContent.style.display = currentDisplay == "block"
-				? `none`
-				: `block`;
+			onCollapseNode(e.target);
 		}
 	}
 }
