@@ -21,11 +21,11 @@ export class AttributeComponent implements IComponent {
 	static createMany(name: string, attrs: Attribute[]): Component {
 		const labels = attrs.map(attr => AttributeComponent.create(name, attr));
 		const options: DivOptions = {
-			id: `container-attrs-${this.name}`,
+			id: `container-attrs-${name}`,
 			class: [ "node-item" ],
 			borderBottom: "1px solid white"
 		}
-		return Dom.createDiv(options, labels);
+		return Dom.createCollapseDiv("Attributes", options, labels);
 	}
 
 	getContent(): Component {

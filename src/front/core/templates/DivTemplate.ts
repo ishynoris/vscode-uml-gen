@@ -35,6 +35,11 @@ export class DivTemplate {
 			style += `top: ${this.options.coordinates.y}px;`;
 		}
 
+		const visible = this.options.visible ?? true;
+		if (!visible) {
+			style += `display: none;`;
+		}
+
 		return style ?? "";
 	}
 

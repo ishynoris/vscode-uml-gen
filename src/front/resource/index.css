@@ -18,3 +18,7 @@
 .node-container label, i {
 	font-size: 10px;
 }
+
+.node-collapse:hover, .node-collapse label:hover {
+	cursor: pointer;
+}

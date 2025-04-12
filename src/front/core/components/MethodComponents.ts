@@ -18,7 +18,7 @@ export class MethodComponent implements IComponent {
 
 	static createMany(name: string, methods: Method[]): Component {
 		const labels = methods.map(method => MethodComponent.create(name, method));
-		return Dom.createDiv({ id: `container-methods-${name}` }, labels);
+		return Dom.createCollapseDiv("Methods", { id: `container-methods-${name}` }, labels);
 	}
 
 	getContent(): Component {
@@ -44,4 +44,6 @@ export class MethodComponent implements IComponent {
 		}
 		return Dom.createDiv(options, childs) ;
 	}
+
+
 }

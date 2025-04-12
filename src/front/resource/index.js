@@ -16,6 +16,7 @@ function Container($container, $canvas) {
 	}
 
 	const $nodes = Array.from($container.getElementsByClassName("node-item"));
+	const $collapse = Array.from($container.getElementsByClassName("node-collapse"));
 	const $parents = getParents($nodes);
 
 	const canvas = new Canvas($canvas);
@@ -26,6 +27,7 @@ function Container($container, $canvas) {
 			document.onmousemove = events.onMove,
 			document.onmouseup = events.onUp;
 			$nodes.forEach($node => $node.onmousedown = events.onDown);
+			$collapse.forEach($div => $div.addEventListener("click", events.onCollapse));
 
 			canvas.drawEdges($parents);
 		},
@@ -133,6 +135,20 @@ function MouseEvents($nodesContainer, canvas) {
 		onUp: (e) => {
 			e.preventDefault();
 			$currentNode = undefined;
+		}, 
+
+		onCollapse: (e) => {
+			e.preventDefault();
+
+			debugger;
+			const $divTitle = e.target.closest(".node-collapse");
+			const targetId = $divTitle.dataset["collapse"];
+
+			const $divContent = document.querySelector(`#${targetId}`);
+			const currentDisplay = $divContent.style.display ?? "";
+			$divContent.style.display = currentDisplay == "block"
+				? `none`
+				: `block`;
 		}
 	}
 }
