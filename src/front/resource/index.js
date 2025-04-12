@@ -24,8 +24,10 @@ function Container($container, $canvas) {
 
 	return {
 		init: () => {
+			window.addEventListener("resize", events.onResize);
 			document.onmousemove = events.onMove,
 			document.onmouseup = events.onUp;
+
 			$nodes.forEach($node => $node.onmousedown = events.onDown);
 			$collapse.forEach($div => $div.addEventListener("click", events.onCollapse));
 
@@ -35,13 +37,6 @@ function Container($container, $canvas) {
 }
 
 function Canvas(canvas) {
-	canvas.width = window.innerWidth;
-	canvas.height = window.innerHeight;
-	
-	const context2D = canvas.getContext('2d');
-	context2D.strokeStyle = "white";
-	context2D.lineWidth = 1;
-
 	const getMidlePosition = ($node) => {
 		return {
 			x: $node.offsetLeft + $node.clientWidth / 2,
@@ -53,15 +48,31 @@ function Canvas(canvas) {
 		const initialPosition = getMidlePosition($node1);
 		const endPosition = getMidlePosition($node2);
 
-		context2D.moveTo(initialPosition.x, initialPosition.y);
-		context2D.lineTo(endPosition.x, endPosition.y);
-		context2D.stroke(); 
+		this.context2D.moveTo(initialPosition.x, initialPosition.y);
+		this.context2D.lineTo(endPosition.x, endPosition.y);
+		this.context2D.stroke(); 
 	}
 
+	const initContext2D = (width, height) => {
+		canvas.width = width;
+		canvas.height = height;
+		
+		const context = canvas.getContext('2d');
+		context.strokeStyle = "white";
+		context.lineWidth = 1;
+		return context;
+	}
+
+	this.context2D = initContext2D(window.innerWidth, window.innerHeight);
+
 	return {
+		setSize: (width, height) => {
+			this.context2D = initContext2D(width, height);
+		},
+
 		drawEdges: ($nodes) => {
-			context2D.clearRect(0, 0, canvas.width, canvas.height);
-			context2D.beginPath();
+			this.context2D.clearRect(0, 0, canvas.width, canvas.height);
+			this.context2D.beginPath();
 
 			for (const key in $nodes) {
 				const $node = $nodes[key];
@@ -142,6 +153,11 @@ function MouseEvents($nodesContainer, canvas) {
 		canvas.drawEdges($nodesContainer);
 	}
 
+	const onWindowResize = (currenWindow) => {
+		canvas.setSize(currenWindow.innerWidth, currenWindow.innerHeight);
+		canvas.drawEdges($nodesContainer);
+	}
+
 	return {
 		onDown: (e) => {
 			e.preventDefault();
@@ -161,6 +177,10 @@ function MouseEvents($nodesContainer, canvas) {
 		onCollapse: (e) => {
 			e.preventDefault();
 			onCollapseNode(e.target);
+		},
+		onResize: (e) => {
+			e.preventDefault();
+			onWindowResize(e.target);
 		}
 	}
 }
