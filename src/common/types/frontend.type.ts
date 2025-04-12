@@ -21,6 +21,7 @@ export type DivOptions = {
 	borderBottom?: string,
 	coordinates?: Coordinates,
 	dataValue?: KeyManyValues[],
+	visible?: boolean,
 }
 
 export type ItalicOptions = {

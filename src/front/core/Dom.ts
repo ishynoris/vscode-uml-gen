@@ -12,7 +12,7 @@ export const Dom = {
 
 	createCollapseDiv: (title: string, options: DivOptions, childs?: Component[]): Component => {
 		const uniqid = randomBytes(6).toString("hex");
-		const labelTitle = Dom.createLabel({ 'text': `${title}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;V` });
+		const labelTitle = Dom.createLabel({ 'text': `${title}&nbsp;&nbsp;` });
 		const collapseTarget = `container-content-${uniqid}`;
 
 		const optionsTitle: DivOptions = { 

@@ -145,10 +145,15 @@ function MouseEvents($nodesContainer, canvas) {
 		const targetId = $divTitle.dataset["collapse"];
 
 		const $divContent = document.querySelector(`#${targetId}`);
-		const currentDisplay = $divContent.style.display ?? "";
-		$divContent.style.display = currentDisplay == "block"
-			? `none`
-			: `block`;
+		const isDisplaBlock = ($divContent.style.display ?? "") == "block";
+
+		if (isDisplaBlock) {
+			$divContent.style.display = "none";
+			$divTitle.classList.remove("node-expanded");
+		} else {
+			$divContent.style.display = "block";
+			$divTitle.classList.add("node-expanded");
+		}
 
 		canvas.drawEdges($nodesContainer);
 	}
