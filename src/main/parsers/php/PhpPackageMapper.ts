@@ -31,12 +31,12 @@ export class PhpPackageMapper implements IPackageMapper {
 }
 
 function initComposer(composerFilePath: string): KeyValue {
-	const composerFile = FileReader.readFromPath(composerFilePath);
-	if (composerFile == "") {
-		throw new Error("Cannot load composer file");
+	const composerFile = FileReader.readContentFromPath(composerFilePath);
+	if (composerFile.value == undefined) {
+		throw new Error(composerFile.getMessage());
 	}
 	
-	const contentJson = JSON.parse(composerFile);
+	const contentJson = JSON.parse(composerFile.value);
 	const psr4 = contentJson["autoload"]["psr-4"] ?? { };
 	const workspacePath = Workspace.getWorkspacePath();
 	const psr4Content: KeyValue = {  };

@@ -5,6 +5,7 @@ import { Container } from "./Container"
 import { FileMetadata } from "../common/types/backend.type"
 import { KeyValue } from "../common/types/general.types"
 import { Extensions } from "../common/types/extension.type"
+import { Optional } from "../common/types/classes.type"
 
 export const FileFactory = {
 	fromAbsolutePath(absolutePath: string): undefined | FileMetadata {
@@ -32,12 +33,24 @@ export const FileFactory = {
 }
 
 export const FileReader = {
-	readFromPath(absolutePath: string): string {
-		return readFileSync(absolutePath).toString("utf-8");
+	readContentFromPath(absolutePath: string): Optional<string> {
+		const errors = [];
+		let content = undefined;
+		try {
+			content = readFileSync(absolutePath).toString("utf-8");
+		} catch (e) {
+			errors.push(`Cannot read content of ${absolutePath}. File not founded`);
+		}
+		return new Optional(content, errors);
 	},
 
-	readFromFile(file: FileMetadata): string {
-		return FileReader.readFromPath(file.absolutePath);
+	readContentFromFile(file: FileMetadata): Optional<string> {
+		const contentOpt = FileReader.readContentFromPath(file.absolutePath);
+		if (!contentOpt.hasErrors) {
+			return contentOpt;
+		}
+		const message = `Cannot read content from ${file.name} file. Path: ${file.absolutePath}`;
+		return new Optional<string>(contentOpt.value, [ message ]);
 	}
 }
 

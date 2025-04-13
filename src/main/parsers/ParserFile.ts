@@ -32,7 +32,10 @@ export class ParserFile {
 		const detailsOpt = parseOne(this.doc, parser);
 
 		if (detailsOpt.value == undefined) {
-			this.errors.push(`Can't extract details from class`)
+			const error = detailsOpt.hasErrors 
+				? detailsOpt.errors
+				: [ `Can't extract details from class` ];
+			this.errors.push(...error);
 			return;
 		}
 
@@ -69,10 +72,17 @@ export class ParserFile {
 }
 
 function parseOne<T>(file: FileMetadata, parser: IParser<T>): Optional<T> {
-	const content = FileReader.readFromFile(file);
+	const content = FileReader.readContentFromFile(file);
+	if (content.value == undefined) {
+		const errors = content.hasErrors
+			? content.errors
+			: [ `Cannot reead ${file.name} in ${file.absolutePath}` ];
+		return new Optional<T>(undefined, errors);
+	}
+
 	const pattern = parser.getPatternRegex();
 	const regex = new RegExp(pattern);
-	const expression = regex.exec(content);
+	const expression = regex.exec(content.value);
 	const groups = expression?.groups;
 	if (expression == null || groups == undefined) {
 		return new Optional<T>(undefined, [ `Can't process regex ${pattern}` ]);
@@ -84,7 +94,14 @@ function parseOne<T>(file: FileMetadata, parser: IParser<T>): Optional<T> {
 }
 
 function parse<T>(file: FileMetadata, parser: IParser<T>): Optional<T[]> {
-	const content = FileReader.readFromFile(file);
+	const content = FileReader.readContentFromFile(file);
+	if (content.value == undefined) {
+		const errors = content.hasErrors
+			? content.errors
+			: [ `Cannot reead ${file.name} in ${file.absolutePath}` ];
+		return new Optional<T[]>(undefined, errors);
+	}
+
 	const errors: string[] = [];
 	const values: T[] = [];
 	const pattern = parser.getPatternRegex();
@@ -95,7 +112,7 @@ function parse<T>(file: FileMetadata, parser: IParser<T>): Optional<T[]> {
 
 	const regex = new RegExp(pattern, "gi");
 	let expression;
-	while((expression = regex.exec(content)) != null) {
+	while((expression = regex.exec(content.value)) != null) {
 		const groups = expression.groups;
 		const signature = expression[0];
 		if (groups == undefined) {
