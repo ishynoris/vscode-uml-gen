@@ -27,12 +27,20 @@ export class Node implements IAreaComponent {
 
 	private getChilds(): Component[] {
 		const name = _processId(this.tag);
+		const childs = [];
 
-		const title = DetailComponent.create(this.metadata.detail);
-		const attributes = AttributeComponent.createMany(name, this.metadata.attributes);
-		const methods = MethodComponent.createMany(name, this.metadata.methods);
+		childs.push(DetailComponent.create(this.metadata.detail));
 
-		const childs = [ title, attributes, methods ];
+		if (this.metadata.attributes.length > 0) {
+			const child = AttributeComponent.createMany(name, this.metadata.attributes);
+			childs.push(child);
+		}
+
+		if (this.metadata.methods.length > 0) {
+			const child = MethodComponent.createMany(name, this.metadata.methods);
+			childs.push(child);
+		}
+
 		return childs;
 	}
 
