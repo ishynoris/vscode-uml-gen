@@ -1,4 +1,5 @@
 import { Attribute } from "../../../common/types/backend.type";
+import { Optional } from "../../../common/types/classes.type";
 import { Encapsulation, Types } from "../../../common/types/encapsulation.types";
 import { Extensions } from "../../../common/types/extension.type";
 import { KeyValue } from "../../../common/types/general.types";
@@ -9,6 +10,11 @@ export class PhpAttributeParser implements IParser<Attribute> {
 
 	constructor(private types: Types[]) { }
 
+	hasRequiredValues(groups: KeyValue): boolean {
+		return groups._attr_encap != undefined
+			&& groups._attr_name != undefined
+	}
+
 	getPatternRegex(): string {
 		const characters = `\\[\\]_-`
 
@@ -18,27 +24,28 @@ export class PhpAttributeParser implements IParser<Attribute> {
 		const nameVar = `\\$[${Regex.Letters}${Regex.Numbers}${characters}]+`;
 		const initialVal = `=${Regex.Anything}`;
 
-		return `(?<_encap>${encapsulation})${Regex.BlankReq}`
-			+ `(?<_classifier>${classifiverVar})?${Regex.BlankOp}`
-			+ `(?<_type>${typeVar}${Regex.BlankReq})?`
-			+ `(?<_name>${nameVar}${Regex.BlankOp})`
-			+ `(?<_initial>${initialVal})?;`;
+		return `(?<_attr_encap>${encapsulation})${Regex.BlankReq}`
+			+ `(?<_attr_classifier>${classifiverVar})?${Regex.BlankOp}`
+			+ `(?<_attr_type>${typeVar}${Regex.BlankReq})?`
+			+ `(?<_attr_name>${nameVar}${Regex.BlankOp})`
+			+ `(?<_attr_initial>${initialVal})?;`;
 	}
 
-	getValue(groups: KeyValue): Attribute | undefined {
-		const _encap = (groups._encap ?? "");
-		const _initial = (groups._initial ?? "");
+	getValue(groups: KeyValue): Optional<Attribute> {
+		const _encap = groups._attr_encap ?? "";
+		const _initial = groups._attr_initial ?? "";
+		const _classifier = groups._attr_classifier ?? "";
 
-		const classifier = groups._classifier ?? "";
 		const initialVal = _initial.length > 0 ? _initial.replace("=", "").trim() : undefined;
 
-		return {
-			name: groups._name,
-			type: groups._type ?? "",
+		const attr = {
+			name: groups._attr_name,
+			type: groups._attr_type ?? "",
 			encapsulation: Encapsulation.to(_encap.length > 0 ? _encap : undefined),
-			isStatic: classifier.includes("static"),
-			isFinal: classifier.includes("final"),
+			isStatic: _classifier.includes("static"),
+			isFinal: _classifier.includes("final"),
 			initialValue: initialVal,
 		};
+		return new Optional(attr);
 	}
 }

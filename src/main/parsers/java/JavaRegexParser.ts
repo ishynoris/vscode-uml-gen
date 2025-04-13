@@ -1,4 +1,5 @@
 import { Args, Method } from "../../../common/types/backend.type";
+import { Optional } from "../../../common/types/classes.type";
 import { Allowed, Encapsulation } from "../../../common/types/encapsulation.types";
 import { KeyValue } from "../../../common/types/general.types";
 import { IParser } from "../../../common/types/interfaces.type";
@@ -9,6 +10,12 @@ export class JavaRegexParser  implements IParser<Method> {
 	constructor(private types: Allowed[]) {
 	}
 
+	hasRequiredValues(groups: KeyValue): boolean {
+		return groups.method_encapsulation != undefined
+			&& groups.method_return != undefined
+			&& groups.method_name != undefined
+	}
+
 	public getPatternRegex(): string {
 		const encapsulation = this.types.join("|");
 		const detail = `((static abstract)|(abstract static)|static|abstract)?`
@@ -16,25 +23,25 @@ export class JavaRegexParser  implements IParser<Method> {
 		const methodName = `[${Regex.Letters}${Regex.Numbers}_]+`;
 		const args = `[${Regex.Letters}\\[\\]@<> ,]*`;
 
-		return `(?<encapsulation>${encapsulation})${Regex.BlankReq}`
-			+ `(?<detail>${detail})${Regex.BlankOp}`
-			+ `(?<return>${returnKey})${Regex.BlankReq}`
-			+ `(?<name>${methodName})${Regex.BlankOp}`
-			+ `${Regex.OpenArgs}(?<args>${args})${Regex.CloseArgs}${Regex.BlankOp}`
+		return `(?<method_encapsulation>${encapsulation})${Regex.BlankReq}`
+			+ `(?<method_detail>${detail})${Regex.BlankOp}`
+			+ `(?<method_return>${returnKey})${Regex.BlankReq}`
+			+ `(?<method_name>${methodName})${Regex.BlankOp}`
+			+ `${Regex.OpenArgs}(?<method_args>${args})${Regex.CloseArgs}${Regex.BlankOp}`
 			+ `${Regex.Anything}${Regex.OpenBlock}`;
 	}
 
-	public getValue(group: KeyValue): Method {
-		const detail = group.detail;
+	public getValue(group: KeyValue): Optional<Method> {
+		const detail = group.method_detail;
 
-		return {
-			name: group.name,
+		return new Optional<Method>({
+			name: group.method_name,
 			isAbstract: detail.includes("abstract"),
 			isStatic: detail.includes("static"),
-			returnType: group.return,
-			encapsulation: Encapsulation.to(group.encapsulation),
-			args: this.processArgs(group.args),
-		}
+			returnType: group.method_return,
+			encapsulation: Encapsulation.to(group.method_encapsulation),
+			args: this.processArgs(group.method_args ?? ""),
+		});
 	}
 
 	private processArgs(params: string): Args[] {

@@ -1,5 +1,6 @@
 import { ClassMetadata, FileMetadata } from "../../common/types/backend.type";
 import { Optional } from "../../common/types/classes.type";
+import { KeyValue } from "../../common/types/general.types";
 import { IParser, IParserFile } from "../../common/types/interfaces.type";
 import { Mock } from "../../common/types/mock.types";
 import { FileReader } from "../util";
@@ -19,119 +20,98 @@ export class ParserFile {
 	public parse(doc: FileMetadata): Optional<ClassMetadata> {
 		this.doc = doc;
 
-		this.defineClassName();
-		this.defineAttributes();
-		this.defineImports();
-		this.defineMethod();
+		const content = FileReader.readContentFromFile(doc);
+		if (content.value == undefined) {
+			return new Optional<ClassMetadata>(undefined, content.errors);
+		}
+		
+		let expression, detailExecuted = false;
+		
+		const regex = this.getRegex();
+		while ((expression = regex.exec(content.value)) != null) {
+			const groups = expression.groups;
+			if (groups == undefined) {
+				this.errors.push(`Cannot parse regex "${regex.source}"`);
+				break;
+			}
+
+
+			if (!detailExecuted) {
+				detailExecuted = this.defineClassName(groups);
+			}
+			
+			this.defineAttributes(groups);
+			this.defineImports(groups);
+			this.defineMethod(groups);
+		}
 
 		return new Optional(this.result, this.errors);
 	}
 
-	protected defineClassName() {
+	protected defineClassName(groups: KeyValue): boolean {
 		const parser = this.parser.getDetailParser();
-		const detailsOpt = parseOne(this.doc, parser);
+		if (!parser.hasRequiredValues(groups)) {
+			return false;
+		}
 
-		if (detailsOpt.value == undefined) {
-			const error = detailsOpt.hasErrors 
-				? detailsOpt.errors
-				: [ `Can't extract details from class` ];
-			this.errors.push(...error);
+		const details = parser.getValue(groups);
+		if (details.value != undefined) {
+			this.result.detail = details.value;
+		}
+
+		this.errors.push(...details.errors);
+		return true;
+	}
+
+	protected defineAttributes(groups: KeyValue) {
+		const parser = this.parser.getAttributeParser();
+		if (!parser.hasRequiredValues(groups)) {
 			return;
 		}
 
-		this.result.detail = detailsOpt.value;
-		this.errors.push(...detailsOpt.errors);
+		const attribute = parser.getValue(groups);
+		if (attribute.value != undefined) {
+			this.result.attributes.push(attribute.value);
+		}
+		this.errors.push(...attribute.errors);
 	}
 
-	protected defineAttributes() {
-		const parser = this.parser.getAttributeParser();
-		const attributesOpt = parse(this.doc, parser);
-		const attributes = attributesOpt.value ?? [];
-
-		this.errors.push(...attributesOpt.errors);
-		this.result.attributes.push(...attributes);
-	}
-
-	protected defineImports() {
+	protected defineImports(groups: KeyValue) {
 		const parser = this.parser.getImportParser();
-		const importsOpt = parse(this.doc, parser);
-		const imports = importsOpt.value ?? [];
+		if (!parser.hasRequiredValues(groups)) {
+			return;
+		}
 
-		this.errors.push(...importsOpt.errors);
-		this.result.imports.push(...imports);
+		const imports = parser.getValue(groups);
+		if (imports.value != undefined) {
+			this.result.imports.push(imports.value);
+		}
+		this.errors.push(...imports.errors);
 	}
 
-	protected defineMethod() {
+	protected defineMethod(groups: KeyValue) {
 		const parser = this.parser.getMethodParser();
-		const methodOpt = parse(this.doc, parser);
-		const methods = methodOpt.value ?? [];
-
-		this.errors.push(...methodOpt.errors);
-		this.result.methods.push(...methods);
-	}
-}
-
-function parseOne<T>(file: FileMetadata, parser: IParser<T>): Optional<T> {
-	const content = FileReader.readContentFromFile(file);
-	if (content.value == undefined) {
-		const errors = content.hasErrors
-			? content.errors
-			: [ `Cannot reead ${file.name} in ${file.absolutePath}` ];
-		return new Optional<T>(undefined, errors);
-	}
-
-	const pattern = parser.getPatternRegex();
-	const regex = new RegExp(pattern);
-	const expression = regex.exec(content.value);
-	const groups = expression?.groups;
-	if (expression == null || groups == undefined) {
-		return new Optional<T>(undefined, [ `Can't process regex ${pattern}` ]);
-	}
-
-	const errors: string[] = [];
-	const value = parser.getValue(groups);
-	return new Optional(value, errors);
-}
-
-function parse<T>(file: FileMetadata, parser: IParser<T>): Optional<T[]> {
-	const content = FileReader.readContentFromFile(file);
-	if (content.value == undefined) {
-		const errors = content.hasErrors
-			? content.errors
-			: [ `Cannot reead ${file.name} in ${file.absolutePath}` ];
-		return new Optional<T[]>(undefined, errors);
-	}
-
-	const errors: string[] = [];
-	const values: T[] = [];
-	const pattern = parser.getPatternRegex();
-	if (pattern.length == 0) {
-		errors.push(`No regex pattern was defined to attributes`);
-		return new Optional<T[]>(values, errors);
-	}
-
-	const regex = new RegExp(pattern, "gi");
-	let expression;
-	while((expression = regex.exec(content.value)) != null) {
-		const groups = expression.groups;
-		const signature = expression[0];
-		if (groups == undefined) {
-			errors.push(`Cannot parses ${signature}`);
-			continue;
+		if (!parser.hasRequiredValues(groups)) {
+			return;
 		}
 
-		const value = parser.getValue(groups);
-		if (value == undefined) {
-			errors.push(`Cannot generates a value ${signature}`);
-			continue;
+		const method = parser.getValue(groups);
+		if (method.value != undefined) {
+			this.result.methods.push(method.value);
 		}
-
-		if (parser.validator != undefined) {
-			const errs = parser.validator(value);
-			errors.push(...errs);
-		}
-		values.push(value);
+		this.errors.push(...method.errors);
 	}
 
-	return new Optional(values, errors);
+	private getRegex(): RegExp {
+		const regexDetail = this.parser.getDetailParser().getPatternRegex();
+		const regexAttribute = this.parser.getAttributeParser().getPatternRegex();
+		const regexMethod = this.parser.getMethodParser().getPatternRegex();
+		const regexImport = this.parser.getImportParser().getPatternRegex();
+
+		const pattern = `(${regexDetail})`
+			+ `|(${regexImport})`
+			+ `|(${regexAttribute})`
+			+ `|(${regexMethod})`;
+		return new RegExp(pattern, "gi");
+	}
 }

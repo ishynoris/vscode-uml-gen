@@ -15,7 +15,9 @@ export interface IParserFile {
 export interface IParser<T> {
 	getPatternRegex(): string;
 
-	getValue(groups: KeyValue): undefined | T;
+	getValue(groups: KeyValue): Optional<T>;
+
+	hasRequiredValues(groups: KeyValue): boolean;
 
 	validator?: (value: T) => string[],
 }
