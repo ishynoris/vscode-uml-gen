@@ -5,9 +5,10 @@ import { PhpDetailParser } from "./PhpDetailParser";
 import { PhpImportsParser } from "./PhpImportsParser";
 import { WorkspaceFiles } from "../../../common/types/classes.type";
 import { PhpAttributeParser } from "./PhpAttributeParser";
-import { Attribute, ClassDetail, Method, Package } from "../../../common/types/backend.type";
+import { Attribute, ClassDetail, Method, Namespace, Package } from "../../../common/types/backend.type";
 import { PhpPackageMapper } from "./PhpPackageMapper";
 import { Workspace } from "../../util";
+import { PhpNamespaceParser } from "./PhpNamespaceParser";
 
 export class PhpParser implements IParserFile {
 
@@ -36,5 +37,9 @@ export class PhpParser implements IParserFile {
 		}
 		const mapper = new PhpPackageMapper(this.workspace, composerPath);
 		return new PhpImportsParser(mapper);
+	}
+
+	getNamespacePareser(): IParser<Namespace> {
+		return new PhpNamespaceParser;
 	}
 }

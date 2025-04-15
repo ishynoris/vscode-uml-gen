@@ -31,13 +31,13 @@ export class PhpDetailParser implements IParser<ClassDetail> {
 			return new Optional<ClassDetail>();
 		}
 
-		const method = {
+		const detail: ClassDetail = {
 			name: groups._cls_name,
 			isInterface: signature.includes("interface"),
 			isAbstract: signature.includes("abstract"),
 			isStatic: signature.includes("static"),
 			isEnum: signature.includes("enum"),
 		};
-		return new Optional(method);
+		return new Optional(detail);
 	}
 }

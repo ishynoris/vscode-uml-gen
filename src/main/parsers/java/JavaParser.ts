@@ -5,8 +5,9 @@ import { JavaAttributeParser } from "./JavaAttributeParser";
 import { IParser, IParserFile } from "../../../common/types/interfaces.type";
 import { JavaDetailParser } from "./JavaDetailParser";
 import { WorkspaceFiles } from "../../../common/types/classes.type";
-import { Attribute, ClassDetail, Method, Package } from "../../../common/types/backend.type";
+import { Attribute, ClassDetail, Method, Namespace, Package } from "../../../common/types/backend.type";
 import { JavaPackageMapper } from "./JavaPackageMapper";
+import { JavaNamespaceParser } from "./JavaNamespaceParser";
 
 export class JavaParser implements IParserFile {
 
@@ -33,5 +34,9 @@ export class JavaParser implements IParserFile {
 
 	getAttributeParser(): IParser<Attribute> {
 		return new JavaAttributeParser(this.encapsulation);
+	}
+
+	getNamespacePareser(): IParser<Namespace> {
+		return new JavaNamespaceParser;
 	}
 }

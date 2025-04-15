@@ -19,13 +19,16 @@ export class ParserFile {
 
 	public parse(doc: FileMetadata): Optional<ClassMetadata> {
 		this.doc = doc;
+		this.result.path = doc.absolutePath;
 
 		const content = FileReader.readContentFromFile(doc);
 		if (content.value == undefined) {
 			return new Optional<ClassMetadata>(undefined, content.errors);
 		}
 		
-		let expression, detailExecuted = false;
+		let expression, 
+			detailExecuted = false,
+			namespaceExecuted = false;
 		
 		const regex = this.getRegex();
 		while ((expression = regex.exec(content.value)) != null) {
@@ -38,6 +41,10 @@ export class ParserFile {
 
 			if (!detailExecuted) {
 				detailExecuted = this.defineClassName(groups);
+			}
+
+			if (!namespaceExecuted) {
+				namespaceExecuted = this.defineNamespace(groups);
 			}
 			
 			this.defineAttributes(groups);
@@ -60,6 +67,20 @@ export class ParserFile {
 		}
 
 		this.errors.push(...details.errors);
+		return true;
+	}
+
+	protected defineNamespace(groups: KeyValue): boolean {
+		const parser = this.parser.getNamespacePareser();
+		if (!parser.hasRequiredValues(groups)) {
+			return false;
+		}
+
+		const namespace = parser.getValue(groups);
+		if (namespace.value != undefined) {
+			this.result.detail.namspace = namespace.value;
+		}
+		this.errors.push(...namespace.errors);
 		return true;
 	}
 
@@ -103,12 +124,14 @@ export class ParserFile {
 	}
 
 	private getRegex(): RegExp {
+		const regexNamespace = this.parser.getNamespacePareser().getPatternRegex();
 		const regexDetail = this.parser.getDetailParser().getPatternRegex();
 		const regexAttribute = this.parser.getAttributeParser().getPatternRegex();
 		const regexMethod = this.parser.getMethodParser().getPatternRegex();
 		const regexImport = this.parser.getImportParser().getPatternRegex();
 
-		const pattern = `(${regexDetail})`
+		const pattern = `(${regexNamespace})`
+			+ `|(${regexDetail})`
 			+ `|(${regexImport})`
 			+ `|(${regexAttribute})`
 			+ `|(${regexMethod})`;
