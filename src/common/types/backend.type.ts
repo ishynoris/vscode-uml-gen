@@ -32,6 +32,10 @@ export type Method = {
 	args: Args[],
 }
 
+export type Namespace = {
+	parts: string[],
+}
+
 export type Package = {
 	classImported: string,
 	package: string,
@@ -43,9 +47,11 @@ export type ClassDetail = {
 	isStatic: boolean,
 	isAbstract: boolean,
 	isEnum: boolean,
+	namspace: Namespace,
 }
 
 export type ClassMetadata = {
+	path: string,
 	detail: ClassDetail,
 	attributes: Attribute[],
 	imports: Package[],

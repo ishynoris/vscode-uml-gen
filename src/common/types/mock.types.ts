@@ -1,5 +1,5 @@
 import { Encapsulation } from "./encapsulation.types"
-import { ClassMetadata, FileMetadata, Method } from "./backend.type"
+import { ClassMetadata, FileMetadata, Method, Namespace } from "./backend.type"
 import { Optional } from "./classes.type"
 import { KeyValue } from "./general.types"
 import { IParser, IParserFile } from "./interfaces.type"
@@ -18,7 +18,11 @@ export const Mock = {
 
 	classMatadata: (): ClassMetadata => {
 		return {
+			path: "",
 			detail: {
+				namspace: { 
+					parts: [] 
+				},
 				name: "",
 				isAbstract: false,
 				isInterface: false,
@@ -45,8 +49,12 @@ export const Mock = {
 				return "";
 			},
 
-			getValue(group: KeyValue): T | undefined {
-				return undefined;
+			hasRequiredValues(groups): boolean {
+				return false;
+			},
+
+			getValue(group: KeyValue): Optional<T> {
+				return new Optional<T>;
 			}, 
 			validator(value: T): string[] {
 				return [];

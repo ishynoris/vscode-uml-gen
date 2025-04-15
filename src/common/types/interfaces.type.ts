@@ -1,5 +1,5 @@
 import { KeyValue } from "./general.types";
-import { Attribute, ClassDetail, FileMetadata, Method, Package } from "./backend.type";
+import { Attribute, ClassDetail, FileMetadata, Method, Namespace, Package } from "./backend.type";
 import { Optional } from "./classes.type";
 
 export interface IParserFile {
@@ -10,6 +10,8 @@ export interface IParserFile {
 	getAttributeParser(): IParser<Attribute>;
 
 	getMethodParser(): IParser<Method>;
+
+	getNamespacePareser(): IParser<Namespace>;
 }
 
 export interface IParser<T> {
