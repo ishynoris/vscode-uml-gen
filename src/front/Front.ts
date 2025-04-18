@@ -20,5 +20,8 @@ export function runWebview(context: ExtensionContext, classMetadata: ClassMetada
 	const title = `UML - ${classMetadata.detail.name}`;
 	const wvPanel = window.createWebviewPanel("uml-gen", title, ViewColumn.Beside, options);
 	wvPanel.webview.html = template.getHtml();
+	wvPanel.webview.onDidReceiveMessage(message => {
+		console.log(message);
+	});
 	wvPanel.reveal();
 }

@@ -53,3 +53,11 @@ export type Component = {
 	content: string,
 	childs?: Component[]
 }
+
+export type VSCodeAPI = {
+	postMessage(message: any): void;
+
+	getState(): any;
+
+	setState(state: any): void;
+};

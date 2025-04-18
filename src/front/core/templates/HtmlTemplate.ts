@@ -1,6 +1,8 @@
 import { ExtensionContext as Context, WebviewPanel } from "vscode";
-import { IComponent, IContainer, ITemplate, Position } from "../../../common/types/frontend.type";
-import { Front as FrontUtil } from "../../../main/util";
+import { IContainer, ITemplate, VSCodeAPI } from "../../../common/types/frontend.type";
+import { Crypto, Front as FrontUtil } from "../../../main/util";
+
+declare const vscode: VSCodeAPI;
 
 export class HtmlTemplate implements ITemplate {
 
@@ -8,6 +10,7 @@ export class HtmlTemplate implements ITemplate {
 	}
 
 	public getHtml(): string {
+		const uniqId = Crypto.getUniqID();
 		const cssContent = FrontUtil.getResourceContent(this.context, "index.css");
 		const jsContent = FrontUtil.getResourceContent(this.context, "index.js");
 		const htmlContent = this.container.getContent().content;
@@ -19,7 +22,7 @@ export class HtmlTemplate implements ITemplate {
 					<style>
 						${cssContent}
 					</style>
-					<script>
+					<script nonce=${uniqId}>
 						${jsContent}
 					</script>
 				</head>
@@ -27,9 +30,10 @@ export class HtmlTemplate implements ITemplate {
 					<canvas id="canvas"></canvas>
 					${htmlContent}
 				</body>
-				<script>
+				<script nonce=${uniqId}>
 					document.addEventListener("DOMContentLoaded", function() {
-						init("${containerId}");
+						vscode = acquireVsCodeApi();
+						init("${containerId}", vscode);
 					});
 				</script>
 			</html>

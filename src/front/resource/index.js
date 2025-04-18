@@ -1,12 +1,12 @@
-function init(mainContainerId) {
+function init(mainContainerId, vscode) {
 	const $mainContainer = document.getElementById(mainContainerId);
 	const $canvas = document.getElementById("canvas");
 
-	const container = new Container($mainContainer, $canvas);
+	const container = new Container($mainContainer, $canvas, vscode);
 	container.init();
 }
 
-function Container($container, $canvas) {
+function Container($container, $canvas, vscode) {
 	const getParents = ($nodes) => {
 		return $nodes.reduce((acc, $node) => {
 			const $parent = $node.closest(".node-container");
@@ -20,7 +20,7 @@ function Container($container, $canvas) {
 	const $parents = getParents($nodes);
 
 	const canvas = new Canvas($canvas);
-	const events = new MouseEvents($parents, canvas);
+	const events = new MouseEvents($parents, canvas, vscode);
 
 	return {
 		init: () => {
@@ -96,7 +96,7 @@ function Canvas(canvas) {
 	}
 }
 
-function MouseEvents($nodesContainer, canvas) {
+function MouseEvents($nodesContainer, canvas, vscodeApi) {
 	const lastPostion = { x: 0, y: 0 };
 	let $currentNode = undefined;
 
@@ -118,8 +118,8 @@ function MouseEvents($nodesContainer, canvas) {
 		});
 	}
 
-	const onDowmNode = ($target, x, y) => {
-		$currentNode = $target.closest(".node-container");
+	const onDowmNode = ($container, x, y) => {
+		$currentNode = $container;
 		setLastMousePosition(x, y)/
 		setZAxis($currentNode.id);
 	}
@@ -163,10 +163,24 @@ function MouseEvents($nodesContainer, canvas) {
 		canvas.drawEdges($nodesContainer);
 	}
 
+	const onOpenNewNode = ($nodeSource) => {
+		vscodeApi.postMessage({
+			id: $nodeSource.id,
+			path: $nodeSource.dataset['absolutePath'],
+			file: $nodeSource.dataset['fileName']
+		})
+	}
+
 	return {
 		onDown: (e) => {
 			e.preventDefault();
-			onDowmNode(e.target, e.clientX, e.clientY);
+			const $nodeContainer = e.target.closest(".node-container");
+
+			if (e.ctrlKey) {
+				onOpenNewNode($nodeContainer);
+				return;
+			}
+			onDowmNode($nodeContainer, e.clientX, e.clientY);
 		},
 
 		onMove: (e) => {
