@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import { window } from 'vscode';
-import path from 'path';
+import * as path from 'path';
 import { FileFactory, Workspace } from './util';
 import { FileMetadata } from '../common/types/backend.type';
 import { Allowed as Extension } from '../common/types/extension.type';
@@ -10,6 +10,7 @@ export class Reader {
 	private srcPath: string;
 	private files: FileMetadata[];
 	private invalidFiles: string[];
+	private ignoreDir: string[];
 
 	constructor(private extension: Extension, srcPath: string = "src") {
 		this.path = this.getSrcPath() ?? "";
@@ -19,6 +20,10 @@ export class Reader {
 			".properties",
 			".gitignore",
 		];
+		this.ignoreDir = [
+			"tests",
+			"vendor",
+		]
 	}
 
 	public loadFiles(): FileMetadata[] {
@@ -35,6 +40,11 @@ export class Reader {
 		const files = fs.readdirSync(absolutePath, "utf-8");
 		
 		for (const key in files) {
+			const dirName = files[key];
+			if (this.ignoreDirectory(dirName)) {
+				continue;
+			}
+
 			let filePath = `${absolutePath}/${files[key]}`;
 			const statSync = fs.statSync(filePath);
 
@@ -78,5 +88,9 @@ export class Reader {
 			return true;
 		}
 		return this.invalidFiles.includes(fileName);
+	}
+
+	private ignoreDirectory(dirName: string): boolean {
+		return this.ignoreDir.includes(dirName);
 	}
 }
