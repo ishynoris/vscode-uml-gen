@@ -1,5 +1,5 @@
-import { randomBytes } from "crypto";
 import { Component, DivOptions, ItalicOptions, LabelOptions } from "../../common/types/frontend.type";
+import { Crypto } from "../../main/util";
 import { DivTemplate } from "./templates/DivTemplate";
 import { ItalicTemplate } from "./templates/ItalicTemplate";
 import { LabelTemplate } from "./templates/LabelTemplate";
@@ -11,7 +11,7 @@ export const Dom = {
 	},
 
 	createCollapseDiv: (title: string, options: DivOptions, childs?: Component[]): Component => {
-		const uniqid = randomBytes(6).toString("hex");
+		const uniqid = Crypto.getUniqID();
 		const labelTitle = Dom.createLabel({ 'text': `${title}&nbsp;&nbsp;` });
 		const collapseTarget = `container-content-${uniqid}`;
 

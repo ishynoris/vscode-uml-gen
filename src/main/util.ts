@@ -6,6 +6,7 @@ import { FileMetadata } from "../common/types/backend.type"
 import { KeyValue } from "../common/types/general.types"
 import { Extensions } from "../common/types/extension.type"
 import { Optional } from "../common/types/classes.type"
+import { randomBytes } from "crypto"
 
 export const FileFactory = {
 	fromAbsolutePath(absolutePath: string): undefined | FileMetadata {
@@ -115,6 +116,12 @@ export const WindowErrors = {
 		if (e instanceof Error) {
 			WindowErrors.showMessage(e.message);
 		}
+	}
+}
+
+export const Crypto = {
+	getUniqID: (size: number = 10) => {
+		return randomBytes(size).toString("hex");
 	}
 }
 
