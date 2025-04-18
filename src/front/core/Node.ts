@@ -2,7 +2,7 @@ import { ClassMetadata } from "../../common/types/backend.type";
 import { Area, Component, Coordinates, DivOptions, IAreaComponent } from "../../common/types/frontend.type";
 import { AttributeComponent } from "./components/AttributeComponent";
 import { MethodComponent } from "./components/MethodComponents";
-import { DetailComponent } from "./components/DetailComponent";
+import { DetailComponent, Details } from "./components/DetailComponent";
 import { Dom } from "./Dom";
 import { KeyManyValues } from "../../common/types/general.types";
 
@@ -29,7 +29,12 @@ export class Node implements IAreaComponent {
 		const name = _processId(this.tag);
 		const childs = [];
 
-		childs.push(DetailComponent.create(this.metadata.detail));
+		const details: Details = { 
+			...this.metadata.namespace,
+			...this.metadata.detail,
+			...{ path: this.metadata.path }
+		}
+		childs.push(DetailComponent.create(details));
 
 		if (this.metadata.attributes.length > 0) {
 			const child = AttributeComponent.createMany(name, this.metadata.attributes);
