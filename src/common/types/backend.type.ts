@@ -47,11 +47,11 @@ export type ClassDetail = {
 	isStatic: boolean,
 	isAbstract: boolean,
 	isEnum: boolean,
-	namspace: Namespace,
 }
 
 export type ClassMetadata = {
 	path: string,
+	namespace: Namespace,
 	detail: ClassDetail,
 	attributes: Attribute[],
 	imports: Package[],

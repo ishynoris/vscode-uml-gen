@@ -78,7 +78,7 @@ export class ParserFile {
 
 		const namespace = parser.getValue(groups);
 		if (namespace.value != undefined) {
-			this.result.detail.namspace = namespace.value;
+			this.result.namespace.parts.push(...namespace.value.parts);
 		}
 		this.errors.push(...namespace.errors);
 		return true;

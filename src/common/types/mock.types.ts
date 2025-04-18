@@ -19,10 +19,10 @@ export const Mock = {
 	classMatadata: (): ClassMetadata => {
 		return {
 			path: "",
+			namespace: { 
+				parts: [] 
+			},
 			detail: {
-				namspace: { 
-					parts: [] 
-				},
 				name: "",
 				isAbstract: false,
 				isInterface: false,
