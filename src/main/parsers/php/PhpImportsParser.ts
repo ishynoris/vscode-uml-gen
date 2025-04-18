@@ -16,7 +16,7 @@ export class PhpImportsParser implements IParser<Package> {
 
 	getPatternRegex(): string {
 		const useKey = `(use)${Regex.BlankReq}`;
-		const namespaceKey = `[${Regex.Letters}_\\-\\\\]+`
+		const namespaceKey = `[${Regex.Letters}${Regex.Numbers}${Regex.Blank}_\\-\\\\]+`
 		return `${useKey}(?<_pack_use>${namespaceKey});`;
 	}
 

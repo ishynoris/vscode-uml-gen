@@ -14,14 +14,16 @@ export class PhpDetailParser implements IParser<ClassDetail> {
 	}
 
 	getPatternRegex(): string {
+		const chars = `\\_\\-,`
 		const encapsulation = this.types.join("|");
 		const signature = `(static class)|(abstract class)|interface|enum|class`
 		const name = `[${Regex.Letters}${Regex.Numbers}_]+`
+		const anything = `([${Regex.Letters}${Regex.Numbers}${Regex.Blank}${chars}])*`;
 
 		return `(?<_cls_encap>(${encapsulation})${Regex.BlankReq})?` 
 			+ `(?<_cls_sign>${signature})${Regex.BlankReq}`
-			+ `(?<_cls_name>${name})(${Regex.Anything})${Regex.BlankOp}`
-			+ `${Regex.OpenBlock}`;
+			+ `(?<_cls_name>${name})${Regex.BlankOp}`
+			+ `(?<_cls_anything>${anything})${Regex.OpenBlock}`;
 	}
 
 	getValue(groups: KeyValue): Optional<ClassDetail> {
