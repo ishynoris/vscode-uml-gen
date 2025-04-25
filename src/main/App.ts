@@ -1,10 +1,8 @@
-import { window, ExtensionContext as Context } from 'vscode';
+import { ExtensionContext as Context } from 'vscode';
 import { Commands, ICreatorFromFile } from "./Commands";
-import { ClassMetadata, FileMetadata } from "../common/types/backend.type"
+import { FileMetadata } from "../common/types/backend.type"
 import * as ParserFactory from './parsers/ParserFactory';
 import * as FrontEnd from '../front/Front';
-import { Optional } from '../common/types/classes.type';
-import { WindowErrors } from './util';
 
 export class App {
 	public readonly context: Context;

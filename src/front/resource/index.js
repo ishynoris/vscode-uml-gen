@@ -166,8 +166,8 @@ function MouseEvents($nodesContainer, canvas, vscodeApi) {
 	const onOpenNewNode = ($nodeSource) => {
 		vscodeApi.postMessage({
 			id: $nodeSource.id,
-			path: $nodeSource.dataset['absolutePath'],
-			file: $nodeSource.dataset['fileName']
+			path: $nodeSource.dataset['absolute_path'],
+			file: $nodeSource.dataset['file_name']
 		})
 	}
 

@@ -32,7 +32,6 @@ export class Node implements IAreaComponent {
 		const details: Details = { 
 			...this.metadata.namespace,
 			...this.metadata.detail,
-			...{ path: this.metadata.path }
 		}
 		childs.push(DetailComponent.create(details));
 
@@ -56,6 +55,9 @@ export class Node implements IAreaComponent {
 			const classImported = classImports.map(pack => pack.classImported);
 			dataPackages.push({ "imports": classImported });
 		}
+
+		dataPackages.push({ "absolute_path": [ this.metadata.path ] })
+		dataPackages.push({ "file_name": [ this.metadata.detail.name ] })
 
 		return {
 			id: `node-${_processId(this.tag)}`,

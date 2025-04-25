@@ -4,7 +4,7 @@ import { Dom } from "../Dom";
 
 type Path = { path: string }
 
-export type Details = ClassDetail & Namespace & Path
+export type Details = ClassDetail & Namespace;
 
 export class DetailComponent implements IComponent { 
 	
@@ -44,10 +44,6 @@ export class DetailComponent implements IComponent {
 			textAlign: "center",
 			class: [ "node-item" ],
 			borderBottom: "1px solid white",
-			dataValue: [
-				{ path: [ this.detail.path ] },
-				{ file_name: [ this.detail.name ]}
-			]
 		}
 		return Dom.createDiv(options, childs);
 	}
