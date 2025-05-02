@@ -5,15 +5,10 @@ import { HtmlTemplate } from "./core/templates/HtmlTemplate";
 import { Optional } from "../common/types/classes.type";
 import { parseFromPath } from "../main/parsers/ParserFactory";
 import { WindowErrors } from "../main/util";
+import { FrontMessage, FrontNode, Mesages } from "../common/types/frontend.type";
 
 type CachePanels = {
 	[key: string]: NodeWebview
-}
-
-type NewNode = {
-	id: string,
-	path: string
-	file: string
 }
 
 export class NodeWebview {
@@ -22,7 +17,10 @@ export class NodeWebview {
 
 	private panel: WebviewPanel;
 
-	private constructor(private metadata: ClassMetadata, private context: ExtensionContext) {
+	private constructor(
+		private metadata: ClassMetadata, 
+		private context: ExtensionContext
+	) {
 		const title = `UML - ${metadata.detail.name}`;
 		const options: WebviewPanelOptions & WebviewOptions = {
 			enableScripts: true,
@@ -30,13 +28,13 @@ export class NodeWebview {
 		}
 
 		this.panel = window.createWebviewPanel("uml-gen", title, ViewColumn.Beside, options);
+		this.panel.webview.onDidReceiveMessage(message => MessagesProcessor.process(message, context));
 	}
 
 	public static create(metadata: ClassMetadata, context: ExtensionContext): NodeWebview {
 		const tag = `webview-${metadata.detail.name}`;
 		if (NodeWebview.panels[tag] == undefined) {
-			const panel = new NodeWebview(metadata, context).initReceiveMessage();
-			NodeWebview.panels[tag] = panel;
+			NodeWebview.panels[tag] = new NodeWebview(metadata, context);
 		}
 		return NodeWebview.panels[tag];
 	}
@@ -59,27 +57,34 @@ export class NodeWebview {
 		this.panel.webview.html = template.getHtml();
 		this.panel.reveal();
 	}
+}
 
-	private initReceiveMessage(): NodeWebview {
-		const context = this.context;
+class MessagesProcessor {
+	static process(message: FrontMessage, context: ExtensionContext) {
+		if (message.id == Mesages.NewNode) {
+			NewNode.render(message, context);
+			return;
+		}
+	}
+}
 
-		this.panel.webview.onDidReceiveMessage((node: NewNode) => {
-			if (!node.path) {
-				WindowErrors.showMessage(`File path cannot be defined`);
-				return;
-			}
-			const metadata = parseFromPath(node.path);
-			if (metadata.value == undefined) {
-				WindowErrors.showMessage(metadata.getMessage());
-				return;
-			}
-			const panel = NodeWebview.createFromPath(node.path, context);
-			if (panel.value == undefined) {
-				WindowErrors.showMessage(panel.getMessage());
-				return;
-			}
-			panel.value.render();
-		});
-		return this;
+class NewNode {
+	static render(node: FrontNode, context: ExtensionContext) {
+		if (!node.path) {
+			const message = `File path cannot be defined`;
+			WindowErrors.showMessage(message);
+			return;
+		}
+		const metadata = parseFromPath(node.path);
+		if (metadata.value == undefined) {
+			WindowErrors.showMessage(metadata.getMessage());
+			return;
+		}
+		const panel = NodeWebview.createFromPath(node.path, context);
+		if (panel.value == undefined) {
+			WindowErrors.showMessage(panel.getMessage());
+			return;
+		}
+		panel.value.render();
 	}
 }

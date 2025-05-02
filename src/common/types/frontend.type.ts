@@ -61,3 +61,16 @@ export type VSCodeAPI = {
 
 	setState(state: any): void;
 };
+
+export enum Mesages {
+	NewNode = "new-node"
+}
+
+export type FrontNode = {
+	path: string,
+	file: string,
+}
+
+export type FrontMessage = FrontNode & {
+	id: Mesages
+}
