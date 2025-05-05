@@ -12,6 +12,7 @@ export class HtmlTemplate implements ITemplate {
 	public getHtml(): string {
 		const uniqId = Crypto.getUniqID();
 		const cssContent = FrontUtil.getResourceContent(this.context, "index.css");
+		const graphContent = FrontUtil.getResourceContent(this.context, "graph.min.js");
 		const jsContent = FrontUtil.getResourceContent(this.context, "index.js");
 		const htmlContent = this.container.getContent().content;
 		const containerId = this.container.getContainerId();
@@ -23,17 +24,20 @@ export class HtmlTemplate implements ITemplate {
 						${cssContent}
 					</style>
 					<script nonce=${uniqId}>
+						${graphContent}
 						${jsContent}
 					</script>
 				</head>
 				<body>
-					<canvas id="canvas"></canvas>
+					<div id="graph"></div>
 					${htmlContent}
 				</body>
 				<script nonce=${uniqId}>
 					document.addEventListener("DOMContentLoaded", function() {
+						const $divGraph = document.getElementById("graph");
+						const graph = new ForceGraph($divGraph);
 						vscode = acquireVsCodeApi();
-						init("${containerId}", vscode);
+						init("${containerId}", vscode, graph);
 					});
 				</script>
 			</html>

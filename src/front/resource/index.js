@@ -1,12 +1,11 @@
-function init(mainContainerId, vscode) {
+function init(mainContainerId, vscode, Graph) {
 	const $mainContainer = document.getElementById(mainContainerId);
-	const $canvas = document.getElementById("canvas");
 
-	const container = new Container($mainContainer, $canvas, vscode);
+	const container = new Container($mainContainer, Graph, vscode);
 	container.init();
 }
 
-function Container($container, $canvas, vscode) {
+function Container($container, Graph, vscode) {
 	const getParents = ($nodes) => {
 		return $nodes.reduce((acc, $node) => {
 			const $parent = $node.closest(".node-container");
@@ -19,8 +18,7 @@ function Container($container, $canvas, vscode) {
 	const $collapse = Array.from($container.getElementsByClassName("node-collapse"));
 	const $parents = getParents($nodes);
 
-	const canvas = new Canvas($canvas);
-	const events = new MouseEvents($parents, canvas, vscode);
+	const events = new MouseEvents($parents, vscode);
 
 	return {
 		init: () => {
@@ -30,8 +28,6 @@ function Container($container, $canvas, vscode) {
 
 			$nodes.forEach($node => $node.onmousedown = events.onDown);
 			$collapse.forEach($div => $div.addEventListener("click", events.onCollapse));
-
-			canvas.drawEdges($parents);
 		},
 	}
 }
@@ -96,7 +92,7 @@ function Canvas(canvas) {
 	}
 }
 
-function MouseEvents($nodesContainer, canvas, vscodeApi) {
+function MouseEvents($nodesContainer, vscodeApi) {
 	const lastPostion = { x: 0, y: 0 };
 	let $currentNode = undefined;
 
@@ -132,8 +128,6 @@ function MouseEvents($nodesContainer, canvas, vscodeApi) {
 		$currentNode.style.left = $currentNode.offsetLeft + newX - lastPostion.x + "px";
 		$currentNode.style.top  = $currentNode.offsetTop  + newY - lastPostion.y + "px";
 		setLastMousePosition(newX, newY);
-
-		canvas.drawEdges($nodesContainer);
 	}
 
 	const onDropNode = () => {
@@ -154,13 +148,10 @@ function MouseEvents($nodesContainer, canvas, vscodeApi) {
 			$divContent.style.display = "block";
 			$divTitle.classList.add("node-expanded");
 		}
-
-		canvas.drawEdges($nodesContainer);
 	}
 
 	const onWindowResize = (currenWindow) => {
-		canvas.setSize(currenWindow.innerWidth, currenWindow.innerHeight);
-		canvas.drawEdges($nodesContainer);
+		
 	}
 
 	const onOpenNewNode = ($nodeSource) => {
