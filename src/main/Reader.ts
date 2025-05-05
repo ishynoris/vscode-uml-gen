@@ -21,6 +21,7 @@ export class Reader {
 			".gitignore",
 		];
 		this.ignoreDir = [
+			".git",
 			"tests",
 			"vendor",
 		]
@@ -37,7 +38,12 @@ export class Reader {
 	}
 
 	private readDirectory(absolutePath: string) {
-		const files = fs.readdirSync(absolutePath, "utf-8");
+		let files: string[];
+		try {
+			files = fs.readdirSync(absolutePath, "utf-8");
+		} catch (e) {
+			throw new Error(`Cannot read dir ${absolutePath}`);
+		}
 		
 		for (const key in files) {
 			const dirName = files[key];
@@ -48,12 +54,13 @@ export class Reader {
 			let filePath = `${absolutePath}/${files[key]}`;
 			const statSync = fs.statSync(filePath);
 
-			if (statSync.isDirectory()) {
-				this.readDirectory(filePath);
-				continue;
-			}
 			const extension = path.extname(filePath);
 			if (this.isInvalidFile(extension)) {
+				continue;
+			}
+
+			if (statSync.isDirectory()) {
+				this.readDirectory(filePath);
 				continue;
 			}
 
