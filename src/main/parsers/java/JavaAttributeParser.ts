@@ -35,8 +35,8 @@ export class JavaAttributeParser implements IParser<Attribute> {
 
 		return new Optional({
 			encapsulation: Encapsulation.to(groups.attr_encapsulation),
-			type: groups.type,
-			name: groups.name,
+			type: groups.attr_type,
+			name: groups.attr_name,
 			isFinal: classifier.includes("final"),
 			isStatic: classifier.includes("static"),
 			initialValue: groups.attr_initial ?? "",
