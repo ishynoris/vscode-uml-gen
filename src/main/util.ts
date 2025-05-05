@@ -72,7 +72,7 @@ export const Workspace = {
 			return null;
 		}
 
-		const path = folder.uri.path;
+		const path = folder.uri.fsPath;
 		return fileName == undefined ? path : `${path}/${fileName}`;
 	},
 

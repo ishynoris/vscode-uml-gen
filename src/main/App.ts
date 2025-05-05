@@ -1,8 +1,10 @@
 import { ExtensionContext as Context } from 'vscode';
 import { Commands, ICreatorFromFile } from "./Commands";
-import { FileMetadata } from "../common/types/backend.type"
+import { ClassMetadata, FileMetadata } from "../common/types/backend.type"
 import * as ParserFactory from './parsers/ParserFactory';
 import * as FrontEnd from '../front/Front';
+import { Optional } from '../common/types/classes.type';
+import { WindowErrors } from './util';
 
 export class App {
 	public readonly context: Context;
@@ -25,13 +27,22 @@ export class App {
 	private createUmlFromFile(): ICreatorFromFile {
 		const context = this.context;
 
+		const runWebview = (metadata: Optional<ClassMetadata>) => {
+			if (metadata.value == undefined) {
+				WindowErrors.showError(metadata.getMessage());
+				return;
+			}
+			FrontEnd.runWebview(context, metadata.value);
+		}
+
 		return {
 			create(file: FileMetadata) {
-				const classMetadataOpt = ParserFactory.parse(file);
-				if (classMetadataOpt.value == undefined) {
-					throw new Error(classMetadataOpt.getMessage());
+				try {
+					const classMetadataOpt = ParserFactory.parse(file);
+					runWebview(classMetadataOpt);
+				} catch (e) {
+					WindowErrors.showError(e);
 				}
-				FrontEnd.runWebview(context, classMetadataOpt.value);
 			}
 		}
 	}
