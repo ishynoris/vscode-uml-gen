@@ -5,7 +5,7 @@ import { HtmlTemplate } from "./core/templates/HtmlTemplate";
 import { Optional } from "../common/types/classes.type";
 import { parseFromPath } from "../main/parsers/ParserFactory";
 import { WindowErrors } from "../main/util";
-import { FrontMessage, FrontNode, Mesages } from "../common/types/frontend.type";
+import { FrontDataNode, MessagesUtil } from "../common/types/frontend.type";
 
 type CachePanels = {
 	[key: string]: NodeWebview
@@ -60,16 +60,17 @@ export class NodeWebview {
 }
 
 class MessagesProcessor {
-	static process(message: FrontMessage, context: ExtensionContext) {
-		if (message.id == Mesages.NewNode) {
-			NewNode.render(message, context);
+	static process(data: FrontDataNode, context: ExtensionContext) {
+		const consumer = new MessagesUtil(data);
+		if (consumer.isNewNode) {
+			NewNode.render(data, context);
 			return;
 		}
 	}
 }
 
 class NewNode {
-	static render(node: FrontNode, context: ExtensionContext) {
+	static render(node: FrontDataNode, context: ExtensionContext) {
 		if (!node.path) {
 			const message = `File path cannot be defined`;
 			WindowErrors.showMessage(message);

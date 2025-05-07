@@ -1,8 +1,8 @@
-import { ExtensionContext as Context, WebviewPanel } from "vscode";
-import { IContainer, ITemplate, VSCodeAPI } from "../../../common/types/frontend.type";
+import { ExtensionContext as Context } from "vscode";
+import { IContainer, ITemplate, MessagesUtil, VSCodeAPI } from "../../../common/types/frontend.type";
 import { Crypto, Front as FrontUtil } from "../../../main/util";
 
-declare const vscode: VSCodeAPI;
+declare const vscodeApi: VSCodeAPI;
 
 export class HtmlTemplate implements ITemplate {
 
@@ -23,8 +23,13 @@ export class HtmlTemplate implements ITemplate {
 					<style>
 						${cssContent}
 					</style>
-					<script nonce=${uniqId}>
+					<script nonce="data-${uniqId}">
+						const FrontMessages = ${MessagesUtil.asString()};
+					</script>
+					<script nonce="graph-${uniqId}">
 						${graphContent}
+					</script>
+					<script nonce="main-${uniqId}">
 						${jsContent}
 					</script>
 				</head>
@@ -36,8 +41,9 @@ export class HtmlTemplate implements ITemplate {
 					document.addEventListener("DOMContentLoaded", function() {
 						const $divGraph = document.getElementById("graph");
 						const graph = new ForceGraph($divGraph);
-						vscode = acquireVsCodeApi();
-						init("${containerId}", vscode, graph);
+
+						vscodeApi = acquireVsCodeApi();
+						init("${containerId}", vscodeApi, graph);
 					});
 				</script>
 			</html>

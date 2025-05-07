@@ -1,4 +1,4 @@
-import { KeyManyValues } from "./general.types";
+import { KeyManyValues, KeyValue } from "./general.types";
 
 type TextAlign = "center" | "end" | "justify" | "left" | "right";
 
@@ -62,15 +62,29 @@ export type VSCodeAPI = {
 	setState(state: any): void;
 };
 
-export enum Mesages {
-	NewNode = "new-node"
+export enum Messages {
+	NewNode = "new-node",
 }
 
-export type FrontNode = {
-	path: string,
-	file: string,
+export type FrontDataNode = {
+	path?: string,
+	file?: string,
+	message?: Messages,
 }
 
-export type FrontMessage = FrontNode & {
-	id: Mesages
+export class MessagesUtil {
+
+	public readonly isNewNode: boolean
+
+	constructor(private data: FrontDataNode) {
+		this.isNewNode = this.data.message == Messages.NewNode;
+	}
+
+	static asString(): string {
+		return JSON.stringify(Messages);
+	}
+
+	static asJSON(): string {
+		return JSON.parse(MessagesUtil.asString());
+	}
 }
