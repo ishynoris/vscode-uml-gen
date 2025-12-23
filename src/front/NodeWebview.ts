@@ -1,5 +1,5 @@
 import { ExtensionContext, ViewColumn, WebviewOptions, WebviewPanel, WebviewPanelOptions, window } from "vscode";
-import { ClassMetadata } from "../common/types/backend.type";
+import { ClassDetail, ClassMetadata } from "../common/types/backend.type";
 import { MainComponent } from "./core/components/MainComponent";
 import { HtmlTemplate } from "./core/templates/HtmlTemplate";
 import { Optional } from "../common/types/classes.type";
@@ -29,10 +29,11 @@ export class NodeWebview {
 
 		this.panel = window.createWebviewPanel("uml-gen", title, ViewColumn.Beside, options);
 		this.panel.webview.onDidReceiveMessage(message => MessagesProcessor.process(message, context));
+		this.panel.onDidDispose(e => NodeWebview.delete(metadata));
 	}
 
 	public static create(metadata: ClassMetadata, context: ExtensionContext): NodeWebview {
-		const tag = `webview-${metadata.detail.name}`;
+		const tag = createWebviewTag(metadata.detail);
 		if (NodeWebview.panels[tag] == undefined) {
 			NodeWebview.panels[tag] = new NodeWebview(metadata, context);
 		}
@@ -57,6 +58,17 @@ export class NodeWebview {
 		this.panel.webview.html = template.getHtml();
 		this.panel.reveal();
 	}
+
+	private static delete(metadata: ClassMetadata): NodeWebview {
+		const tag = createWebviewTag(metadata.detail);
+		const panel = this.panels[tag];
+		delete(this.panels[tag]);
+		return panel;
+	}
+}
+
+function createWebviewTag(detail: ClassDetail): string {
+	return `webview_${detail.name}`;
 }
 
 class MessagesProcessor {
