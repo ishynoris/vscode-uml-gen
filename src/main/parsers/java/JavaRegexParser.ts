@@ -1,19 +1,27 @@
 import { Args, Method } from "../../../common/types/backend.type";
 import { Optional } from "../../../common/types/classes.type";
-import { Allowed, Encapsulation } from "../../../common/types/encapsulation.types";
-import { KeyValue } from "../../../common/types/general.types";
+import { Allowed } from "../../../common/types/encapsulation.types";
 import { IParser } from "../../../common/types/interfaces.type";
 import { Regex } from "../../util";
+import { RegexGroups } from "../ParserFileRegex";
+
+enum Attrs {
+	encapsulation = "method_encapsulation",
+	detail = "method_detail",
+	return = "method_return",
+	name = "method_name",
+	args = "method_args",
+}
 
 export class JavaRegexParser  implements IParser<Method> {
 
 	constructor(private types: Allowed[]) {
 	}
 
-	hasRequiredValues(groups: KeyValue): boolean {
-		return groups.method_encapsulation != undefined
-			&& groups.method_return != undefined
-			&& groups.method_name != undefined
+	hasRequiredValues(groups: RegexGroups): boolean {
+		return groups.has(Attrs.encapsulation)
+			&& groups.has(Attrs.return)
+			&& groups.has(Attrs.name);
 	}
 
 	public getPatternRegex(): string {
@@ -23,24 +31,25 @@ export class JavaRegexParser  implements IParser<Method> {
 		const methodName = `[${Regex.Letters}${Regex.Numbers}_]+`;
 		const args = `[${Regex.Letters}\\[\\]@<> ,]*`;
 
-		return `(?<method_encapsulation>${encapsulation})${Regex.BlankReq}`
-			+ `(?<method_detail>${detail})${Regex.BlankOp}`
-			+ `(?<method_return>${returnKey})${Regex.BlankReq}`
-			+ `(?<method_name>${methodName})${Regex.BlankOp}`
-			+ `${Regex.OpenArgs}(?<method_args>${args})${Regex.CloseArgs}${Regex.BlankOp}`
+		return `(?<${Attrs.encapsulation}>${encapsulation})${Regex.BlankReq}`
+			+ `(?<${Attrs.detail}>${detail})${Regex.BlankOp}`
+			+ `(?<${Attrs.return}>${returnKey})${Regex.BlankReq}`
+			+ `(?<${Attrs.name}>${methodName})${Regex.BlankOp}`
+			+ `${Regex.OpenArgs}(?<${Attrs.args}>${args})${Regex.CloseArgs}${Regex.BlankOp}`
 			+ `${Regex.Anything}${Regex.OpenBlock}`;
 	}
 
-	public getValue(group: KeyValue): Optional<Method> {
-		const detail = group.method_detail;
+	public getValue(group: RegexGroups): Optional<Method> {
+		const detail = group.get(Attrs.detail);
+		const args = group.get(Attrs.args);
 
 		return new Optional<Method>({
-			name: group.method_name,
+			name: group.get(Attrs.name),
 			isAbstract: detail.includes("abstract"),
 			isStatic: detail.includes("static"),
-			returnType: group.method_return,
-			encapsulation: Encapsulation.to(group.method_encapsulation),
-			args: this.processArgs(group.method_args ?? ""),
+			returnType: group.get(Attrs.return),
+			encapsulation: group.asEncapsulation(Attrs.encapsulation),
+			args: this.processArgs(args),
 		});
 	}
 

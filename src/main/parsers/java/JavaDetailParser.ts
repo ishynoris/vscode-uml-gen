@@ -1,16 +1,23 @@
 import { ClassDetail } from "../../../common/types/backend.type";
 import { Optional } from "../../../common/types/classes.type";
 import { Allowed } from "../../../common/types/encapsulation.types";
-import { KeyValue } from "../../../common/types/general.types";
 import { IParser } from "../../../common/types/interfaces.type";
 import { Regex } from "../../util";
+import { RegexGroups } from "../ParserFileRegex";
+
+enum Attr {
+	encap = "cls_encap",
+	details = "cls_details",
+	name = "cls_name",
+	inherit = "cls_inherit",
+}
 
 export class JavaDetailParser implements IParser<ClassDetail> {
 
 	constructor(private type: Allowed[]) { }
 
-	hasRequiredValues(groups: KeyValue): boolean {
-		return groups.cls_name != undefined;
+	hasRequiredValues(groups: RegexGroups): boolean {
+		return groups.has(Attr.name);
 	}
 
 	getPatternRegex(): string {
@@ -18,17 +25,17 @@ export class JavaDetailParser implements IParser<ClassDetail> {
 		const signature = `((static class)|(abstract class)|interface|enum|class)`;
 		const name = `[${Regex.Letters}${Regex.Numbers}]+`;
 
-		return `(?<cls_encap>${encapsulation})${Regex.BlankReq}`
-			+ `(?<cls_details>${signature})${Regex.BlankReq}`
-			+ `(?<cls_name>${name})${Regex.BlankOp}`
-			+ `(?<cls_inherit>${Regex.Anything})${Regex.OpenBlock}`;
+		return `(?<${Attr.encap}>${encapsulation})${Regex.BlankReq}`
+			+ `(?<${Attr.details}>${signature})${Regex.BlankReq}`
+			+ `(?<${Attr.name}>${name})${Regex.BlankOp}`
+			+ `(?<${Attr.inherit}>${Regex.Anything})${Regex.OpenBlock}`;
 	}
 
-	getValue(groups: KeyValue): Optional<ClassDetail> {
-		const details = groups.cls_details ?? "";
+	getValue(groups: RegexGroups): Optional<ClassDetail> {
+		const details = groups.get(Attr.details);
 
 		return new Optional({
-			name: groups.cls_name,
+			name: groups.get(Attr.name),
 			isAbstract: details.includes("abstract"),
 			isInterface: details.includes("interface"),
 			isStatic: details.includes("static"),
