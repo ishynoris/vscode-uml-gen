@@ -1,9 +1,9 @@
 import { ClassMetadata, FileMetadata } from "../../common/types/backend.type";
 import { Optional } from "../../common/types/classes.type";
-import { KeyValue } from "../../common/types/general.types";
-import { IParser, IParserFile } from "../../common/types/interfaces.type";
+import { IParserFile } from "../../common/types/interfaces.type";
 import { Mock } from "../../common/types/mock.types";
 import { FileReader } from "../util";
+import { RegexGroups, ParserFileRegex } from "./ParserFileRegex";
 
 
 export class ParserFile {
@@ -26,18 +26,16 @@ export class ParserFile {
 			return new Optional<ClassMetadata>(undefined, content.errors);
 		}
 		
-		let expression, 
-			detailExecuted = false,
+		let detailExecuted = false,
 			namespaceExecuted = false;
 		
-		const regex = this.getRegex();
-		while ((expression = regex.exec(content.value)) != null) {
-			const groups = expression.groups;
+		const regex = new ParserFileRegex(content.value, this.parser);
+		while (regex.hasNextExpression()) {
+			const groups = regex.getExpression();
 			if (groups == undefined) {
-				this.errors.push(`Cannot parse regex "${regex.source}"`);
+				this.errors.push(`Cannot parse regex "${regex.getCurrentSource()}"`);
 				break;
 			}
-
 
 			if (!detailExecuted) {
 				detailExecuted = this.defineClassName(groups);
@@ -55,7 +53,7 @@ export class ParserFile {
 		return new Optional(this.result, this.errors);
 	}
 
-	protected defineClassName(groups: KeyValue): boolean {
+	protected defineClassName(groups: RegexGroups): boolean {
 		const parser = this.parser.getDetailParser();
 		if (!parser.hasRequiredValues(groups)) {
 			return false;
@@ -70,7 +68,7 @@ export class ParserFile {
 		return true;
 	}
 
-	protected defineNamespace(groups: KeyValue): boolean {
+	protected defineNamespace(groups: RegexGroups): boolean {
 		const parser = this.parser.getNamespacePareser();
 		if (!parser.hasRequiredValues(groups)) {
 			return false;
@@ -84,7 +82,7 @@ export class ParserFile {
 		return true;
 	}
 
-	protected defineAttributes(groups: KeyValue) {
+	protected defineAttributes(groups: RegexGroups) {
 		const parser = this.parser.getAttributeParser();
 		if (!parser.hasRequiredValues(groups)) {
 			return;
@@ -97,7 +95,7 @@ export class ParserFile {
 		this.errors.push(...attribute.errors);
 	}
 
-	protected defineImports(groups: KeyValue) {
+	protected defineImports(groups: RegexGroups) {
 		const parser = this.parser.getImportParser();
 		if (!parser.hasRequiredValues(groups)) {
 			return;
@@ -110,7 +108,7 @@ export class ParserFile {
 		this.errors.push(...imports.errors);
 	}
 
-	protected defineMethod(groups: KeyValue) {
+	protected defineMethod(groups: RegexGroups) {
 		const parser = this.parser.getMethodParser();
 		if (!parser.hasRequiredValues(groups)) {
 			return;
@@ -121,20 +119,5 @@ export class ParserFile {
 			this.result.methods.push(method.value);
 		}
 		this.errors.push(...method.errors);
-	}
-
-	private getRegex(): RegExp {
-		const regexNamespace = this.parser.getNamespacePareser().getPatternRegex();
-		const regexDetail = this.parser.getDetailParser().getPatternRegex();
-		const regexAttribute = this.parser.getAttributeParser().getPatternRegex();
-		const regexMethod = this.parser.getMethodParser().getPatternRegex();
-		const regexImport = this.parser.getImportParser().getPatternRegex();
-
-		const pattern = `(${regexNamespace})`
-			+ `|(${regexDetail})`
-			+ `|(${regexImport})`
-			+ `|(${regexAttribute})`
-			+ `|(${regexMethod})`;
-		return new RegExp(pattern, "gi");
 	}
 }
