@@ -1,19 +1,27 @@
-import { KeyValue } from "../../../common/types/general.types";
 import { Attribute } from "../../../common/types/backend.type";
-import { Allowed, Encapsulation } from "../../../common/types/encapsulation.types";
+import { Allowed } from "../../../common/types/encapsulation.types";
 import { IParser } from "../../../common/types/interfaces.type";
 import { Regex } from "../../util";
 import { Optional } from "../../../common/types/classes.type";
+import { RegexGroups } from "../ParserFileRegex";
+
+enum Def {
+	encapsulation = "attr_encapsulation",
+	classifier = "attr_classifier",
+	type = "attr_type",
+	name = "attr_name",
+	initial = "attr_initial",
+}
 
 export class JavaAttributeParser implements IParser<Attribute> {
 
 	constructor(private types: Allowed[]) {
 	}
 
-	hasRequiredValues(groups: KeyValue): boolean {
-		return groups.attr_encapsulation != undefined
-			&& groups.attr_type != undefined
-			&& groups.attr_name != undefined
+	hasRequiredValues(groups: RegexGroups): boolean {
+		return groups.has(Def.encapsulation)
+			&& groups.has(Def.type)
+			&& groups.has(Def.name)
 	}
 
 	public getPatternRegex(): string {
@@ -23,23 +31,23 @@ export class JavaAttributeParser implements IParser<Attribute> {
 		const nameVar = `[${Regex.Letters}${Regex.Numbers}_]+`;
 		const initialVal = `=${Regex.Anything}`;
 
-		return `(?<attr_encapsulation>${encapsulation})${Regex.BlankReq}`
-			+ `(?<attr_classifier>${classifier})?${Regex.BlankOp}`
-			+ `(?<attr_type>${typesVar})${Regex.BlankReq}`
-			+ `(?<attr_name>${nameVar})${Regex.BlankOp}`
-			+ `(?<attr_initial>${initialVal})?;`;
+		return `(?<${Def.encapsulation}>${encapsulation})${Regex.BlankReq}`
+			+ `(?<${Def.classifier}>${classifier})?${Regex.BlankOp}`
+			+ `(?<${Def.type}>${typesVar})${Regex.BlankReq}`
+			+ `(?<${Def.name}>${nameVar})${Regex.BlankOp}`
+			+ `(?<${Def.initial}>${initialVal})?;`;
 	}
 
-	public getValue(groups: KeyValue): Optional<Attribute> {
-		const classifier = groups.attr_classifier ?? "";
+	public getValue(groups: RegexGroups): Optional<Attribute> {
+		const classifier = groups.get(Def.classifier, "");
 
 		return new Optional({
-			encapsulation: Encapsulation.to(groups.attr_encapsulation),
-			type: groups.type,
-			name: groups.name,
+			encapsulation: groups.asEncapsulation(Def.encapsulation),
+			type: groups.get(Def.type),
+			name: groups.get(Def.name),
 			isFinal: classifier.includes("final"),
 			isStatic: classifier.includes("static"),
-			initialValue: groups.attr_initial ?? "",
+			initialValue: groups.get(Def.initial),
 		});
 	}
 }

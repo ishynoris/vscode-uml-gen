@@ -1,4 +1,4 @@
-import { KeyValue } from "./general.types";
+import { RegexGroups } from "../../main/parsers/ParserFileRegex";
 import { Attribute, ClassDetail, FileMetadata, Method, Namespace, Package } from "./backend.type";
 import { Optional } from "./classes.type";
 
@@ -17,9 +17,9 @@ export interface IParserFile {
 export interface IParser<T> {
 	getPatternRegex(): string;
 
-	getValue(groups: KeyValue): Optional<T>;
+	getValue(groups: RegexGroups): Optional<T>;
 
-	hasRequiredValues(groups: KeyValue): boolean;
+	hasRequiredValues(groups: RegexGroups): boolean;
 
 	validator?: (value: T) => string[],
 }

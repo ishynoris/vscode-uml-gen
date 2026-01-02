@@ -54,13 +54,13 @@ export class Reader {
 			let filePath = `${absolutePath}/${files[key]}`;
 			const statSync = fs.statSync(filePath);
 
-			const extension = path.extname(filePath);
-			if (this.isInvalidFile(extension)) {
+			if (statSync.isDirectory()) {
+				this.readDirectory(filePath);
 				continue;
 			}
 
-			if (statSync.isDirectory()) {
-				this.readDirectory(filePath);
+			const extension = path.extname(filePath);
+			if (this.isInvalidFile(extension)) {
 				continue;
 			}
 
