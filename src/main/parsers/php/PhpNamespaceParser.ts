@@ -1,14 +1,17 @@
 import { Namespace } from "../../../common/types/backend.type";
 import { Optional } from "../../../common/types/classes.type";
-import { KeyValue } from "../../../common/types/general.types";
 import { IParser } from "../../../common/types/interfaces.type";
 import { Regex } from "../../util";
+import { RegexGroups } from "../ParserFileRegex";
+
+enum Def {
+	namespace = "_namespace",
+}
 
 export class PhpNamespaceParser implements IParser<Namespace> {
-	
 
-	hasRequiredValues(groups: KeyValue): boolean {
-		return groups._namespace != undefined;
+	hasRequiredValues(groups: RegexGroups): boolean {
+		return groups.has(Def.namespace);
 	}
 	
 	getPatternRegex(): string {
@@ -17,8 +20,8 @@ export class PhpNamespaceParser implements IParser<Namespace> {
 		return `namespace${Regex.BlankReq}(?<_namespace>${namespacePatter});`
 	}
 
-	getValue(groups: KeyValue): Optional<Namespace> {
-		const namespace = groups._namespace ?? "";
+	getValue(groups: RegexGroups): Optional<Namespace> {
+		const namespace = groups.get(Def.namespace);
 		const parts = namespace == "" ? [] : namespace.split("\\");
 		return new Optional<Namespace>({ parts: parts });
 	}

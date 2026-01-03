@@ -5,14 +5,23 @@ import { Extensions } from "../../../common/types/extension.type";
 import { KeyValue } from "../../../common/types/general.types";
 import { IParser } from "../../../common/types/interfaces.type";
 import { Regex } from "../../util";
+import { RegexGroups } from "../ParserFileRegex";
+
+enum Def {
+	enc = "_attr_encap",
+	clss = "_attr_classifier",
+	type= "_attr_type",
+	name = "_attr_name",
+	init = "_attr_initial",
+}
 
 export class PhpAttributeParser implements IParser<Attribute> {
 
 	constructor(private types: Types[]) { }
 
-	hasRequiredValues(groups: KeyValue): boolean {
-		return groups._attr_encap != undefined
-			&& groups._attr_name != undefined
+	hasRequiredValues(groups: RegexGroups): boolean {
+		return groups.has(Def.enc)
+			&& groups.has(Def.name)
 	}
 
 	getPatternRegex(): string {
@@ -24,24 +33,24 @@ export class PhpAttributeParser implements IParser<Attribute> {
 		const nameVar = `\\$[${Regex.Letters}${Regex.Numbers}${characters}]+`;
 		const initialVal = `=${Regex.Anything}`;
 
-		return `(?<_attr_encap>${encapsulation})${Regex.BlankReq}`
-			+ `(?<_attr_classifier>${classifiverVar})?${Regex.BlankOp}`
-			+ `(?<_attr_type>${typeVar}${Regex.BlankReq})?`
-			+ `(?<_attr_name>${nameVar}${Regex.BlankOp})`
-			+ `(?<_attr_initial>${initialVal})?;`;
+		return `(?<${Def.enc}>${encapsulation})${Regex.BlankReq}`
+			+ `(?<${Def.clss}>${classifiverVar})?${Regex.BlankOp}`
+			+ `(?<${Def.type}>${typeVar}${Regex.BlankReq})?`
+			+ `(?<${Def.name}>${nameVar}${Regex.BlankOp})`
+			+ `(?<${Def.init}>${initialVal})?;`;
 	}
 
-	getValue(groups: KeyValue): Optional<Attribute> {
-		const _encap = groups._attr_encap ?? "";
-		const _initial = groups._attr_initial ?? "";
-		const _classifier = groups._attr_classifier ?? "";
+	getValue(groups: RegexGroups): Optional<Attribute> {
+		const _encap = groups.get(Def.enc)
+		const _initial = groups.get(Def.init)
+		const _classifier = groups.get(Def.clss)
 
 		const initialVal = _initial.length > 0 ? _initial.replace("=", "").trim() : undefined;
 
 		const attr = {
-			name: groups._attr_name,
-			type: groups._attr_type ?? "",
-			encapsulation: Encapsulation.to(_encap.length > 0 ? _encap : undefined),
+			name: groups.get(Def.name),
+			type: groups.get(Def.type),
+			encapsulation: groups.asEncapsulation(Def.enc),
 			isStatic: _classifier.includes("static"),
 			isFinal: _classifier.includes("final"),
 			initialValue: initialVal,
