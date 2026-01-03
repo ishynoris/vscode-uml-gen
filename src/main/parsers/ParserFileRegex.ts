@@ -27,6 +27,11 @@ export class ParserFileRegex {
 
 	public getExpression(): RegexGroups {
 		const groups = this.currentExpression?.groups;
+		for (const key in groups) {
+			if (groups[key] == undefined) {
+				delete(groups[key]);
+			}
+		}
 		return new RegexGroups(groups);
 	}
 	
