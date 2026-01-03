@@ -1,20 +1,27 @@
 import { Args, Method } from "../../../common/types/backend.type";
 import { Optional } from "../../../common/types/classes.type";
-import { Allowed, Encapsulation } from "../../../common/types/encapsulation.types";
-import { KeyValue } from "../../../common/types/general.types";
+import { Allowed } from "../../../common/types/encapsulation.types";
 import { IParser } from "../../../common/types/interfaces.type";
 import { Regex } from "../../util";
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+import { RegexGroups } from "../ParserFileRegex";
+
+enum Def { 
+	enc = "_mtd_encapsulation",
+	name = "_mtd_name",
+	args = "_mtd_args",
+	ret = "_mtd_return",
+}
+
 export class PhpRegexPareser implements IParser<Method> {
 
 	constructor(private types: Allowed[]) {
 	}
 
-	hasRequiredValues(groups: KeyValue): boolean {
-		return groups._mtd_encapsulation != undefined
-			&& groups._mtd_name != undefined
-			&& groups._mtd_args != undefined
-			&& groups._mtd_return != undefined
+	hasRequiredValues(groups: RegexGroups): boolean {
+		return groups.has(Def.enc)
+			&& groups.has(Def.name)
+			&& groups.has(Def.args)
+			&& groups.has(Def.args)
 	}
 
 	public getPatternRegex(): string {
@@ -26,26 +33,27 @@ export class PhpRegexPareser implements IParser<Method> {
 		const methodName = `[${Regex.Letters}${Regex.Numbers}_]+`;
 		const manyArgs = `[${Regex.Letters}${Regex.Numbers}${speacialChars}]*`
 
-		return `(?<_mtd_encapsulation>(${encapsulation}))` 
+		return `(?<${Def.enc}>(${encapsulation}))` 
 			+ `${classifier}${functionKey}`
-			+ `${Regex.BlankReq}(?<_mtd_name>${methodName})${Regex.BlankOp}`
-			+ `${Regex.OpenArgs}(?<_mtd_args>${manyArgs})${Regex.CloseArgs}${Regex.BlankOp}`
-			+ `(:${Regex.BlankOp}(?<_mtd_return>${manyArgs}))?${Regex.OpenBlock}`;
+			+ `${Regex.BlankReq}(?<${Def.name}>${methodName})${Regex.BlankOp}`
+			+ `${Regex.OpenArgs}(?<${Def.args}>${manyArgs})${Regex.CloseArgs}${Regex.BlankOp}`
+			+ `(:${Regex.BlankOp}(?<${Def.ret}>${manyArgs}))?${Regex.OpenBlock}`;
 	}
 
-	public getValue(group: KeyValue): Optional<Method> {
-		const returnType = (group._mtd_return ?? "void")
+	public getValue(group: RegexGroups): Optional<Method> {
+		const returnType = group.get(Def.ret, "void")
 			.replaceAll("\n", "")
 			.replaceAll("\t", "")
 			.trim();
+		const args = group.get(Def.args);
 
 		const method = {
 			isAbstract: false,
 			isStatic: false,
-			name: group._mtd_name,
-			args: this.processArgs(group._mtd_args),
+			name: group.get(Def.name),
+			args: this.processArgs(args),
 			returnType: returnType,
-			encapsulation: Encapsulation.to(group._mtd_encapsulation)
+			encapsulation: group.asEncapsulation(Def.enc),
 		}
 		return new Optional(method);
 	}
