@@ -3,6 +3,7 @@ import { ClassMetadata, FileMetadata, Method, Namespace } from "./backend.type"
 import { Optional } from "./classes.type"
 import { KeyValue } from "./general.types"
 import { IParser, IParserFile } from "./interfaces.type"
+import { RegexGroups } from "./../../parsers/ParserFileRegex"
 
 export const Mock = {
 	method: (): Method => {
@@ -53,7 +54,7 @@ export const Mock = {
 				return false;
 			},
 
-			getValue(group: KeyValue): Optional<T> {
+			getValue(group: RegexGroups): Optional<T> {
 				return new Optional<T>;
 			}, 
 			validator(value: T): string[] {

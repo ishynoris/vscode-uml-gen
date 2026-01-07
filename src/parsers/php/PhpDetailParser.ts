@@ -1,8 +1,8 @@
-import { ClassDetail } from "../../../common/types/backend.type";
-import { Optional } from "../../../common/types/classes.type";
-import { Types } from "../../../common/types/encapsulation.types";
-import { IParser } from "../../../common/types/interfaces.type";
-import { Regex } from "../../util";
+import { ClassDetail } from "../../common/types/backend.type";
+import { Optional } from "../../common/types/classes.type";
+import { Types } from "../../common/types/encapsulation.types";
+import { IParser } from "../../common/types/interfaces.type";
+import { Regex } from "../../main/util";
 import { RegexGroups } from "../ParserFileRegex";
 
 enum Def {

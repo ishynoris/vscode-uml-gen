@@ -3,11 +3,11 @@ import { WorkspaceFiles } from "../common/types/classes.type";
 import { Extensions } from "../common/types/extension.type";
 import { KeyValue } from "../common/types/general.types";
 import { IPackageMapper, IParserFile } from "../common/types/interfaces.type";
-import { JavaPackageMapper } from "./parsers/java/JavaPackageMapper";
-import { JavaParser } from "./parsers/java/JavaParser";
-import { ParserFile } from "./parsers/ParserFile";
-import { PhpPackageMapper } from "./parsers/php/PhpPackageMapper";
-import { PhpParser } from "./parsers/php/PhpParser";
+import { JavaPackageMapper } from "./../parsers/java/JavaPackageMapper";
+import { JavaParser } from "./../parsers/java/JavaParser";
+import { ParserFile } from "./../parsers/ParserFile";
+import { PhpPackageMapper } from "./../parsers/php/PhpPackageMapper";
+import { PhpParser } from "./../parsers/php/PhpParser";
 import { Reader } from "./Reader";
 import { Workspace } from "./util";
 

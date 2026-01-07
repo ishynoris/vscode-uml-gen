@@ -1,13 +1,13 @@
-import { IParser, IParserFile } from "../../../common/types/interfaces.type";
+import { IParser, IParserFile } from "../../common/types/interfaces.type";
 import { PhpRegexPareser } from "./PhpRegexParser";
-import { Types } from "../../../common/types/encapsulation.types";
+import { Types } from "../../common/types/encapsulation.types";
 import { PhpDetailParser } from "./PhpDetailParser";
 import { PhpImportsParser } from "./PhpImportsParser";
-import { WorkspaceFiles } from "../../../common/types/classes.type";
+import { WorkspaceFiles } from "../../common/types/classes.type";
 import { PhpAttributeParser } from "./PhpAttributeParser";
-import { Attribute, ClassDetail, Method, Namespace, Package } from "../../../common/types/backend.type";
+import { Attribute, ClassDetail, Method, Namespace, Package } from "../../common/types/backend.type";
 import { PhpPackageMapper } from "./PhpPackageMapper";
-import { Workspace } from "../../util";
+import { Workspace } from "../../main/util";
 import { PhpNamespaceParser } from "./PhpNamespaceParser";
 
 export class PhpParser implements IParserFile {

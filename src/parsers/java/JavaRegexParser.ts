@@ -1,8 +1,8 @@
-import { Args, Method } from "../../../common/types/backend.type";
-import { Optional } from "../../../common/types/classes.type";
-import { Allowed } from "../../../common/types/encapsulation.types";
-import { IParser } from "../../../common/types/interfaces.type";
-import { Regex } from "../../util";
+import { Args, Method } from "../../common/types/backend.type";
+import { Optional } from "../../common/types/classes.type";
+import { Allowed } from "../../common/types/encapsulation.types";
+import { IParser } from "../../common/types/interfaces.type";
+import { Regex } from "../../main/util";
 import { RegexGroups } from "../ParserFileRegex";
 
 enum Attrs {

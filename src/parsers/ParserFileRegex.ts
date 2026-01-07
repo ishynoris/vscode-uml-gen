@@ -1,6 +1,6 @@
-import { Allowed, Encapsulation } from "../../common/types/encapsulation.types";
-import { KeyValue } from "../../common/types/general.types";
-import { IParserFile } from "../../common/types/interfaces.type";
+import { Allowed, Encapsulation } from "../common/types/encapsulation.types";
+import { KeyValue } from "../common/types/general.types";
+import { IParserFile } from "../common/types/interfaces.type";
 
 export class ParserFileRegex {
 

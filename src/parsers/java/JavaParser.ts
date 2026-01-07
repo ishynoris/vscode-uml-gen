@@ -1,11 +1,11 @@
 import { JavaRegexParser } from "./JavaRegexParser";
-import { Types } from "../../../common/types/encapsulation.types";
+import { Types } from "../../common/types/encapsulation.types";
 import { JavaImportParser } from "./JavaImportParser";
 import { JavaAttributeParser } from "./JavaAttributeParser";
-import { IParser, IParserFile } from "../../../common/types/interfaces.type";
+import { IParser, IParserFile } from "../../common/types/interfaces.type";
 import { JavaDetailParser } from "./JavaDetailParser";
-import { WorkspaceFiles } from "../../../common/types/classes.type";
-import { Attribute, ClassDetail, Method, Namespace, Package } from "../../../common/types/backend.type";
+import { WorkspaceFiles } from "../../common/types/classes.type";
+import { Attribute, ClassDetail, Method, Namespace, Package } from "../../common/types/backend.type";
 import { JavaPackageMapper } from "./JavaPackageMapper";
 import { JavaNamespaceParser } from "./JavaNamespaceParser";
 

@@ -1,4 +1,4 @@
-import { RegexGroups } from "../../main/parsers/ParserFileRegex";
+import { RegexGroups } from "../../parsers/ParserFileRegex";
 import { Attribute, ClassDetail, FileMetadata, Method, Namespace, Package } from "./backend.type";
 import { Optional } from "./classes.type";
 
