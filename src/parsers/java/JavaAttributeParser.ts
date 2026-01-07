@@ -1,8 +1,5 @@
-import { Attribute } from "../../common/types/backend.type";
-import { Allowed } from "../../common/types/encapsulation.types";
-import { IParser } from "../../common/types/interfaces.type";
+import { Attribute, Allowed, IParser,  Optional } from "../../common/types";
 import { Regex } from "../../main/util";
-import { Optional } from "../../common/types/classes.type";
 import { RegexGroups } from "../ParserFileRegex";
 
 enum Def {

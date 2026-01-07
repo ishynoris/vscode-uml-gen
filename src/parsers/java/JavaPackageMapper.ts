@@ -1,6 +1,4 @@
-import { FileMetadata } from "../../common/types/backend.type";
-import { WorkspaceFiles } from "../../common/types/classes.type";
-import { IPackageMapper } from "../../common/types/interfaces.type";
+import { FileMetadata, WorkspaceFiles, IPackageMapper } from "../../common/types";
 import { Workspace } from "../../main/util";
 
 export class JavaPackageMapper implements IPackageMapper {
