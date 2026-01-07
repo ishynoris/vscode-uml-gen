@@ -1,6 +1,4 @@
-import { Package } from "../../common/types/backend.type";
-import { Optional } from "../../common/types/classes.type";
-import { IPackageMapper, IParser } from "../../common/types/interfaces.type";
+import { Package, Optional, IPackageMapper, IParser } from "../../common/types";
 import { Regex } from "../../main/util";
 import { RegexGroups } from "../ParserFileRegex";
 

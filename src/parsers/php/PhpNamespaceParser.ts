@@ -1,6 +1,4 @@
-import { Namespace } from "../../common/types/backend.type";
-import { Optional } from "../../common/types/classes.type";
-import { IParser } from "../../common/types/interfaces.type";
+import { Namespace, Optional, IParser } from "../../common/types";
 import { Regex } from "../../main/util";
 import { RegexGroups } from "../ParserFileRegex";
 

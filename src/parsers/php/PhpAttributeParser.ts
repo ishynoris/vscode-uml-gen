@@ -1,7 +1,4 @@
-import { Attribute } from "../../common/types/backend.type";
-import { Optional } from "../../common/types/classes.type";
-import { Types } from "../../common/types/encapsulation.types";
-import { IParser } from "../../common/types/interfaces.type";
+import { Attribute, Optional, Types, IParser } from "../../common/types";
 import { Regex } from "../../main/util";
 import { RegexGroups } from "../ParserFileRegex";
 
