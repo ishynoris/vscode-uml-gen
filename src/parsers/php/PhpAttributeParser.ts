@@ -1,10 +1,5 @@
-import { Attribute } from "../../../common/types/backend.type";
-import { Optional } from "../../../common/types/classes.type";
-import { Encapsulation, Types } from "../../../common/types/encapsulation.types";
-import { Extensions } from "../../../common/types/extension.type";
-import { KeyValue } from "../../../common/types/general.types";
-import { IParser } from "../../../common/types/interfaces.type";
-import { Regex } from "../../util";
+import { Attribute, Optional, Types, IParser } from "../../common/types";
+import { Regex } from "../../main/util";
 import { RegexGroups } from "../ParserFileRegex";
 
 enum Def {

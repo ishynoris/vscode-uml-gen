@@ -3,7 +3,7 @@ import { ClassDetail, ClassMetadata } from "../common/types/backend.type";
 import { MainComponent } from "./core/components/MainComponent";
 import { HtmlTemplate } from "./core/templates/HtmlTemplate";
 import { Optional } from "../common/types/classes.type";
-import { parseFromPath } from "../main/parsers/ParserFactory";
+import { parseFromPath } from "../parsers/ParserFactory";
 import { WindowErrors } from "../main/util";
 import { FrontMessage, FrontNode, Mesages } from "../common/types/frontend.type";
 

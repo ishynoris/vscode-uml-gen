@@ -1,8 +1,5 @@
-import { ClassMetadata, FileMetadata } from "../../common/types/backend.type";
-import { Optional } from "../../common/types/classes.type";
-import { IParserFile } from "../../common/types/interfaces.type";
-import { Mock } from "../../common/types/mock.types";
-import { FileReader } from "../util";
+import { ClassMetadata, FileMetadata, Optional, IParserFile, Mock } from "../common/types";
+import { FileReader } from "../main/util";
 import { RegexGroups, ParserFileRegex } from "./ParserFileRegex";
 
 

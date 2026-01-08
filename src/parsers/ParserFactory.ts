@@ -1,7 +1,6 @@
-import { ClassMetadata, FileMetadata } from "../../common/types/backend.type";
-import { Optional } from "../../common/types/classes.type";
-import { Container } from "../Container";
-import { FileFactory } from "../util";
+import { ClassMetadata, FileMetadata, Optional } from "../common/types";
+import { Container } from "../main/Container";
+import { FileFactory } from "../main/util";
 import { ParserFile } from "./ParserFile";
 
 export function getParser(file: FileMetadata): ParserFile {

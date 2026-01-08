@@ -1,10 +1,10 @@
 import { ExtensionContext as Context } from 'vscode';
 import { Commands, ICreatorFromFile } from "./Commands";
 import { ClassMetadata, FileMetadata } from "../common/types/backend.type"
-import * as ParserFactory from './parsers/ParserFactory';
-import * as FrontEnd from '../front/Front';
+import * as ParserFactory from '../parsers/ParserFactory';
 import { Optional } from '../common/types/classes.type';
 import { WindowErrors } from './util';
+import { GraphWebviewFactory } from '../front/NodeWebview';
 
 export class App {
 	public readonly context: Context;
@@ -32,7 +32,8 @@ export class App {
 				WindowErrors.showError(metadata.getMessage());
 				return;
 			}
-			FrontEnd.runWebview(context, metadata.value);
+			const graph = GraphWebviewFactory.create(metadata.value, context);
+			graph.render();
 		}
 
 		return {

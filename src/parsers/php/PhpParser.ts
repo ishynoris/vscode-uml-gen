@@ -1,14 +1,6 @@
-import { IParser, IParserFile } from "../../../common/types/interfaces.type";
-import { PhpRegexPareser } from "./PhpRegexParser";
-import { Types } from "../../../common/types/encapsulation.types";
-import { PhpDetailParser } from "./PhpDetailParser";
-import { PhpImportsParser } from "./PhpImportsParser";
-import { WorkspaceFiles } from "../../../common/types/classes.type";
-import { PhpAttributeParser } from "./PhpAttributeParser";
-import { Attribute, ClassDetail, Method, Namespace, Package } from "../../../common/types/backend.type";
-import { PhpPackageMapper } from "./PhpPackageMapper";
-import { Workspace } from "../../util";
-import { PhpNamespaceParser } from "./PhpNamespaceParser";
+import { IParser, IParserFile, Types, WorkspaceFiles, Attribute, ClassDetail, Method, Namespace, Package } from "../../common/types";
+import { PhpRegexPareser, PhpDetailParser, PhpImportsParser, PhpAttributeParser, PhpPackageMapper, PhpNamespaceParser } from "./types";
+import { Workspace } from "../../main/util";
 
 export class PhpParser implements IParserFile {
 

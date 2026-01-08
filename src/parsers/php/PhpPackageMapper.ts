@@ -1,8 +1,5 @@
-import { FileMetadata } from "../../../common/types/backend.type";
-import { WorkspaceFiles } from "../../../common/types/classes.type";
-import { KeyValue } from "../../../common/types/general.types";
-import { IPackageMapper } from "../../../common/types/interfaces.type";
-import { FileFactory, FileReader, Workspace } from "../../util";
+import { FileMetadata, KeyValue, WorkspaceFiles, IPackageMapper } from "../../common/types";
+import { FileReader, Workspace } from "../../main/util";
 
 export class PhpPackageMapper implements IPackageMapper {
 
