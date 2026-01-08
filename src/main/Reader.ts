@@ -1,7 +1,6 @@
 import * as fs from 'fs';
-import { window } from 'vscode';
 import * as path from 'path';
-import { FileFactory, Workspace } from './util';
+import { FileFactory, WindowErrors, Workspace } from './util';
 import { FileMetadata } from '../common/types/backend.type';
 import { Allowed as Extension } from '../common/types/extension.type';
 
@@ -77,7 +76,7 @@ export class Reader {
 	private getSrcPath(fileName?: string): null|string {
 		let srcPath = Workspace.getWorkspacePath();
 		if (srcPath == null) {
-			window.showErrorMessage("None workspace loaded");
+			WindowErrors.showMessage("None workspace loaded");
 			return null;
 		}
 
