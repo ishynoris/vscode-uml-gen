@@ -1,9 +1,13 @@
-import { Args, Attribute, ClassMetadata, FileMetadata, Method } from "./backend.type";
-import { Encapsulation } from "./encapsulation.types";
 import { FileFactory, Front as FrontEnd, Workspace } from "../../main/util";
-import { Area } from "./frontend.type";
 import { ItalicTemplate } from "../../front/core/templates/ItalicTemplate";
-import { IPackageMapper } from "./interfaces.type";
+import { Uri } from "vscode";
+import * as path from "path"
+import { 
+	Args, Attribute, ClassMetadata, FileMetadata, Method, 
+	Encapsulation, 
+	Extensions, ExtensionAllowed,
+	Area,
+} from "../../common/types";
 
 export class Optional<T> {
 
@@ -195,5 +199,29 @@ export class MethodFormatter {
 		}
 		
 		return classifier.length == 0 ? "" : `${classifier.join(" ")}&nbsp;`;
+	}
+}
+
+export class FilePath {
+	public readonly extension: string;
+	public readonly fileName: string;
+	public readonly absolutePath: string;
+
+	constructor(uri: Uri) {
+		this.extension = path.extname(uri.fsPath).replace(".", "");
+		this.fileName = path.basename(uri.fsPath);
+		this.absolutePath = uri.fsPath;
+	}
+
+	public throwErrorIfInvalid() {
+		Extensions.throwErrorIfInvalid(this.extension);
+	}
+
+	public asFileMetaData(): FileMetadata {
+		return {
+			name: this.fileName,
+			absolutePath: this.absolutePath,
+			extension: Extensions.to(this.extension),
+		}
 	}
 }

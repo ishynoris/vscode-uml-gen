@@ -1,5 +1,5 @@
 import { commands, window, TextDocument, ExtensionContext, Uri } from "vscode";
-import { FileFactory } from "./util"
+import { FileFactory, WindowErrors } from "./util"
 import { FileMetadata } from "../common/types/backend.type";
 
 export interface ICreatorFromFile {
@@ -27,14 +27,24 @@ export class Commands {
 	}
 
 	public registerCommandRightClick(creator: ICreatorFromFile): void {
-		const command = commands.registerCommand("uml-gen.right-click", (uri: Uri) => {
-			creator.create(FileFactory.fromUri(uri));
-		});
+		const command = commands.registerCommand("uml-gen.right-click", () => createFromActiveDocument(creator));
 	}
 
 	public registerCommandTitleClick(creator: ICreatorFromFile): void {
-		const command = commands.registerCommand("uml-gen.title-click", (uri: Uri) => {
-			creator.create(FileFactory.fromUri(uri));
-		});
+		const command = commands.registerCommand("uml-gen.title-click", () => createFromActiveDocument(creator));
+	}
+}
+
+function createFromActiveDocument(creator: ICreatorFromFile) {
+	const doc = window.activeTextEditor?.document;
+	try {
+		if (doc == undefined) {
+			throw new Error("No active document found");
+		}
+		
+		const file = FileFactory.fromDocument(doc);
+		creator.create(file);
+	} catch (e) {
+		WindowErrors.showError(e);
 	}
 }
