@@ -1,4 +1,4 @@
-import { Attribute, Allowed, IParser,  Optional } from "../../common/types";
+import { Attribute, EncapsulationAllowed as Allowed, IParser,  Optional } from "../../common/types";
 import { Regex } from "../../main/util";
 import { RegexGroups } from "../ParserFileRegex";
 

@@ -1,4 +1,4 @@
-import { IParserFile, Allowed, Encapsulation, KeyValue } from "../common/types";
+import { IParserFile, EncapsulationAllowed as Allowed, Encapsulation, KeyValue } from "../common/types";
 
 export class ParserFileRegex {
 
