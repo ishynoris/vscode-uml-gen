@@ -19,7 +19,6 @@ export class App {
 	public init() {
 		const CreatorUmlFromFile = this.createUmlFromFile();
 
-		this.commands.registerComandCreateUML(CreatorUmlFromFile);
 		this.commands.registerCommandRightClick(CreatorUmlFromFile);
 		this.commands.registerCommandTitleClick(CreatorUmlFromFile);
 	}

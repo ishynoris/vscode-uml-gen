@@ -17,29 +17,17 @@
   "contributes": {
     "commands": [
       {
-        "command": "uml-gen.create",
-        "title": "Create UML",
-        "category": "uml-gen"
-      },
-      {
         "command": "uml-gen.right-click",
-        "title": "Right Generate UML",
-        "category": "uml-gen"
+        "title": "Create UML Class Diagram",
+        "category": "UML Gen"
       },
       { 
         "command": "uml-gen.title-click",
-        "title": "Title Generate UML",
-        "category": "uml-gen"
+        "title": "Create UML Class Diagram",
+        "category": "UML Gen"
       }
     ],
     "menus": {
-      "editor/title": [
-        {
-          "command": "uml-gen.create",
-          "when": "resourceLangId =~ /^java$|^php$/",
-          "group": "navigation"
-        }
-      ],
       "editor/title/context": [
         {
           "command": "uml-gen.title-click",

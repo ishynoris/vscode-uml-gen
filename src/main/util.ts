@@ -1,11 +1,7 @@
 import { ExtensionContext, TextDocument, Uri, WorkspaceFolder, window, workspace } from "vscode"
-import { readFileSync, statSync } from "fs"
-import * as path from "path"
+import { readFileSync } from "fs"
 import { Container } from "./Container"
-import { FileMetadata } from "../common/types/backend.type"
-import { KeyValue } from "../common/types/general.types"
-import { Extensions } from "../common/types/extension.type"
-import { Optional } from "../common/types/classes.type"
+import { FileMetadata, KeyValue, FilePath, Optional } from "../common/types"
 import { randomBytes } from "crypto"
 
 export const FileFactory = {
@@ -22,14 +18,15 @@ export const FileFactory = {
 	},
 
 	fromUri(uri: Uri): FileMetadata {
-		const fsPath = uri.fsPath;
-		const extension = path.extname(fsPath).replace(".", "");
-
-		return {
-			name: path.basename(fsPath),
-			absolutePath: fsPath,
-			extension: Extensions.to(extension),
+		const filePath = new FilePath(uri);
+		try {
+			filePath.throwErrorIfInvalid();
+		} catch (e) {
+			const reason = e instanceof Error ? `Reason: ${e.message}` : "";
+			throw new Error(`Cannot create UML from ${filePath.fileName}. ${reason}`)
 		}
+
+		return filePath.asFileMetaData();
 	}
 }
 

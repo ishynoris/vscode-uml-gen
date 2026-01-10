@@ -1,4 +1,4 @@
-import { Types, IParser, IParserFile, WorkspaceFiles, Attribute, ClassDetail, Method, Namespace, Package } from "../../common/types";
+import { EncapsulationType as Types, IParser, IParserFile, WorkspaceFiles, Attribute, ClassDetail, Method, Namespace, Package } from "../../common/types";
 import { JavaRegexParser, JavaImportParser, JavaAttributeParser, JavaDetailParser, JavaPackageMapper, JavaNamespaceParser, } from "./types";
 
 export class JavaParser implements IParserFile {

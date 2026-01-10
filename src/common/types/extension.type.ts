@@ -28,8 +28,12 @@ export const Extensions = {
 	},
 
 	throwErrorIfInvalid: (extension: string) => {
+		if (extension.length == 0) {
+			throw new Error(`No extension defined. Extension in blank!`);
+		}
+
 		if (!Extensions.isValid(extension)) {
-			throw new Error(`Extension "${extension}} not allowed."`);
+			throw new Error(`Extension "${extension} not allowed."`);
 		}
 	}
 }

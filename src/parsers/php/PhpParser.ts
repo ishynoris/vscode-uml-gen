@@ -1,4 +1,4 @@
-import { IParser, IParserFile, Types, WorkspaceFiles, Attribute, ClassDetail, Method, Namespace, Package } from "../../common/types";
+import { IParser, IParserFile, EncapsulationType as Types, WorkspaceFiles, Attribute, ClassDetail, Method, Namespace, Package } from "../../common/types";
 import { PhpRegexPareser, PhpDetailParser, PhpImportsParser, PhpAttributeParser, PhpPackageMapper, PhpNamespaceParser } from "./types";
 import { Workspace } from "../../main/util";
 
