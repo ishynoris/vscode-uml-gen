@@ -54,12 +54,8 @@ export class DetailComponent implements IComponent {
 	}
 
 	private getClassName(): string {
-		const partsNamespace = this.detail.parts;
-		if (partsNamespace.length == 0) {
-			return this.detail.name;
-		}
-
-		partsNamespace.push(this.detail.name);
-		return partsNamespace.join(".");
+		const parts = this.detail.parts;
+		const partsJoined = parts.join(".");
+		return partsJoined.length == 0 ? this.detail.name : `${partsJoined}.${this.detail.name}`;
 	}
 }
