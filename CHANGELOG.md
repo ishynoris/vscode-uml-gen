@@ -1,9 +1,6 @@
-# Change Log
-
-All notable changes to the "uml-gen" extension will be documented in this file.
-
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
-
-## [Unreleased]
-
-- Initial release
+# 0.1.3-Alfa
+- First stable version (PHP and Java only)
+- Creates a UML class diagram on `right-click` on document title.
+- Drag and drop any box of diagram;
+- Open a new box with `ctrl + click`
+- Expand/hide attributes and methods of classes to best viewing;
