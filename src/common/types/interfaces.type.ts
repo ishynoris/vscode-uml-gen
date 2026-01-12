@@ -27,3 +27,7 @@ export interface IParser<T> {
 export interface IPackageMapper {
 	getFile(parts: string[]): undefined | FileMetadata;
 }
+
+export interface ICallback<T> {
+	call(t: T): void;
+}

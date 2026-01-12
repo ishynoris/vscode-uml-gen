@@ -1,6 +1,6 @@
 import { FileFactory, Front as FrontEnd, Workspace } from "../../main/util";
 import { ItalicTemplate } from "../../front/core/templates/ItalicTemplate";
-import { Uri } from "vscode";
+import { FileType, Uri } from "vscode";
 import * as path from "path"
 import { 
 	Args, Attribute, ClassMetadata, FileMetadata, Method, 
@@ -223,5 +223,23 @@ export class FilePath {
 			absolutePath: this.absolutePath,
 			extension: Extensions.to(this.extension),
 		}
+	}
+}
+
+
+export class FileOnDisk {
+
+	public readonly isDirectory: boolean;
+	public readonly name: string;
+	public readonly extension: string;
+
+	constructor(private type: FileType, private absolutePath: string) {
+		this.isDirectory = type == FileType.Directory;
+		this.name = path.basename(absolutePath);
+		this.extension = path.extname(absolutePath);
+	}
+
+	public asFileMetadata(): undefined | FileMetadata {
+		return FileFactory.fromAbsolutePath(this.absolutePath);
 	}
 }

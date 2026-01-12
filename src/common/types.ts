@@ -1,7 +1,7 @@
 import { Args, Attribute, ClassDetail, ClassMetadata, FileMetadata, Method, Namespace, Package } from "./types/backend.type";
-import { FilePath, Optional, WorkspaceFiles } from "./types/classes.type";
+import { FilePath, FileOnDisk, Optional, WorkspaceFiles } from "./types/classes.type";
 import { Encapsulation, Allowed as EncapsulationAllowed, Types as EncapsulationType } from "./types/encapsulation.types";
-import { IParser, IParserFile, IPackageMapper } from "./types/interfaces.type";
+import { IParser, IParserFile, IPackageMapper, ICallback } from "./types/interfaces.type";
 import { Mock } from "./types/mock.types";
 import { KeyValue } from "./types/general.types";
 import { Extensions, Allowed as ExtensionAllowed } from "./types/extension.type";
@@ -9,9 +9,9 @@ import { Area } from "./types/frontend.type";
 
 export {
 	Args, Attribute, ClassDetail, ClassMetadata, FileMetadata, Method, Namespace, Package,
-	FilePath, Optional, WorkspaceFiles,
+	FilePath, FileOnDisk, Optional, WorkspaceFiles,
 	Encapsulation, EncapsulationAllowed, EncapsulationType,
-	IParser, IParserFile, IPackageMapper,
+	IParser, IParserFile, IPackageMapper, ICallback,
 	Mock,
 	KeyValue,
 	Extensions, ExtensionAllowed,
