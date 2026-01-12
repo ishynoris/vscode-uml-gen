@@ -1,6 +1,8 @@
 import { commands, window, ExtensionContext, Uri } from "vscode";
 import { FileFactory, WindowErrors } from "./util"
 import { FileMetadata } from "../common/types/backend.type";
+import { Reader } from "./Reader";
+import { Container } from "./Container";
 
 export interface ICreatorFromFile {
 	create(document: FileMetadata): void;
@@ -35,27 +37,27 @@ export class Commands {
 	}
 }
 
-function createFromActiveDocument(creator: ICreatorFromFile, uri?: Uri) {
-	const createFile = (): FileMetadata | undefined => {
-		if (uri != undefined) {
-			return FileFactory.fromUri(uri);
-		}
+async function createFromActiveDocument(creator: ICreatorFromFile, uri?: Uri) {
+	const getCurrentUri = () => uri != undefined ? uri : window.activeTextEditor?.document?.uri
 
-		const doc = window.activeTextEditor?.document;
-		if (doc != undefined) {
-			return FileFactory.fromDocument(doc);
-		}
+	const currentUri = getCurrentUri();
 
-		return undefined;
+	if (currentUri == undefined) {
+		throw new Error("Cannot read current file");
 	}
 
 	try {
-		const file = createFile();
-		if (file == undefined) {
-			throw new Error("No active document found");
-		}
-		
-		creator.create(file);
+		await Reader.fromUri(currentUri).loadFiles({
+			call(files: FileMetadata[]) {
+				const file = FileFactory.fromUri(currentUri);
+				if (file == undefined) {
+					throw new Error("No active document found");
+				}
+
+				Container.init().initWorkspace(file.extension, files);
+				creator.create(file);
+			}
+		});
 	} catch (e) {
 		WindowErrors.showError(e);
 	}

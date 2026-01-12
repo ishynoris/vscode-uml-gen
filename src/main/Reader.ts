@@ -1,76 +1,70 @@
-import * as fs from 'fs';
 import * as path from 'path';
-import { FileFactory, WindowErrors, Workspace } from './util';
-import { FileMetadata } from '../common/types/backend.type';
-import { Allowed as Extension } from '../common/types/extension.type';
+import { WindowErrors, Workspace } from './util';
+import { FileMetadata, ExtensionAllowed as Extension, Extensions, FileOnDisk, ICallback } from '../common/types';
+import { FileType, Uri, workspace } from 'vscode';
+import { Container } from './Container';
+
+type ReadDirType = [string, FileType];
 
 export class Reader {
 	private path: string;
 	private srcPath: string;
-	private files: FileMetadata[];
-	private invalidFiles: string[];
-	private ignoreDir: string[];
+	private onLoad!: ICallback<FileMetadata[]>;
 
 	constructor(private extension: Extension, srcPath: string = "src") {
 		this.path = this.getSrcPath() ?? "";
 		this.srcPath = srcPath;
-		this.files = [];
-		this.invalidFiles = [
-			".properties",
-			".gitignore",
-		];
-		this.ignoreDir = [
-			".git",
-			"tests",
-			"vendor",
-		]
 	}
 
-	public loadFiles(): FileMetadata[] {
+	public static fromUri(uri: Uri): Reader {
+		const extension = path.extname(uri.fsPath);
+		const srcPath = Container.init().getRootFiles(extension);
+		return new Reader(Extensions.to(extension), srcPath);
+	}
+
+	public async loadFiles(onLoad: ICallback<FileMetadata[]>) {
+		this.onLoad = onLoad;
 		if (this.path == null) {
-			return this.files;
+			this.onLoad.call([]);
+			return;
 		}
 
 		const absolutePath = `${this.path}/${this.srcPath}`; 
-		this.readDirectory(absolutePath);
-		return this.files;
+		const files = await this.readDirectory(absolutePath);
+		this.onLoad.call(files);
 	}
 
-	private readDirectory(absolutePath: string) {
-		let files: string[];
-		try {
-			files = fs.readdirSync(absolutePath, "utf-8");
-		} catch (e) {
-			throw new Error(`Cannot read dir ${absolutePath}`);
+	private async readDirectory(absolutePath: string): Promise<FileMetadata[]> {
+		const uri = Uri.file(absolutePath);
+		const rootFiles: FileMetadata[] = [];
+
+		const dirs = await workspace.fs.readDirectory(uri);
+		for (const index in dirs) {
+			const [name, type]: ReadDirType = dirs[index];
+			if (Container.ignoreDir(name)) {
+				continue;
+			}
+
+			const filePath  = `${absolutePath}/${name}`;
+			const fileDisk = new FileOnDisk(type, filePath);
+			if (fileDisk.isDirectory) {
+				const files = await this.readDirectory(filePath);
+				rootFiles.push(...files);
+				continue;
+			}
+
+			if (Container.invalidFile(this.extension, fileDisk.name)) {
+				continue;
+			}
+
+			const metadata = fileDisk.asFileMetadata();
+			if (metadata == undefined) {
+				continue;
+			}
+
+			rootFiles.push(metadata);
 		}
-		
-		for (const key in files) {
-			const dirName = files[key];
-			if (this.ignoreDirectory(dirName)) {
-				continue;
-			}
-
-			let filePath = `${absolutePath}/${files[key]}`;
-			const statSync = fs.statSync(filePath);
-
-			if (statSync.isDirectory()) {
-				this.readDirectory(filePath);
-				continue;
-			}
-
-			const extension = path.extname(filePath);
-			if (this.isInvalidFile(extension)) {
-				continue;
-			}
-
-			const name = path.basename(filePath);
-			const file = FileFactory.fromAbsolutePath(filePath);
-			if (file == undefined) {
-				continue;
-			}
-
-			this.files.push(file);
-		}
+		return rootFiles;
 	}
 
 	private getSrcPath(fileName?: string): null|string {
@@ -85,18 +79,8 @@ export class Reader {
 		}
 		return srcPath;
 	}
-
-	private isInvalidFile(fileName: string): boolean {
-		if (fileName.length == 0) {
-			return true;
-		}
-		if (!fileName.endsWith(this.extension)) {
-			return true;
-		}
-		return this.invalidFiles.includes(fileName);
-	}
-
-	private ignoreDirectory(dirName: string): boolean {
-		return this.ignoreDir.includes(dirName);
-	}
 }
+
+// async function readDirectorySync(required: Extension, absolutePath: string): Promise<FileMetadata[]> {
+	
+// }
