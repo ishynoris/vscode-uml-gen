@@ -5,7 +5,7 @@ import { IParser, IParserFile, IPackageMapper, ICallback } from "./types/interfa
 import { Mock } from "./types/mock.types";
 import { KeyValue } from "./types/general.types";
 import { Extensions, Allowed as ExtensionAllowed } from "./types/extension.type";
-import { Area } from "./types/frontend.type";
+import { ITemplate, IContainer, Area, VSCodeAPI } from "./types/frontend.type";
 
 export {
 	Args, Attribute, ClassDetail, ClassMetadata, FileMetadata, Method, Namespace, Package,
@@ -15,5 +15,5 @@ export {
 	Mock,
 	KeyValue,
 	Extensions, ExtensionAllowed,
-	Area,
+	ITemplate, IContainer, Area, VSCodeAPI,
 };
