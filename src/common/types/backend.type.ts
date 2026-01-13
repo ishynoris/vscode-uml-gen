@@ -57,3 +57,5 @@ export type ClassMetadata = {
 	imports: Package[],
 	methods: Method[],
 }
+
+export type ExcludeDirs = Array<string>;
