@@ -35,5 +35,9 @@ export const Extensions = {
 		if (!Extensions.isValid(extension)) {
 			throw new Error(`Extension "${extension} not allowed."`);
 		}
+	},
+
+	sanitize: (extension: string) => {
+		return extension.replace(".", "").toLocaleLowerCase();
 	}
 }

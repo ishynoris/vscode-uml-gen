@@ -1,4 +1,4 @@
-import { FileMetadata } from "../common/types/backend.type";
+import { ExcludeDirs, FileMetadata } from "../common/types/backend.type";
 import { WorkspaceFiles } from "../common/types/classes.type";
 import { Extensions } from "../common/types/extension.type";
 import { KeyValue } from "../common/types/general.types";
@@ -13,23 +13,29 @@ import { Workspace } from "./util";
 
 type WorkspaceFilesType = { [ key: string ] : WorkspaceFiles }; 
 
-const RootFiles: KeyValue = {
-	"java": "src/main/java",
-	"php": "",
-}
+const IgnoreFiles: ExcludeDirs = [
+	".properties",
+	".gitignore",
+]
 
 export class Container {
 
 	private static self: Container;
 
 	private worspaceFiles!: WorkspaceFilesType;
-	private rootFiles: KeyValue = {};
+	public readonly ignoreDirs: ExcludeDirs;
+	public readonly ignoreFiles: ExcludeDirs;
+
+	private constructor() {
+		this.worspaceFiles = { };
+		this.ignoreFiles = IgnoreFiles;
+		this.ignoreDirs = Workspace.getExludeDirs();
+	}
 
 	public static init(): Container {
 		if (Container.self == undefined) {
 			Container.self = new Container;
 			Container.self.worspaceFiles = { };
-			Container.self.rootFiles = RootFiles;
 		}
 		return Container.self
 	}
@@ -42,7 +48,7 @@ export class Container {
 	}
 
 	public getRootFiles(extension: string): string {
-		return this.rootFiles[extension];
+		return Workspace.getRootDir(extension);
 	}
 
 	public getParser(file: FileMetadata): undefined | ParserFile {
@@ -68,7 +74,7 @@ export class Container {
 }
 
 function initWorkspace(extension: string): WorkspaceFiles {
-	const rootFiles = RootFiles[extension];
+	const rootFiles = Workspace.getRootDir(extension);
 	const reader = new Reader(Extensions.to(extension), rootFiles);
 
 	const files: FileMetadata[] = reader.loadFiles();

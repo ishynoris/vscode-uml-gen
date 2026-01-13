@@ -1,7 +1,7 @@
 import { ExtensionContext, TextDocument, Uri, WorkspaceFolder, window, workspace } from "vscode"
 import { readFileSync } from "fs"
 import { Container } from "./Container"
-import { FileMetadata, KeyValue, FilePath, Optional } from "../common/types"
+import { FileMetadata, KeyValue, FilePath, Optional, Extensions, ExcludeDirs } from "../common/types"
 import { randomBytes } from "crypto"
 
 export const FileFactory = {
@@ -81,6 +81,21 @@ export const Workspace = {
 		const rootFiles = Container.init().getRootFiles(extension);
 		const path = parts.join("/");
 		return `${workspacePath}/${rootFiles}/${path}`;
+	},
+
+	getRootDir(extension: string): string {
+		const section = `${Extensions.sanitize(extension)}RootDir`;
+		const rootDir = Workspace.getSectionConfig<string>(section);
+		return rootDir ?? "";
+	},
+
+	getExludeDirs(): ExcludeDirs {
+		const config = Workspace.getSectionConfig<string>("excludeDirs");
+		return config == undefined ? [] : config.split(",");
+	},
+
+	getSectionConfig<T>(section: string): T | undefined {
+		return workspace.getConfiguration("uml-gen").get<T>(section);
 	}
 }
 
