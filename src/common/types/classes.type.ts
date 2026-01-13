@@ -32,15 +32,15 @@ type MapFileMetada = { [key: string]: FileMetadata };
 
 export class WorkspaceFiles {
 
-	private files: MapFileMetada = { };
+	private mapFiles: MapFileMetada = { };
 
-	constructor(private extension: string, files: FileMetadata[]) {
+	constructor(private extension: string, public readonly files: FileMetadata[]) {
 		const ReducePath = (map: MapFileMetada, file: FileMetadata): MapFileMetada => {
 			map[file.name] = file;
 			return map;
 		}
 
-		this.files = files.reduce(ReducePath, { });
+		this.mapFiles = files.reduce(ReducePath, { });
 	}
 
 	getFromPath(absolutePath: string): FileMetadata | undefined {
@@ -56,7 +56,7 @@ export class WorkspaceFiles {
 		if (!fileName.endsWith(this.extension)) {
 			fileName = `${fileName}.${this.extension}`;
 		}
-		return this.files[fileName];
+		return this.mapFiles[fileName];
 	}
 }
 

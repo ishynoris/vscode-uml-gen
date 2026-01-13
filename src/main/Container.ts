@@ -4,15 +4,26 @@ import { ParserFile } from "./../parsers/ParserFile";
 import { PhpParser } from "./../parsers/php/PhpParser";
 
 type WorkspaceFilesType = { [ key: string ] : WorkspaceFiles }; 
+type IgnoreDir = string[];
+type IgnoreFile = string[];
 
 const RootFiles: KeyValue = {
 	"java": "src/main/java",
 	"php": "",
 }
 
-export type IgnoreDirs = string[];
+const IgnoreDirs: IgnoreDir = [
+	".git",
+	"tests",
+	"vendor",
+	"bin",
+	"logs",
+]
 
-export type IgnoreFiles = string[];
+const IgnoreFiles: IgnoreFile = [
+	".properties",
+	".gitignore",
+]
 
 export class Container {
 
@@ -20,29 +31,19 @@ export class Container {
 
 	private worspaceFiles!: WorkspaceFilesType;
 	private rootFiles: KeyValue = {};
-	public readonly ignoreDirs!: IgnoreDirs;
-	public readonly ignoreFiles!: IgnoreFiles;
+	public readonly ignoreDirs: IgnoreDir;
+	public readonly ignoreFiles: IgnoreFile;
 
-	private constructor(ignoreFiles: IgnoreFiles, ignoreDirs: IgnoreDirs) {
+	private constructor() {
 		this.worspaceFiles = { };
 		this.rootFiles = RootFiles;
-		this.ignoreFiles = ignoreFiles;
-		this.ignoreDirs = ignoreDirs;
+		this.ignoreFiles = IgnoreFiles;
+		this.ignoreDirs = IgnoreDirs;
 	}
 
 	public static init(): Container {
 		if (Container.self == undefined) {
-			const ignoreDir: IgnoreDirs = [
-				".git",
-				"tests",
-				"vendor",
-			];
-
-			const ignoreFIles: IgnoreFiles = [
-				".properties",
-				".gitignore",
-			]
-			Container.self = new Container(ignoreDir, ignoreFIles);
+			Container.self = new Container();
 		}
 		return Container.self
 	}
@@ -50,6 +51,10 @@ export class Container {
 	public initWorkspace(extension: string, files: FileMetadata[]) {
 		extension = Extensions.sanitize(extension);
 		this.worspaceFiles[extension] = new WorkspaceFiles(extension, files);
+	}
+
+	public hasWorkspace(extension: string): boolean {
+		return this.worspaceFiles[extension] != undefined;
 	}
 
 	public getWorkspaceFiles(extension: string): WorkspaceFiles {

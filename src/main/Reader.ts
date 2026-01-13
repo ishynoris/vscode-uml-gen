@@ -30,6 +30,13 @@ export class Reader {
 			return;
 		}
 
+		const container = Container.init();
+		if (container.hasWorkspace(this.extension)) {
+			const files = container.getWorkspaceFiles(this.extension).files;
+			this.onLoad.call(files);
+			return;
+		}
+
 		const absolutePath = `${this.path}/${this.srcPath}`; 
 		const files = await this.readDirectory(absolutePath);
 		this.onLoad.call(files);
