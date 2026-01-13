@@ -1,6 +1,5 @@
-import * as path from 'path';
 import { WindowErrors, Workspace } from './util';
-import { FileMetadata, ExtensionAllowed as Extension, Extensions, FileOnDisk, ICallback } from '../common/types';
+import { FileMetadata, ExtensionAllowed as Extension, Extensions, FileOnDisk, ICallback, FilePath } from '../common/types';
 import { FileType, Uri, workspace } from 'vscode';
 import { Container } from './Container';
 
@@ -17,7 +16,9 @@ export class Reader {
 	}
 
 	public static fromUri(uri: Uri): Reader {
-		const extension = path.extname(uri.fsPath);
+		const filePath = new FilePath(uri);
+
+		const extension = filePath.extension;
 		const srcPath = Container.init().getRootFiles(extension);
 		return new Reader(Extensions.to(extension), srcPath);
 	}
@@ -81,6 +82,3 @@ export class Reader {
 	}
 }
 
-// async function readDirectorySync(required: Extension, absolutePath: string): Promise<FileMetadata[]> {
-	
-// }

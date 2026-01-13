@@ -42,5 +42,12 @@ export const Extensions = {
 		if (!Extensions.isValid(extension)) {
 			throw new Error(`Extension "${extension} not allowed."`);
 		}
+	},
+
+	extract: (fileName: string): string => {
+		const parts = fileName.split(".");
+		const lastIndex = parts.length - 1;
+		const extension = Extensions.sanitize(parts[lastIndex]);
+		return Extensions.isValid(extension) ? `.${extension}` : "";
 	}
 }

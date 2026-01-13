@@ -1,11 +1,10 @@
-import { FileFactory, Front as FrontEnd, Workspace } from "../../main/util";
+import { FileFactory, Front as FrontEnd } from "../../main/util";
 import { ItalicTemplate } from "../../front/core/templates/ItalicTemplate";
 import { FileType, Uri } from "vscode";
-import * as path from "path"
 import { 
 	Args, Attribute, ClassMetadata, FileMetadata, Method, 
 	Encapsulation, 
-	Extensions, ExtensionAllowed,
+	Extensions,
 	Area,
 } from "../../common/types";
 
@@ -208,8 +207,8 @@ export class FilePath {
 	public readonly absolutePath: string;
 
 	constructor(uri: Uri) {
-		this.extension = path.extname(uri.fsPath).replace(".", "");
-		this.fileName = path.basename(uri.fsPath);
+		this.extension = Extensions.extract(uri.fsPath);
+		this.fileName = FilePath.baseName(uri.fsPath);
 		this.absolutePath = uri.fsPath;
 	}
 
@@ -224,6 +223,12 @@ export class FilePath {
 			extension: Extensions.to(this.extension),
 		}
 	}
+
+	public static baseName(filePath: string): string {
+		const parts = filePath.split("/");
+		const lastIndex = parts.length - 1;
+		return parts[lastIndex];
+	}
 }
 
 
@@ -234,9 +239,11 @@ export class FileOnDisk {
 	public readonly extension: string;
 
 	constructor(private type: FileType, private absolutePath: string) {
+		const filePath = new FilePath(Uri.file(absolutePath));
+
 		this.isDirectory = type == FileType.Directory;
-		this.name = path.basename(absolutePath);
-		this.extension = path.extname(absolutePath);
+		this.name = filePath.fileName;
+		this.extension = filePath.fileName;
 	}
 
 	public asFileMetadata(): undefined | FileMetadata {
