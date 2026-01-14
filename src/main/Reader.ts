@@ -6,29 +6,22 @@ import { Container } from './Container';
 type ReadDirType = [string, FileType];
 
 export class Reader {
-	private path: string;
-	private srcPath: string;
+	private absolutePath: string;
 	private onLoad!: ICallback<FileMetadata[]>;
 
-	constructor(private extension: Extension, srcPath: string = "src") {
-		this.path = this.getSrcPath() ?? "";
-		this.srcPath = srcPath;
+	constructor(private extension: Extension) {
+		const rootDir = Container.init().projectRootDir
+		this.absolutePath = this.getSrcPath(rootDir);
 	}
 
 	public static fromUri(uri: Uri): Reader {
 		const filePath = new FilePath(uri);
-
 		const extension = filePath.extension;
-		const srcPath = Container.init().getRootFiles(extension);
-		return new Reader(Extensions.to(extension), srcPath);
+		return new Reader(Extensions.to(extension));
 	}
 
 	public async loadFiles(onLoad: ICallback<FileMetadata[]>) {
 		this.onLoad = onLoad;
-		if (this.path == null) {
-			this.onLoad.call([]);
-			return;
-		}
 
 		const container = Container.init();
 		if (container.hasWorkspace(this.extension)) {
@@ -37,8 +30,7 @@ export class Reader {
 			return;
 		}
 
-		const absolutePath = `${this.path}/${this.srcPath}`; 
-		const files = await this.readDirectory(absolutePath);
+		const files = await this.readDirectory(this.absolutePath);
 		this.onLoad.call(files);
 	}
 
@@ -75,15 +67,10 @@ export class Reader {
 		return rootFiles;
 	}
 
-	private getSrcPath(fileName?: string): null|string {
-		let srcPath = Workspace.getWorkspacePath();
+	private getSrcPath(fileName?: string): string {
+		const srcPath = Workspace.getWorkspacePath(fileName);
 		if (srcPath == null) {
-			WindowErrors.showMessage("None workspace loaded");
-			return null;
-		}
-
-		if (fileName != undefined && fileName.length > 1) {
-			srcPath = `${srcPath}/${fileName}`;
+			throw new Error("None workspace loaded");
 		}
 		return srcPath;
 	}

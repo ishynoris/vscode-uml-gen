@@ -16,7 +16,7 @@ export class JavaPackageMapper implements IPackageMapper {
 			return undefined;
 		}
 		
-		let absolutePath = Workspace.getAbsolutePath(this.extension, parts);
+		let absolutePath = Workspace.getAbsolutePath(parts);
 		if (absolutePath == undefined) {
 			return undefined;
 		}
