@@ -1,19 +1,13 @@
-import { ExcludeDirs, FileMetadata } from "../common/types/backend.type";
-import { WorkspaceFiles } from "../common/types/classes.type";
-import { Extensions } from "../common/types/extension.type";
-import { KeyValue } from "../common/types/general.types";
-import { IPackageMapper, IParserFile } from "../common/types/interfaces.type";
-import { JavaPackageMapper } from "./../parsers/java/JavaPackageMapper";
+import { Extensions, IgnoreDirs, FileMetadata, WorkspaceFiles } from "../common/types";
 import { JavaParser } from "./../parsers/java/JavaParser";
 import { ParserFile } from "./../parsers/ParserFile";
-import { PhpPackageMapper } from "./../parsers/php/PhpPackageMapper";
 import { PhpParser } from "./../parsers/php/PhpParser";
 import { Reader } from "./Reader";
 import { Workspace } from "./util";
 
 type WorkspaceFilesType = { [ key: string ] : WorkspaceFiles }; 
 
-const IgnoreFiles: ExcludeDirs = [
+const IgnoreFiles: IgnoreDirs = [
 	".properties",
 	".gitignore",
 ]
@@ -23,13 +17,15 @@ export class Container {
 	private static self: Container;
 
 	private worspaceFiles!: WorkspaceFilesType;
-	public readonly ignoreDirs: ExcludeDirs;
-	public readonly ignoreFiles: ExcludeDirs;
+	public readonly ignoreDirs: IgnoreDirs;
+	public readonly ignoreFiles: IgnoreDirs;
+	public readonly projectRootDir: string;
 
 	private constructor() {
 		this.worspaceFiles = { };
 		this.ignoreFiles = IgnoreFiles;
-		this.ignoreDirs = Workspace.getExludeDirs();
+		this.ignoreDirs = Workspace.getIgnoreDirs();
+		this.projectRootDir = Workspace.getRootDir();
 	}
 
 	public static init(): Container {
@@ -45,10 +41,6 @@ export class Container {
 			this.worspaceFiles[extension] = initWorkspace(extension);
 		}
 		return this.worspaceFiles[extension];
-	}
-
-	public getRootFiles(extension: string): string {
-		return Workspace.getRootDir(extension);
 	}
 
 	public getParser(file: FileMetadata): undefined | ParserFile {
@@ -74,8 +66,7 @@ export class Container {
 }
 
 function initWorkspace(extension: string): WorkspaceFiles {
-	const rootFiles = Workspace.getRootDir(extension);
-	const reader = new Reader(Extensions.to(extension), rootFiles);
+	const reader = new Reader(Extensions.to(extension));
 
 	const files: FileMetadata[] = reader.loadFiles();
 	return new WorkspaceFiles(extension, files);

@@ -69,7 +69,7 @@ export const Workspace = {
 			return null;
 		}
 
-		const path = folder.uri.fsPath;
+		const path = folder.uri.fsPath.replaceAll("\\", "/");
 		return fileName == undefined ? path : `${path}/${fileName}`;
 	},
 
@@ -78,7 +78,7 @@ export const Workspace = {
 		if (workspacePath == null) {
 			return undefined;
 		}
-		const rootFiles = Container.init().rootDir;
+		const rootFiles = Container.init().projectRootDir;
 		const path = parts.join("/");
 		return `${workspacePath}/${rootFiles}/${path}`;
 	},

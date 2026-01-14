@@ -1,38 +1,29 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { FileFactory, WindowErrors, Workspace } from './util';
-import { FileMetadata } from '../common/types/backend.type';
-import { Allowed as Extension } from '../common/types/extension.type';
+import { FileMetadata, IgnoreDirs, ExtensionAllowed as Extension } from '../common/types';
+import { Container } from './Container';
 
 export class Reader {
-	private path: string;
-	private srcPath: string;
+	private absolutePath: string;
 	private files: FileMetadata[];
 	private invalidFiles: string[];
-	private ignoreDir: string[];
+	private ignoreDir: IgnoreDirs;
 
-	constructor(private extension: Extension, srcPath: string = "src") {
-		this.path = this.getSrcPath() ?? "";
-		this.srcPath = srcPath;
+	constructor(private extension: Extension) {
+		const rootDir = Container.init().projectRootDir
+		
+		this.absolutePath = this.getSrcPath(rootDir);
 		this.files = [];
 		this.invalidFiles = [
 			".properties",
 			".gitignore",
 		];
-		this.ignoreDir = [
-			".git",
-			"tests",
-			"vendor",
-		]
+		this.ignoreDir = Container.init().ignoreDirs;
 	}
 
 	public loadFiles(): FileMetadata[] {
-		if (this.path == null) {
-			return this.files;
-		}
-
-		const absolutePath = `${this.path}/${this.srcPath}`; 
-		this.readDirectory(absolutePath);
+		this.readDirectory(this.absolutePath);
 		return this.files;
 	}
 
@@ -73,15 +64,10 @@ export class Reader {
 		}
 	}
 
-	private getSrcPath(fileName?: string): null|string {
-		let srcPath = Workspace.getWorkspacePath();
+	private getSrcPath(fileName?: string): string {
+		const srcPath = Workspace.getWorkspacePath(fileName);
 		if (srcPath == null) {
-			WindowErrors.showMessage("None workspace loaded");
-			return null;
-		}
-
-		if (fileName != undefined && fileName.length > 1) {
-			srcPath = `${srcPath}/${fileName}`;
+			throw new Error("None workspace loaded");
 		}
 		return srcPath;
 	}
