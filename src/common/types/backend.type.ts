@@ -58,4 +58,4 @@ export type ClassMetadata = {
 	methods: Method[],
 }
 
-export type ExcludeDirs = Array<string>;
+export type IgnoreDirs = Array<string>;
