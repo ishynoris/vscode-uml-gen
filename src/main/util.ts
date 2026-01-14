@@ -1,7 +1,7 @@
 import { ExtensionContext, TextDocument, Uri, WorkspaceFolder, window, workspace } from "vscode"
 import { readFileSync } from "fs"
 import { Container } from "./Container"
-import { FileMetadata, KeyValue, FilePath, Optional } from "../common/types"
+import { FileMetadata, KeyValue, FilePath, Optional, IgnoreDirs } from "../common/types"
 import { randomBytes } from "crypto"
 
 export const FileFactory = {
@@ -69,18 +69,35 @@ export const Workspace = {
 			return null;
 		}
 
-		const path = folder.uri.fsPath;
+		const path = folder.uri.fsPath.replaceAll("\\", "/");
 		return fileName == undefined ? path : `${path}/${fileName}`;
 	},
 
-	getAbsolutePath(extension: string, parts: string[]): undefined | string {
+	getAbsolutePath(parts: string[]): undefined | string {
 		const workspacePath = this.getWorkspacePath();
 		if (workspacePath == null) {
 			return undefined;
 		}
-		const rootFiles = Container.init().getRootFiles(extension);
+		const rootFiles = Container.init().projectRootDir;
 		const path = parts.join("/");
 		return `${workspacePath}/${rootFiles}/${path}`;
+	},
+
+	getRootDir(): string {
+		let config = Workspace.getSectionConfig<string>("projectRootDir", "src");
+		if (config.startsWith("/")) {
+			config = config.substring(1);
+		}
+		return config;
+	},
+
+	getIgnoreDirs(): IgnoreDirs {
+		return Workspace.getSectionConfig<Array<string>>("ignoreDirs", []);
+	},
+
+	getSectionConfig<T>(section: string, def: T): T {
+		const config = workspace.getConfiguration("uml-gen").get<T>(section);
+		return config ?? def;
 	}
 }
 
