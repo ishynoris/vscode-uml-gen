@@ -207,9 +207,9 @@ export class FilePath {
 	public readonly absolutePath: string;
 
 	constructor(uri: Uri) {
-		this.extension = Extensions.extract(uri.fsPath);
-		this.fileName = FilePath.baseName(uri.fsPath);
-		this.absolutePath = uri.fsPath;
+		this.absolutePath = FilePath.sanitizePathFromUri(uri);
+		this.extension = Extensions.extract(this.absolutePath);
+		this.fileName = FilePath.baseName(this.absolutePath);
 	}
 
 	public throwErrorIfInvalid() {
@@ -228,6 +228,11 @@ export class FilePath {
 		const parts = filePath.split("/");
 		const lastIndex = parts.length - 1;
 		return parts[lastIndex];
+	}
+
+	public static sanitizePathFromUri(uri: Uri): string {
+		const path = uri.fsPath.replaceAll("\\", "/");
+		return path;
 	}
 }
 

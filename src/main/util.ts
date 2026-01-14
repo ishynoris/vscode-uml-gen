@@ -71,7 +71,7 @@ export const Workspace = {
 			return null;
 		}
 
-		const path = folder.uri.fsPath.replaceAll("\\", "/");
+		const path = FilePath.sanitizePathFromUri(folder.uri);
 		return fileName == undefined ? path : `${path}/${fileName}`;
 	},
 
