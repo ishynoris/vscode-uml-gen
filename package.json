@@ -55,41 +55,22 @@
         }
       ]
     },
-    "configuration": [
-      {
-        "id": "general",
-        "title": "General",
-        "properties": {
-          "uml-gen.excludeDirs": {
-            "type": "string",
-            "default": ".git, tests, vendor, bin, logs",
-            "markdownDescription": "Ignore all files on directories. Separate with `,`"
-          }
-        }
-      },
-      {
-        "id": "php-project",
-        "title": "PHP Project",
-        "properties": {
-          "uml-gen.phpRootDir": {
-            "type": "string",
-            "default": "/",
-            "markdownDescription": "Root directory of PHP Project"
-          }
-        }
-      },
-      {
-        "id": "java-project",
-        "title": "Java Project",
-        "properties": {
-          "uml-gen.javaRootDir": {
-            "type": "string",
-            "default": "/src/java/main",
-            "markdownDescription": "Root directory of Java Projects"
-          }
+    "configuration": {
+      "type": "object",
+      "title": "UML Generator",
+      "properties": {
+        "uml-gen.ignoreDirs": {
+          "markdownDescription": "Ignore files dirs of project. Separates with `,`.",
+          "type": "array",
+          "default": [ ".git", "tests", "vendor", "bin", "logs" ]
+        },
+        "uml-gen.projectRootDir": {
+          "markdownDescription": "Root dir of source code.",
+          "type": "string",
+          "default": "/src"
         }
       }
-    ]
+    }
   },
   "scripts": {
     "publish": "vsce package",
