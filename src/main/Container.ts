@@ -16,15 +16,11 @@ export class Container {
 	private static self: Container;
 
 	private worspaceFiles!: WorkspaceFilesType;
-	public readonly ignoreDirs: IgnoreDirs;
-	public readonly ignoreFiles: IgnoreDirs;
-	public readonly projectRootDir: string;
+	private ignoreFiles: IgnoreDirs;
 
 	private constructor() {
 		this.worspaceFiles = { };
 		this.ignoreFiles = IgnoreFiles;
-		this.ignoreDirs = Workspace.getIgnoreDirs();
-		this.projectRootDir = Workspace.getRootDir();
 	}
 
 	public static init(): Container {
@@ -32,6 +28,10 @@ export class Container {
 			Container.self = new Container();
 		}
 		return Container.self
+	}
+
+	public getRootDir(): string {
+		return Workspace.getRootDir();
 	}
 
 	public initWorkspace(extension: string, files: FileMetadata[]) {
@@ -70,7 +70,8 @@ export class Container {
 	}
 
 	public static ignoreDir(dirName: string): boolean {
-		return Container.init().ignoreDirs.includes(dirName);
+		const ignoreDirs = Workspace.getIgnoreDirs();
+		return ignoreDirs.includes(dirName);
 	}
 
 	public static ignoreFile(fileName: string): boolean {

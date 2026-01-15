@@ -4,6 +4,7 @@ import { Container } from "./Container"
 import { FileMetadata, KeyValue, FilePath, Optional, IgnoreDirs } from "../common/types"
 import { randomBytes } from "crypto"
 import { Resource } from "../front/resource/type"
+import { Commands } from "./Commands"
 
 export const FileFactory = {
 	fromAbsolutePath(absolutePath: string): undefined | FileMetadata {
@@ -80,13 +81,13 @@ export const Workspace = {
 		if (workspacePath == null) {
 			return undefined;
 		}
-		const rootFiles = Container.init().projectRootDir;
+		const rootFiles = Container.init().getRootDir();
 		const path = parts.join("/");
 		return `${workspacePath}/${rootFiles}/${path}`;
 	},
 
 	getRootDir(): string {
-		let config = Workspace.getSectionConfig<string>("projectRootDir", "src");
+		let config = Workspace.getSectionConfig<string>(Commands.PROJECT_ROOT_DIR, "src");
 		if (config.startsWith("/")) {
 			config = config.substring(1);
 		}
@@ -94,7 +95,7 @@ export const Workspace = {
 	},
 
 	getIgnoreDirs(): IgnoreDirs {
-		return Workspace.getSectionConfig<Array<string>>("ignoreDirs", []);
+		return Workspace.getSectionConfig<Array<string>>(Commands.IGNORE_DIRS, []);
 	},
 
 	getSectionConfig<T>(section: string, def: T): T {

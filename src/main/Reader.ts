@@ -10,7 +10,7 @@ export class Reader {
 	private onLoad!: ICallback<FileMetadata[]>;
 
 	constructor(private extension: Extension) {
-		const rootDir = Container.init().projectRootDir
+		const rootDir = Container.init().getRootDir();
 		this.absolutePath = this.getSrcPath(rootDir);
 	}
 

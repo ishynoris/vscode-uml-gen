@@ -10,6 +10,11 @@ export interface ICreatorFromFile {
 
 export class Commands {
 
+	public static readonly PROJECT_ROOT_DIR = "projectRootDir";
+	public static readonly IGNORE_DIRS = "ignoreDirs";
+	public static readonly GEN_TITLE_CLICK = "uml-gen.title-click";
+	public static readonly GEN_EXPLORER_CLICK = "uml-gen.right-click";
+
 	private context: ExtensionContext;
 
 	constructor(context: ExtensionContext) {
@@ -29,11 +34,11 @@ export class Commands {
 	}
 
 	public registerCommandRightClick(creator: ICreatorFromFile): void {
-		const command = commands.registerCommand("uml-gen.right-click", (uri: Uri) => createFromActiveDocument(creator, uri));
+		const command = commands.registerCommand(Commands.GEN_EXPLORER_CLICK, (uri: Uri) => createFromActiveDocument(creator, uri));
 	}
 
 	public registerCommandTitleClick(creator: ICreatorFromFile): void {
-		const command = commands.registerCommand("uml-gen.title-click", (uri: Uri) => createFromActiveDocument(creator, uri));
+		const command = commands.registerCommand(Commands.GEN_TITLE_CLICK, (uri: Uri) => createFromActiveDocument(creator, uri));
 	}
 }
 
