@@ -248,7 +248,7 @@ export class FileOnDisk {
 
 		this.isDirectory = type == FileType.Directory;
 		this.name = filePath.fileName;
-		this.extension = filePath.fileName;
+		this.extension = filePath.extension;
 	}
 
 	public asFileMetadata(): undefined | FileMetadata {
