@@ -33,7 +33,7 @@
         "title": "Create UML Class Diagram",
         "category": "UML Gen"
       },
-      { 
+      {
         "command": "uml-gen.title-click",
         "title": "Create UML Class Diagram",
         "category": "UML Gen"
@@ -83,6 +83,9 @@
     "pretest": "npm run compile-tests && npm run compile && npm run lint",
     "lint": "eslint src",
     "test": "vscode-test"
+  },
+  "dependencies": {
+    "force-graph": "^1.51.0"
   },
   "devDependencies": {
     "@types/vscode": "^1.97.0",
