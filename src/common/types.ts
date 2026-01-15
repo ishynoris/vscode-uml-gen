@@ -6,6 +6,7 @@ import { Mock } from "./types/mock.types";
 import { KeyValue } from "./types/general.types";
 import { Extensions, Allowed as ExtensionAllowed } from "./types/extension.type";
 import { ITemplate, IContainer, Area, VSCodeAPI } from "./types/frontend.type";
+import { Exceptions } from "./exception/types";
 
 export {
 	Args, Attribute, ClassDetail, ClassMetadata, FileMetadata, Method, Namespace, Package, IgnoreDirs,
@@ -16,4 +17,5 @@ export {
 	KeyValue,
 	Extensions, ExtensionAllowed,
 	ITemplate, IContainer, Area, VSCodeAPI,
+	Exceptions,
 };

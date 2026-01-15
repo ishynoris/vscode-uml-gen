@@ -1,5 +1,5 @@
-import { WindowErrors, Workspace } from './util';
-import { FileMetadata, ExtensionAllowed as Extension, Extensions, FileOnDisk, ICallback, FilePath } from '../common/types';
+import { FileReader, Workspace } from './util';
+import { FileMetadata, ExtensionAllowed as Extension, Extensions, FileOnDisk, ICallback, FilePath, Exceptions } from '../common/types';
 import { FileType, Uri, workspace } from 'vscode';
 import { Container } from './Container';
 
@@ -22,6 +22,15 @@ export class Reader {
 
 	public async loadFiles(onLoad: ICallback<FileMetadata[]>) {
 		this.onLoad = onLoad;
+
+		const dirExists = await FileReader.pathExists(this.absolutePath);
+		if (!dirExists) {
+			const dir: Exceptions.RootDir = { 
+				absolute: this.absolutePath,
+				root: Container.init().getRootDir(),
+			};
+			throw new Exceptions.RootDirNotFoundException(dir);
+		}
 
 		const container = Container.init();
 		if (container.hasWorkspace(this.extension)) {

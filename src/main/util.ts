@@ -1,7 +1,7 @@
 import { TextDocument, Uri, WorkspaceFolder, window, workspace } from "vscode"
 import { readFileSync } from "fs"
 import { Container } from "./Container"
-import { FileMetadata, KeyValue, FilePath, Optional, IgnoreDirs } from "../common/types"
+import { FileMetadata, KeyValue, FilePath, Optional, IgnoreDirs, Exceptions } from "../common/types"
 import { randomBytes } from "crypto"
 import { Resource } from "../front/resource/type"
 import { Commands } from "./Commands"
@@ -33,6 +33,15 @@ export const FileFactory = {
 }
 
 export const FileReader = {
+	async pathExists(absolutePath: string): Promise<boolean> {
+		try {
+			await workspace.fs.readDirectory(Uri.file(absolutePath));
+		} catch (e) {
+			return false;
+		}
+		return true;
+	},
+
 	readContentFromPath(absolutePath: string): Optional<string> {
 		const errors = [];
 		let content = undefined;
