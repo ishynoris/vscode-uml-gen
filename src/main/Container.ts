@@ -1,8 +1,7 @@
-import { Extensions, IgnoreDirs, FileMetadata, WorkspaceFiles } from "../common/types";
+import { Extensions, ExtensionAllowed as ExtensionType, IgnoreDirs, FileMetadata, WorkspaceFiles } from "../common/types";
 import { JavaParser } from "./../parsers/java/JavaParser";
 import { ParserFile } from "./../parsers/ParserFile";
 import { PhpParser } from "./../parsers/php/PhpParser";
-import { Reader } from "./Reader";
 import { Workspace } from "./util";
 
 type WorkspaceFilesType = { [ key: string ] : WorkspaceFiles }; 
@@ -17,29 +16,35 @@ export class Container {
 	private static self: Container;
 
 	private worspaceFiles!: WorkspaceFilesType;
-	public readonly ignoreDirs: IgnoreDirs;
-	public readonly ignoreFiles: IgnoreDirs;
-	public readonly projectRootDir: string;
+	private ignoreFiles: IgnoreDirs;
 
 	private constructor() {
 		this.worspaceFiles = { };
 		this.ignoreFiles = IgnoreFiles;
-		this.ignoreDirs = Workspace.getIgnoreDirs();
-		this.projectRootDir = Workspace.getRootDir();
 	}
 
 	public static init(): Container {
 		if (Container.self == undefined) {
-			Container.self = new Container;
-			Container.self.worspaceFiles = { };
+			Container.self = new Container();
 		}
 		return Container.self
 	}
 
+	public getRootDir(): string {
+		return Workspace.getRootDir();
+	}
+
+	public initWorkspace(extension: string, files: FileMetadata[]) {
+		extension = Extensions.sanitize(extension);
+		this.worspaceFiles[extension] = new WorkspaceFiles(extension, files);
+	}
+
+	public hasWorkspace(extension: string): boolean {
+		return this.worspaceFiles[extension] != undefined;
+	}
+
 	public getWorkspaceFiles(extension: string): WorkspaceFiles {
-		if (this.worspaceFiles[extension] == undefined) {
-			this.worspaceFiles[extension] = initWorkspace(extension);
-		}
+		extension = Extensions.sanitize(extension);
 		return this.worspaceFiles[extension];
 	}
 
@@ -48,8 +53,8 @@ export class Container {
 			throw new Error(`Cannot parse  "${file.name}". Extension not allowed`);
 		}
 
-		const workspace = this.getWorkspaceFiles(file.extension);
-		const extension = file.extension.replace(".", "");
+		const extension = Extensions.sanitize(file.extension);
+		const workspace = this.getWorkspaceFiles(extension);
 
 		if (extension == "java") {
 			const parser = new JavaParser(workspace);
@@ -63,11 +68,23 @@ export class Container {
 
 		return undefined;
 	}
+
+	public static ignoreDir(dirName: string): boolean {
+		const ignoreDirs = Workspace.getIgnoreDirs();
+		return ignoreDirs.includes(dirName);
+	}
+
+	public static ignoreFile(fileName: string): boolean {
+		return Container.init().ignoreFiles.includes(fileName);
+	}
+
+	public static invalidFile(extension: ExtensionType, fileName: string): boolean {
+		if (fileName.length == 0) {
+			return true;
+		}
+		if (!fileName.endsWith(extension.toString())) {
+			return true;
+		}
+		return Container.ignoreFile(fileName);
+	}
 }
-
-function initWorkspace(extension: string): WorkspaceFiles {
-	const reader = new Reader(Extensions.to(extension));
-
-	const files: FileMetadata[] = reader.loadFiles();
-	return new WorkspaceFiles(extension, files);
-};

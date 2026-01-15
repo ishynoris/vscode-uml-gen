@@ -1,11 +1,10 @@
-import { FileFactory, Front as FrontEnd, Workspace } from "../../main/util";
+import { FileFactory, Front as FrontEnd } from "../../main/util";
 import { ItalicTemplate } from "../../front/core/templates/ItalicTemplate";
-import { Uri } from "vscode";
-import * as path from "path"
+import { FileType, Uri } from "vscode";
 import { 
 	Args, Attribute, ClassMetadata, FileMetadata, Method, 
 	Encapsulation, 
-	Extensions, ExtensionAllowed,
+	Extensions,
 	Area,
 } from "../../common/types";
 
@@ -33,15 +32,15 @@ type MapFileMetada = { [key: string]: FileMetadata };
 
 export class WorkspaceFiles {
 
-	private files: MapFileMetada = { };
+	private mapFiles: MapFileMetada = { };
 
-	constructor(private extension: string, files: FileMetadata[]) {
+	constructor(private extension: string, public readonly files: FileMetadata[]) {
 		const ReducePath = (map: MapFileMetada, file: FileMetadata): MapFileMetada => {
 			map[file.name] = file;
 			return map;
 		}
 
-		this.files = files.reduce(ReducePath, { });
+		this.mapFiles = files.reduce(ReducePath, { });
 	}
 
 	getFromPath(absolutePath: string): FileMetadata | undefined {
@@ -57,7 +56,7 @@ export class WorkspaceFiles {
 		if (!fileName.endsWith(this.extension)) {
 			fileName = `${fileName}.${this.extension}`;
 		}
-		return this.files[fileName];
+		return this.mapFiles[fileName];
 	}
 }
 
@@ -208,9 +207,9 @@ export class FilePath {
 	public readonly absolutePath: string;
 
 	constructor(uri: Uri) {
-		this.extension = path.extname(uri.fsPath).replace(".", "");
-		this.fileName = path.basename(uri.fsPath);
-		this.absolutePath = uri.fsPath;
+		this.absolutePath = FilePath.sanitizePathFromUri(uri);
+		this.extension = Extensions.extract(this.absolutePath);
+		this.fileName = FilePath.baseName(this.absolutePath);
 	}
 
 	public throwErrorIfInvalid() {
@@ -223,5 +222,36 @@ export class FilePath {
 			absolutePath: this.absolutePath,
 			extension: Extensions.to(this.extension),
 		}
+	}
+
+	public static baseName(filePath: string): string {
+		const parts = filePath.split("/");
+		const lastIndex = parts.length - 1;
+		return parts[lastIndex];
+	}
+
+	public static sanitizePathFromUri(uri: Uri): string {
+		const path = uri.fsPath.replaceAll("\\", "/");
+		return path;
+	}
+}
+
+
+export class FileOnDisk {
+
+	public readonly isDirectory: boolean;
+	public readonly name: string;
+	public readonly extension: string;
+
+	constructor(private type: FileType, public readonly absolutePath: string) {
+		const filePath = new FilePath(Uri.file(absolutePath));
+
+		this.isDirectory = type == FileType.Directory;
+		this.name = filePath.fileName;
+		this.extension = filePath.extension;
+	}
+
+	public asFileMetadata(): undefined | FileMetadata {
+		return FileFactory.fromAbsolutePath(this.absolutePath);
 	}
 }

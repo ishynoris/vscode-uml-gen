@@ -1,8 +1,10 @@
-import { ExtensionContext, TextDocument, Uri, WorkspaceFolder, window, workspace } from "vscode"
+import { TextDocument, Uri, WorkspaceFolder, window, workspace } from "vscode"
 import { readFileSync } from "fs"
 import { Container } from "./Container"
-import { FileMetadata, KeyValue, FilePath, Optional, IgnoreDirs } from "../common/types"
+import { FileMetadata, KeyValue, FilePath, Optional, IgnoreDirs, FileOnDisk } from "../common/types"
 import { randomBytes } from "crypto"
+import { Resource } from "../front/resource/type"
+import { Commands } from "./Commands"
 
 export const FileFactory = {
 	fromAbsolutePath(absolutePath: string): undefined | FileMetadata {
@@ -31,13 +33,29 @@ export const FileFactory = {
 }
 
 export const FileReader = {
+	async pathExists(absolutePath: string): Promise<boolean> {
+		try {
+			await workspace.fs.readDirectory(Uri.file(absolutePath));
+		} catch (e) {
+			return false;
+		}
+		return true;
+	},
+
+	async readDirs(filePath: string): Promise<FileOnDisk[]> {
+		const uri = Uri.file(filePath);
+		const dirs = await workspace.fs.readDirectory(uri);
+		return dirs.map(([name, type]) => new FileOnDisk(type, `${filePath}/${name}`));
+	},
+
 	readContentFromPath(absolutePath: string): Optional<string> {
 		const errors = [];
 		let content = undefined;
 		try {
 			content = readFileSync(absolutePath).toString("utf-8");
 		} catch (e) {
-			errors.push(`Cannot read content of ${absolutePath}. File not founded`);
+			const reason = e instanceof Error ? e.message : "File not founded";
+			errors.push(`Cannot read content of ${absolutePath}. ${reason}`);
 		}
 		return new Optional(content, errors);
 	},
@@ -69,7 +87,7 @@ export const Workspace = {
 			return null;
 		}
 
-		const path = folder.uri.fsPath.replaceAll("\\", "/");
+		const path = FilePath.sanitizePathFromUri(folder.uri);
 		return fileName == undefined ? path : `${path}/${fileName}`;
 	},
 
@@ -78,13 +96,13 @@ export const Workspace = {
 		if (workspacePath == null) {
 			return undefined;
 		}
-		const rootFiles = Container.init().projectRootDir;
+		const rootFiles = Container.init().getRootDir();
 		const path = parts.join("/");
 		return `${workspacePath}/${rootFiles}/${path}`;
 	},
 
 	getRootDir(): string {
-		let config = Workspace.getSectionConfig<string>("projectRootDir", "src");
+		let config = Workspace.getSectionConfig<string>(Commands.PROJECT_ROOT_DIR, "src");
 		if (config.startsWith("/")) {
 			config = config.substring(1);
 		}
@@ -92,7 +110,7 @@ export const Workspace = {
 	},
 
 	getIgnoreDirs(): IgnoreDirs {
-		return Workspace.getSectionConfig<Array<string>>("ignoreDirs", []);
+		return Workspace.getSectionConfig<Array<string>>(Commands.IGNORE_DIRS, []);
 	},
 
 	getSectionConfig<T>(section: string, def: T): T {
@@ -102,11 +120,8 @@ export const Workspace = {
 }
 
 export const Front = {
-	getResourceContent(context: ExtensionContext, fileResource: string): null|string {
-		const contextPath = context.extensionPath;
-		const resourcePath = "src/front/resource";
-		return readFileSync(`${contextPath}/${resourcePath}/${fileResource}`).toString();
-	},
+	CssContent: Resource.CssContent,
+	JsContetn: Resource.JsContent,
 
 	scapeHtmlEntity(text: string): string {
 		const htmlEntity: KeyValue = {
@@ -129,6 +144,7 @@ export const WindowErrors = {
 	showError: (e: any) => {
 		if (e instanceof Error) {
 			WindowErrors.showMessage(e.message);
+			console.log(e);
 		}
 	}
 }

@@ -1,6 +1,6 @@
-import { ExtensionContext as Context, WebviewPanel } from "vscode";
-import { IContainer, ITemplate, VSCodeAPI } from "../../../common/types/frontend.type";
-import { Crypto, Front as FrontUtil } from "../../../main/util";
+import { ExtensionContext as Context } from "vscode";
+import { IContainer, ITemplate, VSCodeAPI } from "../../../common/types";
+import { Crypto, Front } from "../../../main/util";
 
 declare const vscode: VSCodeAPI;
 
@@ -11,8 +11,6 @@ export class HtmlTemplate implements ITemplate {
 
 	public getHtml(): string {
 		const uniqId = Crypto.getUniqID();
-		const cssContent = FrontUtil.getResourceContent(this.context, "index.css");
-		const jsContent = FrontUtil.getResourceContent(this.context, "index.js");
 		const htmlContent = this.container.getContent().content;
 		const containerId = this.container.getContainerId();
 
@@ -20,10 +18,10 @@ export class HtmlTemplate implements ITemplate {
 			<html>
 				<head> 
 					<style>
-						${cssContent}
+						${Front.CssContent}
 					</style>
 					<script nonce=${uniqId}>
-						${jsContent}
+						${Front.JsContetn}
 					</script>
 				</head>
 				<body>

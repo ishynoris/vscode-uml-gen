@@ -15,12 +15,18 @@ export const Extensions = {
 		}
 	},
 
+	sanitize: (extension: string): string => {
+		return extension.replace(".", "").toLocaleLowerCase();
+	},
+
 	isValid: (extension: string): boolean => {
+		extension = Extensions.sanitize(extension);
 		const map = Extensions.map();
 		return map[extension] != undefined;
 	},
 
 	to: (extension: string): Allowed => {
+		extension = Extensions.sanitize(extension);
 		Extensions.throwErrorIfInvalid(extension);
 
 		const map = Extensions.map();
@@ -28,6 +34,7 @@ export const Extensions = {
 	},
 
 	throwErrorIfInvalid: (extension: string) => {
+		extension = Extensions.sanitize(extension);
 		if (extension.length == 0) {
 			throw new Error(`No extension defined. Extension in blank!`);
 		}
@@ -37,7 +44,10 @@ export const Extensions = {
 		}
 	},
 
-	sanitize: (extension: string) => {
-		return extension.replace(".", "").toLocaleLowerCase();
+	extract: (fileName: string): string => {
+		const parts = fileName.split(".");
+		const lastIndex = parts.length - 1;
+		const extension = Extensions.sanitize(parts[lastIndex]);
+		return Extensions.isValid(extension) ? `.${extension}` : "";
 	}
 }
