@@ -243,7 +243,7 @@ export class FileOnDisk {
 	public readonly name: string;
 	public readonly extension: string;
 
-	constructor(private type: FileType, private absolutePath: string) {
+	constructor(private type: FileType, public readonly absolutePath: string) {
 		const filePath = new FilePath(Uri.file(absolutePath));
 
 		this.isDirectory = type == FileType.Directory;

@@ -1,6 +1,6 @@
 import { FileReader, Workspace } from './util';
 import { FileMetadata, ExtensionAllowed as Extension, Extensions, FileOnDisk, ICallback, FilePath, Exceptions } from '../common/types';
-import { FileType, Uri, workspace } from 'vscode';
+import { FileType, Uri } from 'vscode';
 import { Container } from './Container';
 
 type ReadDirType = [string, FileType];
@@ -44,20 +44,17 @@ export class Reader {
 	}
 
 	private async readDirectory(absolutePath: string): Promise<FileMetadata[]> {
-		const uri = Uri.file(absolutePath);
 		const rootFiles: FileMetadata[] = [];
 
-		const dirs = await workspace.fs.readDirectory(uri);
+		const dirs = await FileReader.readDirs(absolutePath)
 		for (const index in dirs) {
-			const [name, type]: ReadDirType = dirs[index];
-			if (Container.ignoreDir(name)) {
+			const fileDisk = dirs[index];
+			if (Container.ignoreDir(fileDisk.name)) {
 				continue;
 			}
 
-			const filePath  = `${absolutePath}/${name}`;
-			const fileDisk = new FileOnDisk(type, filePath);
 			if (fileDisk.isDirectory) {
-				const files = await this.readDirectory(filePath);
+				const files = await this.readDirectory(fileDisk.absolutePath);
 				rootFiles.push(...files);
 				continue;
 			}

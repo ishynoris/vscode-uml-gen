@@ -1,7 +1,7 @@
 import { TextDocument, Uri, WorkspaceFolder, window, workspace } from "vscode"
 import { readFileSync } from "fs"
 import { Container } from "./Container"
-import { FileMetadata, KeyValue, FilePath, Optional, IgnoreDirs, Exceptions } from "../common/types"
+import { FileMetadata, KeyValue, FilePath, Optional, IgnoreDirs, FileOnDisk } from "../common/types"
 import { randomBytes } from "crypto"
 import { Resource } from "../front/resource/type"
 import { Commands } from "./Commands"
@@ -40,6 +40,12 @@ export const FileReader = {
 			return false;
 		}
 		return true;
+	},
+
+	async readDirs(filePath: string): Promise<FileOnDisk[]> {
+		const uri = Uri.file(filePath);
+		const dirs = await workspace.fs.readDirectory(uri);
+		return dirs.map(([name, type]) => new FileOnDisk(type, `${filePath}/${name}`));
 	},
 
 	readContentFromPath(absolutePath: string): Optional<string> {
