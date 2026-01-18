@@ -1,11 +1,13 @@
 import { ExtensionContext, ViewColumn, WebviewOptions, WebviewPanel, WebviewPanelOptions, window } from "vscode";
-import { ClassDetail, ClassMetadata } from "../common/types/backend.type";
-import { MainComponent } from "./core/components/MainComponent";
 import { HtmlTemplate } from "./core/templates/HtmlTemplate";
-import { Optional } from "../common/types/classes.type";
 import { parseFromPath } from "../parsers/ParserFactory";
 import { WindowErrors } from "../main/util";
-import { FrontMessage, FrontNode, Mesages } from "../common/types/frontend.type";
+import { 
+	ClassDetail, ClassMetadata,
+	Optional,
+	FrontMessage, FrontNode, Mesages,
+	ForceGraphWrapper as FGWrapper,
+} from "../common/types";
 
 type MapNodeWebview = { [key: string]: GraphWebview }
 
@@ -54,8 +56,22 @@ class GraphWebview {
 	}
 
 	public render() {
-		const mainComponent = new MainComponent(this.metadata, "main-container");
-		const template = new HtmlTemplate(mainComponent, this.context);
+		const graph: FGWrapper.GraphData = {
+			nodes: [
+				{ id: "Id1" },
+				{ id: "Id2" },
+				{ id: "Id3" },
+				{ id: "Id4" },
+			],
+			links: [
+				{ source:  "Id1", target: "Id2" },
+				{ source:  "Id1", target: "Id3" },
+				{ source:  "Id1", target: "Id4" },
+				{ source:  "Id1", target: "Id1" },
+			]
+		};
+
+		const template = new HtmlTemplate(graph, this.context, this.panel.webview);
 
 		this.panel.webview.html = template.getHtml();
 		this.panel.reveal();

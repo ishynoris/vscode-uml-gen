@@ -1,40 +1,34 @@
-import { ExtensionContext as Context } from "vscode";
-import { IContainer, ITemplate, VSCodeAPI } from "../../../common/types";
-import { Crypto, Front } from "../../../main/util";
+import { ExtensionContext as Context, Uri, Webview } from "vscode";
+import { ForceGraphWrapper as FG, ITemplate, VSCodeAPI } from "../../../common/types";
+import { Crypto, FileReader } from "../../../main/util";
 
 declare const vscode: VSCodeAPI;
 
+type GraphData = FG.GraphData;
+
 export class HtmlTemplate implements ITemplate {
 
-	constructor (private container: IContainer, private context: Context) {
+	private webviewExtensionPath: string;
+
+	constructor (private data: GraphData, private context: Context, private webview: Webview) {
+		this.webviewExtensionPath = `${context.extensionPath}/dist`;
 	}
 
 	public getHtml(): string {
-		const uniqId = Crypto.getUniqID();
-		const htmlContent = this.container.getContent().content;
-		const containerId = this.container.getContainerId();
+		const htmlPath = `${this.webviewExtensionPath}/webview/index.html`;
+		const htmlContent = FileReader.readContentFromPath(htmlPath).value;
+		if (htmlContent == undefined) {
+			throw new Error("Resources not loaded");
+		}
 
-		return `
-			<html>
-				<head> 
-					<style>
-						${Front.CssContent}
-					</style>
-					<script nonce=${uniqId}>
-						${Front.JsContetn}
-					</script>
-				</head>
-				<body>
-					<canvas id="canvas"></canvas>
-					${htmlContent}
-				</body>
-				<script nonce=${uniqId}>
-					document.addEventListener("DOMContentLoaded", function() {
-						vscode = acquireVsCodeApi();
-						init("${containerId}", vscode);
-					});
-				</script>
-			</html>
-			`
+		return htmlContent.replace("__SCRIPT_UNIQ_ID__", Crypto.getUniqID())
+			.replace("__NODES_STRINGIFIED__", JSON.stringify(this.data).replaceAll("\"", "'"))
+			.replace("__SRC_FORCE_GRAPH__", this.getDistPath("webview/js/force-graph.min.js"))
+			.replace("__SRC_MAIN__", this.getDistPath("webview/js/app.js"))
+	}
+
+	private getDistPath(path: string): string {
+		const uri = Uri.file(`${this.webviewExtensionPath}/${path}`);
+		return this.webview.asWebviewUri(uri).toString();
 	}
 }
