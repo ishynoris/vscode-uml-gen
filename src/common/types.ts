@@ -5,30 +5,9 @@ import { IParser, IParserFile, IPackageMapper, ICallback } from "./types/interfa
 import { Mock } from "./types/mock.types";
 import { KeyValue } from "./types/general.types";
 import { Extensions, Allowed as ExtensionAllowed } from "./types/extension.type";
-import { ITemplate, IContainer, Area, VSCodeAPI, FrontMessage, FrontNode, Mesages } from "./types/frontend.type";
+import { ITemplate, IContainer, Area, VSCodeAPI, FrontMessage, FrontNode, Mesages, Component, Coordinates, DivOptions, IAreaComponent, Position } from "./types/frontend.type";
 import { Exceptions } from "./exception/types";
-
-export namespace ForceGraphWrapper {
-	export type NodeObject = {
-		id?: string | number;
-		index?: number;
-		x?: number;
-		y?: number;
-		vx?: number;
-		vy?: number;
-		fx?: number;
-		fy?: number;
-	}
-	export type LinkNodes = {
-		source?: string | number | NodeObject;
-		target?: string | number | NodeObject;
-	}
-	
-	export type GraphData = {
-		nodes: NodeObject[],
-		links: LinkNodes[],
-	}
-}
+import { ForceGraph as ForceGraphWrapper} from "../front/core/ForceGraphWrapper";
 
 export {
 	Args, Attribute, ClassDetail, ClassMetadata, FileMetadata, Method, Namespace, Package, IgnoreDirs,
@@ -38,6 +17,7 @@ export {
 	Mock,
 	KeyValue,
 	Extensions, ExtensionAllowed,
-	ITemplate, IContainer, Area, VSCodeAPI, FrontMessage, FrontNode, Mesages,
+	ITemplate, IContainer, Area, Position, VSCodeAPI, FrontMessage, FrontNode, Mesages, Component, Coordinates, DivOptions, IAreaComponent,
 	Exceptions,
+	ForceGraphWrapper,
 };
