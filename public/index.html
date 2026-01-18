@@ -1,0 +1,21 @@
+<html>
+	<head> 
+		<script src="__SRC_FORCE_GRAPH__"></script>
+		<script src="__SRC_MAIN__"></script>
+	</head>
+	<body>
+		<div id="graph-data" data-nodes="__NODES_STRINGIFIED__"></div>
+		<div id="force-graph-container" style="background-color: aliceblue;"></div>
+		<script nonce="__SCRIPT_UNIQ_ID__">
+			document.addEventListener("DOMContentLoaded", function() {
+				vscode = acquireVsCodeApi();
+
+				const nodes = document.getElementById("graph-data")
+					.dataset['nodes']
+					.replaceAll("'", "\"");
+				const graphData = JSON.parse(nodes);
+				init("force-graph-container", graphData, vscode);
+			});
+		</script>
+	</body>
+</html>
