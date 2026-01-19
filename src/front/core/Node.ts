@@ -1,12 +1,11 @@
-import { ClassMetadata } from "../../common/types/backend.type";
-import { Area, Component, Coordinates, DivOptions, IAreaComponent } from "../../common/types/frontend.type";
+import { ClassMetadata, Area, Component, Coordinates, DivOptions } from "../../common/types";
 import { AttributeComponent } from "./components/AttributeComponent";
 import { MethodComponent } from "./components/MethodComponents";
 import { DetailComponent, Details } from "./components/DetailComponent";
 import { Dom } from "./Dom";
 import { KeyManyValues } from "../../common/types/general.types";
 
-export class Node implements IAreaComponent {
+export class Node {
 
 	public readonly tag: string;
 
@@ -62,7 +61,6 @@ export class Node implements IAreaComponent {
 		return {
 			id: `node-${_processId(this.tag)}`,
 			class: [ "node-container" ],
-			coordinates: this.coords,
 			dataValue: dataPackages,
 		}
 	}

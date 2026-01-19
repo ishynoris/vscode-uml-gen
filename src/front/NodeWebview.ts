@@ -2,12 +2,14 @@ import { ExtensionContext, ViewColumn, WebviewOptions, WebviewPanel, WebviewPane
 import { HtmlTemplate } from "./core/templates/HtmlTemplate";
 import { parseFromPath } from "../parsers/ParserFactory";
 import { WindowErrors } from "../main/util";
+import { GraphFactory } from "../common/GraphFactory";
 import { 
 	ClassDetail, ClassMetadata,
 	Optional,
 	FrontMessage, FrontNode, Mesages,
 	ForceGraphWrapper as FGWrapper,
 } from "../common/types";
+import { ForceGraph } from "./core/ForceGraphWrapper";
 
 type MapNodeWebview = { [key: string]: GraphWebview }
 
@@ -56,21 +58,7 @@ class GraphWebview {
 	}
 
 	public render() {
-		const graph: FGWrapper.GraphData = {
-			nodes: [
-				{ id: "Id1" },
-				{ id: "Id2" },
-				{ id: "Id3" },
-				{ id: "Id4" },
-			],
-			links: [
-				{ source:  "Id1", target: "Id2" },
-				{ source:  "Id1", target: "Id3" },
-				{ source:  "Id1", target: "Id4" },
-				{ source:  "Id1", target: "Id1" },
-			]
-		};
-
+		const graph: ForceGraph.GraphData = GraphFactory.getForceGraphData(this.metadata);
 		const template = new HtmlTemplate(graph, this.context, this.panel.webview);
 
 		this.panel.webview.html = template.getHtml();
