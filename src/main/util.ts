@@ -3,7 +3,6 @@ import { readFileSync } from "fs"
 import { Container } from "./Container"
 import { FileMetadata, KeyValue, FilePath, Optional, IgnoreDirs, FileOnDisk } from "../common/types"
 import { randomBytes } from "crypto"
-import { Resource } from "../front/resource/type"
 import { Commands } from "./Commands"
 
 export const FileFactory = {
@@ -120,9 +119,6 @@ export const Workspace = {
 }
 
 export const Front = {
-	CssContent: Resource.CssContent,
-	JsContetn: Resource.JsContent,
-
 	scapeHtmlEntity(text: string): string {
 		const htmlEntity: KeyValue = {
 			"<": "&#60;",
