@@ -24,7 +24,7 @@ export class HtmlTemplate implements ITemplate {
 		return htmlContent.replace("__SCRIPT_UNIQ_ID__", Crypto.getUniqID())
 			.replace("__NODES_STRINGIFIED__", JSON.stringify(this.data).replaceAll("\"", "'"))
 			.replace("__SRC_FORCE_GRAPH__", this.getDistPath("webview/js/force-graph.min.js"))
-			.replace("__SRC_MAIN__", this.getDistPath("webview/js/app.js"))
+			.replace("__SRC_MAIN__", this.getDistPath("webview/bundle.js"))
 	}
 
 	private getDistPath(path: string): string {

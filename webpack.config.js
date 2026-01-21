@@ -59,7 +59,6 @@ const resourceConfig = {
     new CopyWebpackPlugin({
       patterns: [
         { from: "public/thrid-party", to: './webview/js' },
-		{ from: "public/js", to: './webview/js' },
       ]
     })
   ]
