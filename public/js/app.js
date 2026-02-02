@@ -1,28 +1,40 @@
+var appliedListener = false;
+
 export function init(containerId, nodes, vscodeApi) {
 	const container = document.getElementById(containerId);
 	const graph = new ForceGraph(container)
-		.nodeId('id').graphData(nodes)
-		.nodeCanvasObject((item, ctx) => {
+		.dagMode("radialout") // radialin, td, bu, lr, rl
+		.dagLevelDistance(200)
+		.cooldownTicks(100)
+		// .nodeRelSize(20)
+		.dagNodeFilter((e) => {
+			debugger;
+			return true;
+		})
+		.onEngineStop((e) => {
+			console.log(e);
+			graph.cooldownTicks(0)
+		})
+		.nodeCanvasObject((item, ctx, scale) => {
 			if (item.x == undefined && item.y == undefined) {
 				return;
 			}
+			
+			if (!appliedListener) {
+				appliedListener = true;
+				const canvas = ctx.canvas;
+				canvas.addEventListener("click", function(e) {
+					console.log("appliedListener");
+				});
+			}
+
 			const { node, x, y } = item;
-			const { width, height } = node.coords;
-			const coords = {
-				x: x,
-				y: y,
-				w: width,
-				h: height,
-				center: {
-					x: x - (width / 2),
-					y: y - (height / 2)
-				}
-			};
-			const canvas = CanvasNodeDecorator(ctx);
-			canvas.render(node, coords);
-		});
+			const canvas = CanvasNodeDecorator(ctx, scale);
+			canvas.render(node, x, y);
+		})
+		.graphData(nodes);
 }
 
-function CanvasNodeDecorator(context2D) {
-	return new window.CanvasNodeDecorator(context2D);
+function CanvasNodeDecorator(context2D, scale) {
+	return new window.CanvasNodeDecorator(context2D, scale);
 }
