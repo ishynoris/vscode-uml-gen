@@ -10,7 +10,9 @@ export class Node {
 	public readonly tag: string;
 
 	constructor(private metadata: ClassMetadata, private coords: Coordinates) {
-		this.tag = metadata.detail.name;
+		const namespace = metadata.namespace.parts.join(".");
+		const className = metadata.detail.name;
+		this.tag = `${namespace}.${className}`;
 	}
 	
 	getArea(): Area {
